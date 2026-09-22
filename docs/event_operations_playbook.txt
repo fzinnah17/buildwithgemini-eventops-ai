@@ -1,0 +1,80 @@
+================================================================================
+EVENTOPS AI — ENTERPRISE EVENT OPERATIONS PLAYBOOK (GENERAL REFERENCE GUIDE)
+================================================================================
+NOTICE: This document provides general, practical event operations guidance and
+operational best practices for executive dinners, salons, and professional
+gatherings. It is designed as an operational knowledge base and does not claim to
+represent the proprietary internal policies of any specific enterprise or vendor.
+================================================================================
+
+1. EVENT LIFECYCLE & MILESTONES
+--------------------------------------------------------------------------------
+- T-6 Weeks (Vision & Format Lock):
+  * Define event objective, target audience profile, guest count ceiling, and financial ceiling.
+  * Establish protected priorities (e.g. culinary quality, intimate acoustic environment, accessibility).
+- T-4 Weeks (Venue Selection & Budget Baseline):
+  * Inspect venue for physical accessibility, elevator access, door closure, and ambient acoustics (< 65 dB).
+  * Lock venue contract with explicit Food & Beverage minimum and cancellation/rescheduling terms.
+  * Establish baseline budget with 8-15% unallocated contingency reserve.
+- T-3 Weeks (Invitations & Inclusivity Survey):
+  * Send invitations with clear framing, dress code, schedule, and dietary intake survey.
+  * Survey must inquire about mobility accommodations, dietary allergies/preferences, and zero-proof beverage options.
+- T-2 Weeks (Program & Run of Show Draft):
+  * Sequence minute-by-minute Run of Show (ROS) with designated owners for each transition.
+  * Ensure speeches or toasts do not exceed 5-7 minutes during dining to preserve food temperature and conversational flow.
+- T-72 Hours (Operational & Dietary Lock):
+  * Confirm final guest headcount and dietary list with venue culinary team.
+  * Require the kitchen to hold at least 2 reserve allergen-free / vegan plates for unanticipated guest needs.
+  * Re-confirm arrival staff: dedicated greeter and coat check attendant for events with 20+ guests.
+- Day of Event (T-0):
+  * T-90 min: Event Lead on-site for room inspection, table spacing check (> 36" clearance), lighting level check, and acoustic test.
+  * T-15 min: Welcome drinks and ambient music active.
+  * Post-Event (T+24h): Send personalized thank you, opt-in attendee roster, and conduct financial reconciliation.
+
+2. ACCESSIBILITY & UNIVERSAL DESIGN STANDARDS
+--------------------------------------------------------------------------------
+- Physical Access:
+  * Entrances must feature step-free access or functional ADA-compliant lifts.
+  * Restrooms must be on the same level as the private event space or accessible via direct elevator.
+  * Aisle clearance between tables and behind seated chairs must maintain at least 36 inches to comfortably accommodate wheelchairs and mobility devices.
+- Sensory & Acoustic Comfort:
+  * Executive dinners must maintain conversational acoustic levels. Background music should be gentle (jazz, acoustic instrumental, or ambient downtempo) and never drown out natural speaking volume.
+  * Lighting must be warm (2200K - 2700K color temperature), dimmable, and free of harsh fluorescent glare or flickering bulbs.
+  * Provide or identify a quiet decompression space nearby for guests who may experience sensory fatigue.
+- Beverage Inclusivity:
+  * Non-alcoholic options must never be an afterthought. Offer artisanal zero-proof elixirs, botanical sodas, or crafted mocktails served in identical luxury glassware to alcoholic pairings.
+
+3. DIETARY MANAGEMENT & ALLERGEN PROTOCOLS
+--------------------------------------------------------------------------------
+- Clear Labeling: Plated courses must be cross-checked against individual seat assignments or discrete dietary service markers.
+- Kitchen Reserves: Always arrange for 2-3 emergency vegan/gluten-free/nut-free entrée plates even if all RSVPs indicated standard diets.
+- Cross-Contamination: For severe anaphylactic allergies (peanuts, tree nuts, shellfish), mandate strict kitchen separation protocols in the venue event agreement.
+
+4. BUDGET RECONCILIATION & LOCAL TAX/GRATUITY NORMS
+--------------------------------------------------------------------------------
+- Metropolitan (NYC) Dining Realities:
+  * Always calculate base food and beverage costs separately from local sales tax (NYC: 8.875%), administrative fees (typically 3-5%), and mandatory gratuities (typically 20%).
+  * A nominal $100/head menu actually incurs ~$133.65/head in gross commitment after tax, admin fee, and gratuity.
+- Contingency Reserve Discipline:
+  * Never allocate 100% of the total budget to planned line items. Maintain a strict 8% to 15% contingency reserve.
+  * Contingency funds are dedicated to last-minute headcount variations, overtime charges, urgent floral adjustments, or transportation assistance.
+
+5. RUN OF SHOW (ROS) PRINCIPLES & CUEING
+--------------------------------------------------------------------------------
+- Arrival Window: Allocate a minimum of 25-30 minutes for arrival, decompression, coat check, and initial welcome beverage before attempting to seat guests.
+- Transition Cues: Never shout over a room. Transition cues should be subtle: a slight lowering of background music, service staff opening dining doors, or the host tapping a glass gently.
+- Table Discussion Prompts: Keep prompts open-ended, non-judgmental, and focused on shared learning rather than corporate elevator pitches.
+- Course Pacing: Allow 35-45 minutes per course. Do not clear plates until at least 80% of the table has completed their dish.
+
+6. DATA MINIMIZATION & GUEST PRIVACY
+--------------------------------------------------------------------------------
+- Collect only operationally necessary guest data (name, email, dietary/accessibility needs, title/organization).
+- Never share guest phone numbers or direct contact details without explicit, opt-in consent.
+- Post-event attendee rosters should be opt-in only.
+- In-room photography should respect guests' privacy preferences, with discrete badges or seating indicators for those who prefer not to appear in social media photography.
+
+7. OPERATIONAL READINESS BENCHMARKS (EVENTOPS GUARD)
+--------------------------------------------------------------------------------
+- Readiness Score >= 85: Ready for Execution. All critical logistics, staffing, dietary locks, and budget reconciliations are satisfied.
+- Readiness Score 65 - 84: Needs Attention. Minor gaps in contingency reserves, vendor contracts, or acoustic verifications require timely resolution.
+- Readiness Score < 65: High Risk. Immediate operational blockers (budget deficit, missing coat check for large gathering, unassigned key roles) must be resolved prior to proceeding.
