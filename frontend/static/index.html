@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventOps AI — Enterprise Event Operations Agent</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<style>
+  :root {
+    --bg-base: #0a0d14;
+    --bg-surface: #10141f;
+    --bg-surface-elevated: #171c2b;
+    --bg-surface-hover: #1e2436;
+    --border-subtle: #232a3d;
+    --border-strong: #323d57;
+    --text-primary: #f0f4fc;
+    --text-secondary: #9daec2;
+    --text-muted: #627289;
+    --accent-blue: #3b82f6;
+    --accent-blue-hover: #2563eb;
+    --accent-teal: #14b8a6;
+    --accent-teal-subtle: rgba(20, 184, 166, 0.12);
+    --accent-amber: #f59e0b;
+    --accent-amber-subtle: rgba(245, 158, 11, 0.12);
+    --accent-red: #ef4444;
+    --accent-red-subtle: rgba(239, 68, 68, 0.12);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* TOP HEADER */
+  header {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #1e3a8a, #0284c7);
+    border: 1px solid var(--accent-blue);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: #fff;
+  }
+  .brand-text h1 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .brand-badge {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-teal-subtle);
+    color: var(--accent-teal);
+    border: 1px solid rgba(20, 184, 166, 0.3);
+  }
+  .brand-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  .header-event-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--bg-surface-elevated);
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+  }
+  .event-tag {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .event-title-badge {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .readiness-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent-teal-subtle);
+    color: var(--accent-teal);
+    border: 1px solid rgba(20, 184, 166, 0.3);
+  }
+  .conn-status {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+  }
+  .conn-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    box-shadow: 0 0 6px var(--accent-teal);
+  }
+
+  /* WORKSPACE LAYOUT */
+  .workspace-container {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    overflow: hidden;
+  }
+
+  /* PRIMARY OPERATIONS WORKSPACE */
+  .operations-workspace {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-subtle);
+    background: var(--bg-base);
+    overflow: hidden;
+  }
+  .workspace-nav {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .nav-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface-elevated);
+  }
+  .nav-btn.active {
+    color: #fff;
+    background: var(--bg-surface-elevated);
+    border-color: var(--border-strong);
+    box-shadow: inset 0 -2px 0 var(--accent-blue);
+  }
+
+  .workspace-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* CARDS & PANELS */
+  .ops-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+  }
+  .ops-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.5rem;
+  }
+  .ops-panel-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .metric-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.85rem;
+  }
+  .metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    margin-bottom: 0.2rem;
+  }
+  .metric-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .metric-sub {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 0.15rem;
+  }
+
+  /* FACTS VS ASSUMPTIONS BAR */
+  .facts-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  .facts-col {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+  }
+  .facts-col-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .facts-confirmed { color: var(--accent-teal); }
+  .facts-assumptions { color: var(--accent-amber); }
+  .facts-list {
+    list-style: none;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .facts-list li {
+    position: relative;
+    padding-left: 0.85rem;
+  }
+  .facts-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+  }
+
+  /* TABLES */
+  .ops-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: left;
+  }
+  .ops-table th {
+    background: var(--bg-surface-elevated);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.4px;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .ops-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+  .ops-table tr:hover td {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+  }
+
+  /* STATUS BADGES */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .badge-approved { background: var(--accent-teal-subtle); color: var(--accent-teal); border: 1px solid rgba(20, 184, 166, 0.3); }
+  .badge-pending { background: var(--accent-amber-subtle); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); animation: pulse-border 2s infinite; }
+  .badge-critical { background: var(--accent-red-subtle); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-protected { background: rgba(59, 130, 246, 0.12); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+  @keyframes pulse-border {
+    0% { border-color: rgba(245, 158, 11, 0.3); }
+    50% { border-color: rgba(245, 158, 11, 0.8); }
+    100% { border-color: rgba(245, 158, 11, 0.3); }
+  }
+
+  /* EVENTOPS GUARD FINDINGS */
+  .guard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .guard-card {
+    background: var(--bg-surface-elevated);
+    border-left: 3px solid var(--border-strong);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .guard-card.critical { border-left-color: var(--accent-red); }
+  .guard-card.attention { border-left-color: var(--accent-amber); }
+  .guard-card.ready { border-left-color: var(--accent-teal); }
+  .guard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .guard-issue {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+  }
+  .guard-body {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+  }
+  .guard-action {
+    font-size: 0.74rem;
+    color: var(--accent-blue);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+  }
+
+  /* GUEST JOURNEY 8 STAGES */
+  .journey-timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .journey-stage-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.75rem;
+  }
+  .journey-step-num {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+  .journey-stage-title {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  .journey-stage-desc {
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+  }
+
+  /* VISUAL DIRECTION */
+  .visual-card {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 1rem;
+    align-items: start;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+  }
+  .visual-img-frame {
+    width: 100%;
+    height: 160px;
+    background: #0d1117;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-subtle);
+  }
+  .visual-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .visual-fallback {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 1rem;
+  }
+  .visual-meta h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+  .visual-meta p {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* SECONDARY AGENT COPILOT PANEL */
+  .agent-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-surface);
+    overflow: hidden;
+  }
+  .agent-panel-header {
+    padding: 0.75rem 1rem;
+    background: var(--bg-surface-elevated);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .agent-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .copilot-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: var(--radius-sm);
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  /* QUICK PROMPTS */
+  .quick-prompts-bar {
+    padding: 0.6rem 0.85rem;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .quick-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.4px;
+  }
+  .prompt-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .prompt-btn {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 0.74rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.12s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .prompt-btn:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+  }
+
+  /* CHAT LOG */
+  .chat-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .chat-msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 92%;
+  }
+  .chat-msg.user {
+    align-self: flex-end;
+    align-items: flex-end;
+  }
+  .chat-msg.agent {
+    align-self: flex-start;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .chat-sender {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+  }
+  .chat-bubble {
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    line-height: 1.45;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    white-space: pre-wrap;
+  }
+  .chat-msg.user .chat-bubble {
+    background: #1e3a8a;
+    border-color: #2563eb;
+    color: #fff;
+  }
+  .chat-msg.agent .chat-bubble.rich {
+    background: transparent;
+    border: none;
+    padding: 0;
+    white-space: normal;
+    width: 100%;
+  }
+
+  /* A2UI CARDS (v0.8 Basic Catalog) */
+  .a2card {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    padding: 0.85rem;
+    background: var(--bg-surface-elevated);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    width: 100%;
+  }
+  .a2col { display: flex; flex-direction: column; gap: 0.4rem; }
+  .a2row { display: flex; flex-direction: row; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .a2row.between { justify-content: space-between; }
+  .a2text { margin: 0; line-height: 1.4; color: var(--text-primary); }
+  .a2text.a2-h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
+  .a2text.a2-h2 { font-size: 1.05rem; font-weight: 700; }
+  .a2text.a2-h3 { font-size: 0.95rem; font-weight: 600; color: var(--accent-blue); }
+  .a2text.a2-caption { font-size: 0.72rem; color: var(--text-muted); }
+  .a2divider { border: none; border-top: 1px solid var(--border-subtle); margin: 0.4rem 0; width: 100%; }
+  .a2img { max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: block; }
+  .material-symbols-outlined { font-size: 1.15rem; vertical-align: middle; color: var(--accent-blue); }
+
+  /* CHAT INPUT FORM */
+  .chat-form {
+    padding: 0.75rem;
+    background: var(--bg-surface-elevated);
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    gap: 0.5rem;
+  }
+  .chat-input {
+    flex: 1;
+    background: var(--bg-base);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.75rem;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .chat-input:focus {
+    border-color: var(--accent-blue);
+  }
+  .chat-send-btn {
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .chat-send-btn:hover { background: var(--accent-blue-hover); }
+
+  /* THINKING SPINNER */
+  .spinner-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    padding: 0.4rem 0;
+  }
+  .spin {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .workspace-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 400px;
+    }
+    .operations-workspace { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<header>
+  <div class="brand-group">
+    <div class="brand-logo">EO</div>
+    <div class="brand-text">
+      <h1>EventOps AI <span class="brand-badge">Enterprise Console</span></h1>
+      <div class="brand-subtitle">Enterprise Event Operations Agent</div>
+    </div>
+  </div>
+
+  <div class="header-event-info" id="headerEventBadge">
+    <span class="event-tag"><span class="material-symbols-outlined" style="font-size:16px;">event</span> Event:</span>
+    <span class="event-title-badge" id="eventBadgeTitle">evt_wit_manhattan_2026: Women in Tech Leadership Dinner</span>
+  </div>
+
+  <div class="header-actions">
+    <div class="readiness-pill" id="headerReadiness">
+      <span class="material-symbols-outlined" style="font-size:16px;">verified_user</span>
+      <span id="headerScore">85/100 · READY / ON TRACK</span>
+    </div>
+    <div class="conn-status">
+      <span class="conn-dot"></span>
+      <span>A2A Online</span>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTAINER -->
+<div class="workspace-container">
+
+  <!-- PRIMARY OPERATIONS WORKSPACE -->
+  <main class="operations-workspace">
+    <nav class="workspace-nav" aria-label="Workspace Sections">
+      <button class="nav-btn active" data-target="overview"><span class="material-symbols-outlined" style="font-size:16px;">dashboard</span> Event Overview</button>
+      <button class="nav-btn" data-target="budget"><span class="material-symbols-outlined" style="font-size:16px;">payments</span> Adaptive Budget</button>
+      <button class="nav-btn" data-target="guard"><span class="material-symbols-outlined" style="font-size:16px;">shield_with_heart</span> EventOps Guard</button>
+      <button class="nav-btn" data-target="ledger"><span class="material-symbols-outlined" style="font-size:16px;">history_edu</span> Decision Ledger</button>
+      <button class="nav-btn" data-target="ros"><span class="material-symbols-outlined" style="font-size:16px;">schedule</span> Run of Show</button>
+      <button class="nav-btn" data-target="journey"><span class="material-symbols-outlined" style="font-size:16px;">route</span> Guest Journey</button>
+      <button class="nav-btn" data-target="visual"><span class="material-symbols-outlined" style="font-size:16px;">image</span> Visual Direction</button>
+    </nav>
+
+    <div class="workspace-body" id="workspaceBody">
+
+      <!-- SECTION 1: OVERVIEW -->
+      <section class="ops-panel" id="panel-overview">
+        <div class="ops-panel-header">
+          <div class="ops-panel-title"><span class="material-symbols-outlined" style="font-size:18px;">event_available</span> Event Overview & Specifications</div>
+          <span class="badge badge-approved" id="ovStatus">DRAFTING / ACTIVE</span>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-label">Total Budget</div>
+            <div class="metric-value" id="ovBudget">$4,000.00</div>
+            <div class="metric-sub">Firm Cap · NYC Tax & Gratuity Incl.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Confirmed Guests</div>
+            <div class="metric-value" id="ovGuests">30</div>
+            <div class="metric-sub">Seated Salon Format</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Location / Target</div>
+            <div class="metric-value" id="ovLocation">Manhattan, NY</div>
+            <div class="metric-sub">Private Dining Room Buyout</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Readiness Score</div>
+            <div class="metric-value" style="color:var(--accent-teal);" id="ovScore">85 / 100</div>
+            <div class="metric-sub">0 Blockers · 3 Attention</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:0.75rem; margin-bottom:0.75rem;">
+          <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.25rem;">Event Objective & Atmosphere</div>
+          <p style="font-size:0.82rem; color:var(--text-secondary); line-height:1.45;" id="ovObjective">
+            Foster high-trust relationships and meaningful peer connection among senior Women in Tech leaders through an intimate, conversation-centric dining experience. Atmosphere is warm, sophisticated, relationship-first, and decisively non-corporate.
+          </p>
+        </div>
+
+        <!-- Confirmed Facts vs Assumptions -->
+        <div class="facts-bar">
+          <div class="facts-col">
+            <div class="facts-col-title facts-confirmed"><span class="material-symbols-outlined" style="font-size:16px;">check_circle</span> Confirmed Facts (Immutable)</div>
+            <ul class="facts-list" id="confirmedFactsList">
+              <li>Total allocated budget is firmly capped at $4,000.00.</li>
+              <li>Target headcount is 30 invited participants.</li>
+              <li>Format is an evening seated salon in Manhattan.</li>
+              <li>Food & beverage experience is the primary hospitality priority.</li>
+            </ul>
+          </div>
+          <div class="facts-col">
+            <div class="facts-col-title facts-assumptions"><span class="material-symbols-outlined" style="font-size:16px;">help_outline</span> Unverified Assumptions</div>
+            <ul class="facts-list" id="assumptionsList">
+              <li>Venue F&B minimum is credited 100% against consumption.</li>
+              <li>Mandatory gratuity is 20% and NYC sales tax is 8.875%.</li>
+              <li>External AV is unneeded; acoustic dining room acoustics suffice.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: ADAPTIVE BUDGET -->
+      <section class="ops-panel" id="panel-budget">
+        <div class="ops-panel-header">
+          <div class="ops-panel-title"><span class="material-symbols-outlined" style="font-size:18px;">account_balance_wallet</span> Adaptive Budget & Financial Allocation</div>
+          <span class="badge badge-approved">100% RECONCILED</span>
+        </div>
+
+        <div style="margin-bottom:0.85rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-secondary); margin-bottom:0.35rem;">
+            <span>Total Committed: <strong style="color:var(--text-primary);">$4,000.00</strong></span>
+            <span>Contingency Buffer: <strong style="color:var(--accent-teal);">$350.00 (8.75%)</strong></span>
+          </div>
+          <div style="height:6px; background:var(--bg-surface-elevated); border-radius:3px; overflow:hidden; display:flex;">
+            <div style="width:55%; background:var(--accent-blue);" title="F&B: $2,200"></div>
+            <div style="width:25%; background:#6366f1;" title="Venue: $1,000"></div>
+            <div style="width:6.25%; background:#8b5cf6;" title="Atmosphere: $250"></div>
+            <div style="width:5%; background:#06b6d4;" title="Staffing: $200"></div>
+            <div style="width:8.75%; background:var(--accent-teal);" title="Contingency: $350"></div>
+          </div>
+        </div>
+
+        <table class="ops-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Allocated</th>
+              <th>Share</th>
+              <th>Tax / Gratuity</th>
+              <th>Governance Priority</th>
+              <th>Operational Notes</th>
+            </tr>
+          </thead>
+          <tbody id="budgetTableBody">
+            <tr>
+              <td><strong>Food & Beverage</strong></td>
+              <td>$2,200.00</td>
+              <td>55.0%</td>
+              <td>$150.88 tax + $340.00 tip</td>
+              <td><span class="badge badge-protected">PROTECTED PRIORITY</span></td>
+              <td>3-course dinner for 30 @ $56.67/head base</td>
+            </tr>
+            <tr>
+              <td><strong>Venue Space Minimum</strong></td>
+              <td>$1,000.00</td>
+              <td>25.0%</td>
+              <td>Included in F&B</td>
+              <td><span class="badge">Standard Line</span></td>
+              <td>Private dining room buyout minimum</td>
+            </tr>
+            <tr>
+              <td><strong>Atmosphere & Printing</strong></td>
+              <td>$250.00</td>
+              <td>6.25%</td>
+              <td>$20.00 tax</td>
+              <td><span class="badge">Flexible Line</span></td>
+              <td>Custom menus, bud vases, name cards</td>
+            </tr>
+            <tr>
+              <td><strong>Staffing & Hospitality</strong></td>
+              <td>$200.00</td>
+              <td>5.0%</td>
+              <td>$0.00</td>
+              <td><span class="badge badge-protected">PROTECTED PRIORITY</span></td>
+              <td>Dedicated coat check & greeting attendant</td>
+            </tr>
+            <tr>
+              <td><strong>Contingency Reserve</strong></td>
+              <td>$350.00</td>
+              <td>8.75%</td>
+              <td>$0.00</td>
+              <td><span class="badge badge-approved">SAFETY FLOOR MET</span></td>
+              <td>8.75% operational contingency buffer</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION 3: EVENTOPS GUARD -->
+      <section class="ops-panel" id="panel-guard">
+        <div class="ops-panel-header">
+          <div class="ops-panel-title"><span class="material-symbols-outlined" style="font-size:18px;">security</span> EventOps Guard — Operational Gap Analysis</div>
+          <span class="badge badge-approved">Readiness Score: 85/100</span>
+        </div>
+
+        <div class="guard-grid" id="guardGrid">
+          <div class="guard-card attention">
+            <div class="guard-header">
+              <span class="guard-issue">Dietary & Allergen Intake Protocol</span>
+              <span class="badge badge-pending">ATTENTION</span>
+            </div>
+            <div class="guard-body">Specific guest dietary allergies (celiac, vegan, tree nut) require affirmative confirmation before final banquet event order lock.</div>
+            <div class="guard-action"><span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span> Recommended Action: Issue pre-event intake survey at T-10 days; reserve 3 kitchen contingency plates.</div>
+          </div>
+
+          <div class="guard-card attention">
+            <div class="guard-header">
+              <span class="guard-issue">Acoustic & Conversational Environment</span>
+              <span class="badge badge-pending">ATTENTION</span>
+            </div>
+            <div class="guard-body">Background music in private dining room must not exceed 65 dBA to facilitate unforced conversation across tables.</div>
+            <div class="guard-action"><span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span> Recommended Action: Verify venue sound controls and specify low-tempo instrumental jazz playlist.</div>
+          </div>
+
+          <div class="guard-card ready">
+            <div class="guard-header">
+              <span class="guard-issue">Arrival & Coat Check Verification</span>
+              <span class="badge badge-approved">READY / ON TRACK</span>
+            </div>
+            <div class="guard-body">Dedicated coat check attendant confirmed in hospitality budget ($200 allocated). Street-to-space decompression secured.</div>
+            <div class="guard-action"><span class="material-symbols-outlined" style="font-size:14px;">check</span> Verified fact: Dedicated attendant prevents arrival bottleneck.</div>
+          </div>
+
+          <div class="guard-card ready">
+            <div class="guard-header">
+              <span class="guard-issue">Financial Contingency Reserve</span>
+              <span class="badge badge-approved">READY / ON TRACK</span>
+            </div>
+            <div class="guard-body">Current reserve is $350.00 (8.75%), meeting the strict minimum 8.0% institutional safety threshold.</div>
+            <div class="guard-action"><span class="material-symbols-outlined" style="font-size:14px;">check</span> Verified fact: Reserve protects against last-minute beverage or dietary variances.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: DECISION LEDGER -->
+      <section class="ops-panel" id="panel-ledger">
+        <div class="ops-panel-header">
+          <div class="ops-panel-title"><span class="material-symbols-outlined" style="font-size:18px;">gavel</span> Decision Ledger — Human-in-the-Loop Governance</div>
+          <span class="badge badge-approved">AUDIT-READY</span>
+        </div>
+
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.65rem;">
+          Consequential changes require human confirmation. Changes in "PENDING APPROVAL" state do not mutate live ledger allocations until explicitly approved.
+        </div>
+
+        <table class="ops-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Decision ID</th>
+              <th>Proposed Change</th>
+              <th>Rationale & Trade-offs</th>
+              <th>Expected Impact</th>
+              <th>Approver</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody">
+            <tr>
+              <td><span class="badge badge-approved">APPROVED</span></td>
+              <td><code>dec_init_001</code></td>
+              <td>Reallocate $150 from general printing to artisanal zero-proof pairings</td>
+              <td>Inclusive hospitality priority; 40% of guest profile prefers premium non-alcoholic options.</td>
+              <td>Elevates guest experience without budget inflation.</td>
+              <td>Executive Host</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION 5: RUN OF SHOW -->
+      <section class="ops-panel" id="panel-ros">
+        <div class="ops-panel-header">
+          <div class="ops-panel-title"><span class="material-symbols-outlined" style="font-size:18px;">timer</span> Run of Show — Operational Timeline</div>
+          <span class="badge">4 PHASES · 150 MIN TOTAL</span>
+        </div>
+
+        <table class="ops-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Duration</th>
+              <th>Phase & Activity</th>
+              <th>Operational Lead</th>
+              <th>Protocol / Contingency Notes</th>
+            </tr>
+          </thead>
+          <tbody id="rosTableBody">
+            <tr>
+              <td><strong>18:30 - 19:00</strong></td>
+              <td>30 min</td>
+              <td>Guest Arrival, Coat Check & Decompression</td>
+              <td>Lead Host & Greeter</td>
+              <td>Signature zero-proof spritz on arrival; nametags prepared alphabetically.</td>
+            </tr>
+            <tr>
+              <td><strong>19:00 - 19:15</strong></td>
+              <td>15 min</td>
+              <td>Welcome Framing & Chatham House Rule</td>
+              <td>Host / Emcee</td>
+              <td>Establish psychological safety, confidentiality, and evening dinner format.</td>
+            </tr>
+            <tr>
+              <td><strong>19:15 - 20:30</strong></td>
+              <td>75 min</td>
+              <td>Seated 3-Course Dinner & Prompted Dialogue</td>
+              <td>Banquet Captain & Host</td>
+              <td>Family-style service; table prompts focused on tech leadership inflection points.</td>
+            </tr>
+            <tr>
+              <td><strong>20:30 - 21:00</strong></td>
+              <td>30 min</td>
+              <td>Synthesis, Open Networking & Farewell</td>
+              <td>Host & Coat Check Lead</td>
+              <td>Warm farewell, curated takeaway reading list, seamless coat return.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION 6: GUEST JOURNEY -->
+      <section class="ops-panel" id="panel-journey">
+        <div class="ops-panel-header">
+          <div class="ops-panel-title"><span class="material-symbols-outlined" style="font-size:18px;">timeline</span> 8-Stage Guest Journey Experience</div>
+          <span class="badge badge-approved">8 OF 8 STAGES MAPPED</span>
+        </div>
+
+        <div class="journey-timeline">
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 01</div>
+            <div class="journey-stage-title">Invitation & Framing</div>
+            <div class="journey-stage-desc">Personalized peer invitation highlighting relationship-first salon format, no selling, no panel speeches.</div>
+          </div>
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 02</div>
+            <div class="journey-stage-title">Pre-Event Logistics</div>
+            <div class="journey-stage-desc">Clear venue directions, discreet dietary intake survey, and accessibility confirmation sent T-5 days.</div>
+          </div>
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 03</div>
+            <div class="journey-stage-title">Arrival & Decompression</div>
+            <div class="journey-stage-desc">Street-to-space threshold transition: immediate coat check, low lighting, and welcome beverage in hand.</div>
+          </div>
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 04</div>
+            <div class="journey-stage-title">First 15 Minutes</div>
+            <div class="journey-stage-desc">Low-pressure introduction pairing: greeter introduces new arrivals to a table peer to eliminate awkward standing.</div>
+          </div>
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 05</div>
+            <div class="journey-stage-title">Main Experience</div>
+            <div class="journey-stage-desc">Seated 3-course dinner with conversational table prompts; organic dialogue over family-style platters.</div>
+          </div>
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 06</div>
+            <div class="journey-stage-title">Transitions & Flow</div>
+            <div class="journey-stage-desc">Subtle lighting dimming signaling dessert; guests encouraged to move seats for final coffee course.</div>
+          </div>
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 07</div>
+            <div class="journey-stage-title">Departure & Farewell</div>
+            <div class="journey-stage-desc">Expedited coat retrieval, personal host farewell, and curated print takeaway envelope.</div>
+          </div>
+          <div class="journey-stage-card">
+            <div class="journey-step-num">Stage 08</div>
+            <div class="journey-stage-title">Post-Event Follow-up</div>
+            <div class="journey-stage-desc">Warm thank-you email sent within 24h with opt-in guest directory and community resource links.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: VISUAL DIRECTION -->
+      <section class="ops-panel" id="panel-visual">
+        <div class="ops-panel-header">
+          <div class="ops-panel-title"><span class="material-symbols-outlined" style="font-size:18px;">palette</span> Visual Direction & Concept Rendering</div>
+          <span class="badge badge-approved">CONCEPT GENERATED</span>
+        </div>
+
+        <div class="visual-card">
+          <div class="visual-img-frame">
+            <img class="visual-img" id="visualImg" src="https://storage.googleapis.com/eventops-ai-media-qwiklabs-gcp-04-a69f0245a9b4/evt_wit_manhattan_2026_concept.png" alt="Event visual concept moodboard" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'visual-fallback\'>Editorial concept moodboard<br><span style=\'color:var(--text-muted);font-size:11px;\'>Architectural long table, amber lighting, low-intervention elegance</span></div>';">
+          </div>
+          <div class="visual-meta">
+            <h4>Atmosphere: Warm Architectural Elegance</h4>
+            <p>
+              Intimate private dining room in Manhattan with warm architectural amber lighting, long communal walnut table, low botanical ceramic bud vases, linen napkins, and zero fluorescent or generic corporate banquet fixtures.
+            </p>
+            <div style="margin-top:0.6rem; font-size:0.72rem; color:var(--text-muted);">
+              Hosted on Google Cloud Storage: <code>gs://eventops-ai-media-qwiklabs-gcp-04-a69f0245a9b4</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- SECONDARY AGENT COPILOT PANEL -->
+  <aside class="agent-panel" aria-label="Operations Copilot">
+    <div class="agent-panel-header">
+      <div class="agent-title">
+        <span class="material-symbols-outlined" style="font-size:18px; color:var(--accent-blue);">terminal</span>
+        Operations Copilot
+      </div>
+      <span class="copilot-tag">HITL Governance Active</span>
+    </div>
+
+    <!-- QUICK PROMPTS -->
+    <div class="quick-prompts-bar">
+      <div class="quick-label">Enterprise Scenario Prompts</div>
+      <div class="prompt-chips">
+        <button class="prompt-btn" data-prompt="Plan an elegant 30-person Women in Tech networking dinner in Manhattan with a $4,000 budget. Make it warm and sophisticated rather than corporate, and prioritize meaningful connection.">
+          <span>1. Initial Event Dossier & Plan</span>
+          <span class="material-symbols-outlined" style="font-size:14px;">send</span>
+        </button>
+        <button class="prompt-btn" data-prompt="My budget has dropped to $3,000. Protect the food experience and propose the best changes.">
+          <span>2. Budget Adaptation ($4k → $3k)</span>
+          <span class="material-symbols-outlined" style="font-size:14px;">send</span>
+        </button>
+        <button class="prompt-btn" data-prompt="What am I forgetting?">
+          <span>3. EventOps Guard Gap Scan</span>
+          <span class="material-symbols-outlined" style="font-size:14px;">send</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CHAT LOG -->
+    <div class="chat-log" id="chatLog">
+      <div class="chat-msg agent">
+        <div class="chat-sender">EventOps AI</div>
+        <div class="chat-bubble">
+          EventOps AI initialized. Living event dossier <code>evt_wit_manhattan_2026</code> is loaded from Cloud Firestore with Human-in-the-Loop governance active. Direct operations or trigger one of the scenario prompts above.
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT INPUT -->
+    <form class="chat-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Direct EventOps AI (e.g., 'Approve proposed budget change')..." autocomplete="off">
+      <button type="submit" class="chat-send-btn" id="chatSubmitBtn">
+        <span>Execute</span>
+        <span class="material-symbols-outlined" style="font-size:16px;">arrow_upward</span>
+      </button>
+    </form>
+  </aside>
+
+</div>
+
+<script>
+const EVENT_ID = "evt_wit_manhattan_2026";
+const chatLog = document.getElementById("chatLog");
+const chatForm = document.getElementById("chatForm");
+const chatInput = document.getElementById("chatInput");
+const chatSubmitBtn = document.getElementById("chatSubmitBtn");
+
+/* Tab navigation */
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const target = btn.dataset.target;
+    const el = document.getElementById("panel-" + target);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+
+/* Quick prompt chips */
+document.querySelectorAll(".prompt-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const prompt = btn.dataset.prompt;
+    if (prompt) sendMessage(prompt);
+  });
+});
+
+/* Create bubble */
+function createMsg(role) {
+  const m = document.createElement("div");
+  m.className = "chat-msg " + role;
+  const s = document.createElement("div");
+  s.className = "chat-sender";
+  s.textContent = role === "user" ? "Organizer" : "EventOps AI";
+  const b = document.createElement("div");
+  b.className = "chat-bubble";
+  m.appendChild(s);
+  m.appendChild(b);
+  chatLog.appendChild(m);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return b;
+}
+
+/* ----------------------------------------------------------------------------
+ * A2UI mini-renderer (v0.8 Basic Catalog).
+ * Renders Card, Column, Row, Text, Divider, List, Image, Icon.
+ * -------------------------------------------------------------------------- */
+function boundStr(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v.literalString === "string") return v.literalString;
+  return "";
+}
+
+function childIds(props) {
+  const ids = [];
+  if (props && typeof props.child === "string") ids.push(props.child);
+  const ch = props && props.children;
+  if (ch && Array.isArray(ch.explicitList)) for (const c of ch.explicitList) if (typeof c === "string") ids.push(c);
+  return ids;
+}
+
+function iconName(n) {
+  return String(n || "").replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/\s+/g, "_").toLowerCase();
+}
+
+function buildNode(id, comps, seen) {
+  if (!id || seen.has(id)) return null;
+  seen.add(id);
+  const spec = comps[id];
+  if (!spec || typeof spec !== "object") return null;
+  const type = Object.keys(spec)[0];
+  const props = spec[type] || {};
+  const kids = () => childIds(props).map(cid => buildNode(cid, comps, seen)).filter(Boolean);
+
+  switch (type) {
+    case "Card": {
+      const d = document.createElement("div");
+      d.className = "a2card";
+      kids().forEach(n => d.appendChild(n));
+      return d;
+    }
+    case "Column":
+    case "List": {
+      const horizontal = type === "List" && props.direction === "horizontal";
+      const d = document.createElement("div");
+      d.className = horizontal ? "a2row" : "a2col";
+      kids().forEach(n => d.appendChild(n));
+      return d;
+    }
+    case "Row": {
+      const d = document.createElement("div");
+      d.className = "a2row" + (props.distribution === "spaceBetween" ? " between" : "");
+      kids().forEach(n => d.appendChild(n));
+      return d;
+    }
+    case "Text": {
+      const t = document.createElement("div");
+      t.className = "a2text";
+      const hint = String(props.usageHint || "body").toLowerCase();
+      if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(hint)) t.classList.add("a2-" + hint);
+      else if (hint === "caption") t.classList.add("a2-caption");
+      t.textContent = boundStr(props.text);
+      return t;
+    }
+    case "Divider": {
+      const hr = document.createElement("hr");
+      hr.className = "a2divider";
+      return hr;
+    }
+    case "Image": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;
+      const img = document.createElement("img");
+      img.className = "a2img";
+      img.src = src;
+      img.alt = boundStr(props.alt) || "Event visual";
+      return img;
+    }
+    case "Icon": {
+      const s = document.createElement("span");
+      s.className = "material-symbols-outlined";
+      s.textContent = iconName(boundStr(props.name) || props.name);
+      return s;
+    }
+    default:
+      return null;
+  }
+}
+
+function renderSurface(messages, container) {
+  const comps = {};
+  const roots = [];
+  for (const m of messages) {
+    if (m.beginRendering && typeof m.beginRendering.root === "string") roots.push(m.beginRendering.root);
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.id && c.component) comps[c.id] = c.component;
+  }
+  let rootIds = roots.filter(r => comps[r]);
+  if (rootIds.length === 0) {
+    const referenced = new Set();
+    for (const id in comps) {
+      const spec = comps[id];
+      childIds(spec[Object.keys(spec)[0]] || {}).forEach(c => referenced.add(c));
+    }
+    rootIds = Object.keys(comps).filter(id => !referenced.has(id));
+  }
+  let drew = false;
+  for (const rid of rootIds) {
+    const node = buildNode(rid, comps, new Set());
+    if (node) { container.appendChild(node); drew = true; }
+  }
+  return drew;
+}
+
+function flattenText(messages) {
+  const out = [];
+  for (const m of messages) {
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) {
+      for (const c of su.components) {
+        if (c && c.component && c.component.Text) out.push(boundStr(c.component.Text.text));
+      }
+    }
+  }
+  return out.join("\n").trim();
+}
+
+function renderReply(bubble, parts) {
+  bubble.textContent = "";
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const a2ui = parts.filter(p => p && p.kind === "a2ui" && p.data).map(p => p.data);
+
+  const textStr = texts.join("\n").trim();
+  if (textStr) {
+    const d = document.createElement("div");
+    d.textContent = textStr;
+    bubble.appendChild(d);
+  }
+
+  if (a2ui.length) {
+    bubble.classList.add("rich");
+    if (!renderSurface(a2ui, bubble)) {
+      const fb = document.createElement("div");
+      fb.textContent = flattenText(a2ui) || "(A2UI Interface updated)";
+      bubble.appendChild(fb);
+    }
+  }
+  if (!bubble.childNodes.length) bubble.textContent = "(EventOps completed evaluation.)";
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+/* Send message to A2A proxy */
+async function sendMessage(text) {
+  if (!text) return;
+  const userBubble = createMsg("user");
+  userBubble.textContent = text;
+  chatInput.value = "";
+
+  const agentBubble = createMsg("agent");
+  agentBubble.innerHTML = '<div class="spinner-box"><span class="spin"></span> EventOps AI evaluating operations...</div>';
+
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text, user_id: "demo-organizer" })
+    });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Non-JSON response from agent proxy (HTTP ${res.status}): ${raw.slice(0, 150)}`); }
+
+    renderReply(agentBubble, data.parts || []);
+    // Refresh live event data from Firestore to update ledger, budget & readiness
+    refreshEventData();
+  } catch (err) {
+    agentBubble.textContent = "Operational Notice: " + err.message;
+  }
+}
+
+chatForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const val = chatInput.value.trim();
+  if (val) sendMessage(val);
+});
+
+/* Refresh living event state from Firestore */
+async function refreshEventData() {
+  try {
+    const res = await fetch(`/api/event/${EVENT_ID}`);
+    if (!res.ok) return;
+    const data = await res.json();
+
+    // Update Overview metrics
+    if (data.total_budget != null) {
+      document.getElementById("ovBudget").textContent = `$${Number(data.total_budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+    if (data.guest_count != null) {
+      document.getElementById("ovGuests").textContent = data.guest_count;
+    }
+    if (data.location) {
+      document.getElementById("ovLocation").textContent = data.location;
+    }
+    if (data.readiness_score != null) {
+      document.getElementById("ovScore").textContent = `${data.readiness_score} / 100`;
+      document.getElementById("headerScore").textContent = `${data.readiness_score}/100 · READY / ON TRACK`;
+    }
+
+    // Update Decision Ledger
+    if (Array.isArray(data.decisions) && data.decisions.length > 0) {
+      const tbody = document.getElementById("ledgerTableBody");
+      tbody.innerHTML = "";
+      data.decisions.forEach(d => {
+        const tr = document.createElement("tr");
+        const statusClass = d.approval_status === "approved" ? "badge-approved" : (d.approval_status === "pending_approval" ? "badge-pending" : "");
+        const statusText = d.approval_status === "pending_approval" ? "PENDING APPROVAL" : (d.approval_status || "UNKNOWN").toUpperCase();
+
+        tr.innerHTML = `
+          <td><span class="badge ${statusClass}">${statusText}</span></td>
+          <td><code>${d.decision_id || "-"}</code></td>
+          <td><strong>${d.proposed_change || "-"}</strong></td>
+          <td>${d.rationale || "-"}</td>
+          <td>${d.expected_impact || "-"}</td>
+          <td>${d.approved_by || (d.approval_status === "pending_approval" ? "Awaiting Human" : "System")}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Update Budget Table if line items exist
+    const budgetItems = (Array.isArray(data.budget_breakdown) && data.budget_breakdown.length > 0)
+      ? data.budget_breakdown
+      : (Array.isArray(data.budget_allocations) ? data.budget_allocations : []);
+    if (budgetItems.length > 0) {
+      const bbody = document.getElementById("budgetTableBody");
+      bbody.innerHTML = "";
+      const total = data.total_budget || 4000;
+      budgetItems.forEach(b => {
+        const tr = document.createElement("tr");
+        const pct = ((b.allocated_amount / total) * 100).toFixed(1);
+        const prioBadge = b.is_protected ? '<span class="badge badge-protected">PROTECTED PRIORITY</span>' : (b.category.includes("Contingency") ? '<span class="badge badge-approved">SAFETY BUFFER</span>' : '<span class="badge">Standard Line</span>');
+        tr.innerHTML = `
+          <td><strong>${b.category}</strong></td>
+          <td>$${Number(b.allocated_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+          <td>${pct}%</td>
+          <td>$${Number(b.tax || 0).toFixed(2)} tax / $${Number(b.gratuity || 0).toFixed(2)} tip</td>
+          <td>${prioBadge}</td>
+          <td>${b.notes || "-"}</td>
+        `;
+        bbody.appendChild(tr);
+      });
+    }
+
+  } catch (e) {
+    console.warn("Could not refresh live event data:", e);
+  }
+}
+
+// Initial fetch on page load
+refreshEventData();
+</script>
+</body>
+</html>
