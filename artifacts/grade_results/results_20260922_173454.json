@@ -1,0 +1,2544 @@
+{
+  "eval_case_results": [
+    {
+      "eval_case_index": 0,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The agent provided a clear, accurate, and structured overview of its capabilities aligned precisely with its system instructions and available tools.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 1,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The agent correctly used the weather tool to look up the weather for San Francisco and responded with an accurate, direct, and clear answer based on the tool's output.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 2,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The agent's response directly, accurately, and concisely answers the user's question, perfectly matching the expected ground truth answer.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 3,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The assistant appropriately used the temperature conversion tool and provided an accurate, direct, and clear response to the user's question.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 4,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The agent correctly used the calculate tool to compute the expression 45 * 12 + 18, obtained the correct result of 558, and presented it clearly and accurately.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 5,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The agent accurately and clearly answered the user's conversion question using the appropriate tool.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "summary_metrics": [
+    {
+      "metric_name": "custom_response_quality",
+      "num_cases_total": 6,
+      "num_cases_valid": 6,
+      "num_cases_error": 0,
+      "mean_score": 5.0,
+      "stdev_score": 0.0,
+      "pass_rate": null
+    }
+  ],
+  "win_rates": null,
+  "evaluation_dataset": [
+    {
+      "bigquery_source": null,
+      "gcs_source": null,
+      "eval_cases": [
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Hello, what can you help me with?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null,
+                "media_processing": null,
+                "speech_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "Hello! I'm **quickstart_agent**, your calculation and conversion assistant. I can help you with:\n\n- **Mathematical calculations:** Basic and complex arithmetic expressions (e.g., multiplication, powers, multi-step math).\n- **Temperature conversions:** Converting between Celsius, Fahrenheit, and Kelvin.\n- **Distance conversions:** Converting between meters, kilometers, miles, and feet.\n- **Quick lookups:** Checking the current time or weather for different cities.\n\nFeel free to ask a question or give me a calculation or conversion to solve!",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null,
+                    "media_processing": null,
+                    "speech_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "greeting",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "quickstart_agent": {
+                "agent_id": "quickstart_agent",
+                "agent_type": "LlmAgent",
+                "description": "",
+                "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+                "tools": [
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                        "name": "get_weather",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_weatherParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                        "name": "get_current_time",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_current_timeParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                        "name": "calculate",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "expression": {
+                              "title": "Expression",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "expression"
+                          ],
+                          "title": "calculateParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                        "name": "convert_temperature",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_temperatureParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                        "name": "convert_distance",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_distanceParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  }
+                ],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "Hello! I'm **quickstart_agent**, your calculation and conversion assistant. I can help you with:\n\n- **Mathematical calculations:** Basic and complex arithmetic expressions (e.g., multiplication, powers, multi-step math).\n- **Temperature conversions:** Converting between Celsius, Fahrenheit, and Kelvin.\n- **Distance conversions:** Converting between meters, kilometers, miles, and feet.\n- **Quick lookups:** Checking the current time or weather for different cities.\n\nFeel free to ask a question or give me a calculation or conversion to solve!",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:46.064105Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null,
+          "interactions_data_source": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "What's the weather like in San Francisco?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null,
+                "media_processing": null,
+                "speech_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "The weather in San Francisco is currently 60\u00b0F and foggy.",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null,
+                    "media_processing": null,
+                    "speech_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "weather_query",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "quickstart_agent": {
+                "agent_id": "quickstart_agent",
+                "agent_type": "LlmAgent",
+                "description": "",
+                "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+                "tools": [
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                        "name": "get_weather",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_weatherParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                        "name": "get_current_time",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_current_timeParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                        "name": "calculate",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "expression": {
+                              "title": "Expression",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "expression"
+                          ],
+                          "title": "calculateParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                        "name": "convert_temperature",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_temperatureParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                        "name": "convert_distance",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_distanceParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  }
+                ],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": {
+                            "id": "call_231174",
+                            "args": {
+                              "query": "San Francisco"
+                            },
+                            "name": "get_weather",
+                            "partial_args": null,
+                            "will_continue": null
+                          },
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:46.110909Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": {
+                            "will_continue": null,
+                            "scheduling": null,
+                            "parts": null,
+                            "id": "call_231174",
+                            "name": "get_weather",
+                            "response": {
+                              "result": "It's 60 degrees and foggy."
+                            }
+                          },
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "user"
+                    },
+                    "event_time": "2026-09-22T17:34:47.776363Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "The weather in San Francisco is currently 60\u00b0F and foggy.",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:47.778226Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null,
+          "interactions_data_source": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "What is the capital of France?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null,
+                "media_processing": null,
+                "speech_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "The capital of France is Paris.",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null,
+                    "media_processing": null,
+                    "speech_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": {
+            "response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "The capital of France is Paris.",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null,
+                  "speech_metadata": null
+                }
+              ],
+              "role": "model"
+            }
+          },
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "capital_lookup",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "quickstart_agent": {
+                "agent_id": "quickstart_agent",
+                "agent_type": "LlmAgent",
+                "description": "",
+                "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+                "tools": [
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                        "name": "get_weather",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_weatherParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                        "name": "get_current_time",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_current_timeParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                        "name": "calculate",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "expression": {
+                              "title": "Expression",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "expression"
+                          ],
+                          "title": "calculateParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                        "name": "convert_temperature",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_temperatureParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                        "name": "convert_distance",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_distanceParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  }
+                ],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "The capital of France is Paris.",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:46.109170Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null,
+          "interactions_data_source": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "What is 100 degrees Fahrenheit in Celsius?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null,
+                "media_processing": null,
+                "speech_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "100 degrees Fahrenheit is approximately **37.78 \u00b0C**.",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null,
+                    "media_processing": null,
+                    "speech_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "temperature_conversion",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "quickstart_agent": {
+                "agent_id": "quickstart_agent",
+                "agent_type": "LlmAgent",
+                "description": "",
+                "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+                "tools": [
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                        "name": "get_weather",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_weatherParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                        "name": "get_current_time",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_current_timeParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                        "name": "calculate",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "expression": {
+                              "title": "Expression",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "expression"
+                          ],
+                          "title": "calculateParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                        "name": "convert_temperature",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_temperatureParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                        "name": "convert_distance",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_distanceParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  }
+                ],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": {
+                            "id": "call_245739",
+                            "args": {
+                              "to_unit": "celsius",
+                              "value": 100,
+                              "from_unit": "fahrenheit"
+                            },
+                            "name": "convert_temperature",
+                            "partial_args": null,
+                            "will_continue": null
+                          },
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:46.112403Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": {
+                            "will_continue": null,
+                            "scheduling": null,
+                            "parts": null,
+                            "id": "call_245739",
+                            "name": "convert_temperature",
+                            "response": {
+                              "status": "success",
+                              "original_value": 100,
+                              "from_unit": "fahrenheit",
+                              "converted_value": 37.78,
+                              "to_unit": "celsius"
+                            }
+                          },
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "user"
+                    },
+                    "event_time": "2026-09-22T17:34:47.990022Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "100 degrees Fahrenheit is approximately **37.78 \u00b0C**.",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:47.991886Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null,
+          "interactions_data_source": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "Calculate 45 * 12 + 18",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null,
+                "media_processing": null,
+                "speech_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "45 * 12 + 18 = **558**",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null,
+                    "media_processing": null,
+                    "speech_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "math_calculation",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "quickstart_agent": {
+                "agent_id": "quickstart_agent",
+                "agent_type": "LlmAgent",
+                "description": "",
+                "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+                "tools": [
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                        "name": "get_weather",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_weatherParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                        "name": "get_current_time",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_current_timeParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                        "name": "calculate",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "expression": {
+                              "title": "Expression",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "expression"
+                          ],
+                          "title": "calculateParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                        "name": "convert_temperature",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_temperatureParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                        "name": "convert_distance",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_distanceParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  }
+                ],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": {
+                            "id": "call_330084",
+                            "args": {
+                              "expression": "45 * 12 + 18"
+                            },
+                            "name": "calculate",
+                            "partial_args": null,
+                            "will_continue": null
+                          },
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:46.113894Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": {
+                            "will_continue": null,
+                            "scheduling": null,
+                            "parts": null,
+                            "id": "call_330084",
+                            "name": "calculate",
+                            "response": {
+                              "status": "success",
+                              "expression": "45 * 12 + 18",
+                              "result": 558.0
+                            }
+                          },
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "user"
+                    },
+                    "event_time": "2026-09-22T17:34:47.368902Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "45 * 12 + 18 = **558**",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:47.371011Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null,
+          "interactions_data_source": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "How many miles is 25 kilometers?",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null,
+                "media_processing": null,
+                "speech_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "**25 kilometers** is approximately **15.53 miles**.",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null,
+                    "media_processing": null,
+                    "speech_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "distance_conversion",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "quickstart_agent": {
+                "agent_id": "quickstart_agent",
+                "agent_type": "LlmAgent",
+                "description": "",
+                "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+                "tools": [
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                        "name": "get_weather",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_weatherParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                        "name": "get_current_time",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "query": {
+                              "title": "Query",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "query"
+                          ],
+                          "title": "get_current_timeParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "type": "string"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                        "name": "calculate",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "expression": {
+                              "title": "Expression",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "expression"
+                          ],
+                          "title": "calculateParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                        "name": "convert_temperature",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_temperatureParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  },
+                  {
+                    "retrieval": null,
+                    "computer_use": null,
+                    "file_search": null,
+                    "google_search": null,
+                    "google_maps": null,
+                    "code_execution": null,
+                    "enterprise_web_search": null,
+                    "function_declarations": [
+                      {
+                        "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                        "name": "convert_distance",
+                        "parameters": null,
+                        "parameters_json_schema": {
+                          "properties": {
+                            "value": {
+                              "title": "Value",
+                              "type": "number"
+                            },
+                            "from_unit": {
+                              "title": "From Unit",
+                              "type": "string"
+                            },
+                            "to_unit": {
+                              "title": "To Unit",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "from_unit",
+                            "to_unit"
+                          ],
+                          "title": "convert_distanceParams",
+                          "type": "object"
+                        },
+                        "response": null,
+                        "response_json_schema": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "behavior": null
+                      }
+                    ],
+                    "google_search_retrieval": null,
+                    "parallel_ai_search": null,
+                    "url_context": null,
+                    "mcp_servers": null,
+                    "exa_ai_search": null
+                  }
+                ],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": {
+                            "id": "call_297645",
+                            "args": {
+                              "to_unit": "miles",
+                              "from_unit": "kilometers",
+                              "value": 25
+                            },
+                            "name": "convert_distance",
+                            "partial_args": null,
+                            "will_continue": null
+                          },
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:46.118029Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": {
+                            "will_continue": null,
+                            "scheduling": null,
+                            "parts": null,
+                            "id": "call_297645",
+                            "name": "convert_distance",
+                            "response": {
+                              "status": "success",
+                              "original_value": 25,
+                              "from_unit": "kilometers",
+                              "converted_value": 15.53,
+                              "to_unit": "miles"
+                            }
+                          },
+                          "inline_data": null,
+                          "text": null,
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "user"
+                    },
+                    "event_time": "2026-09-22T17:34:48.381162Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "quickstart_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "**25 kilometers** is approximately **15.53 miles**.",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null,
+                          "media_processing": null,
+                          "speech_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": "2026-09-22T17:34:48.383116Z",
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null,
+          "interactions_data_source": null
+        }
+      ],
+      "eval_dataset_df": null,
+      "candidate_name": null
+    }
+  ],
+  "metadata": {
+    "candidate_names": [
+      "candidate_1"
+    ],
+    "dataset_name": null,
+    "dataset_id": null,
+    "creation_timestamp": "2026-09-22T17:34:54.151731Z",
+    "dataset": [
+      {
+        "prompt_display_text": "Hello, what can you help me with?",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Hello, what can you help me with?\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "Hello! I'm **quickstart_agent**, your calculation and conversion assistant. I can help you with:\n\n- **Mathematical calculations:** Basic and complex arithmetic expressions (e.g., multiplication, powers, multi-step math).\n- **Temperature conversions:** Converting between Celsius, Fahrenheit, and Kelvin.\n- **Distance conversions:** Converting between meters, kilometers, miles, and feet.\n- **Quick lookups:** Checking the current time or weather for different cities.\n\nFeel free to ask a question or give me a calculation or conversion to solve!",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Hello! I'm **quickstart_agent**, your calculation and conversion assistant. I can help you with:\\n\\n- **Mathematical calculations:** Basic and complex arithmetic expressions (e.g., multiplication, powers, multi-step math).\\n- **Temperature conversions:** Converting between Celsius, Fahrenheit, and Kelvin.\\n- **Distance conversions:** Converting between meters, kilometers, miles, and feet.\\n- **Quick lookups:** Checking the current time or weather for different cities.\\n\\nFeel free to ask a question or give me a calculation or conversion to solve!\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"quickstart_agent\": {\"agent_id\": \"quickstart_agent\", \"agent_type\": \"LlmAgent\", \"description\": \"\", \"instruction\": \"You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.\", \"tools\": [{\"function_declarations\": [{\"description\": \"Simulates a web search. Use it get information on weather.\\n\\nArgs:\\n    query: A string containing the location to get weather information for.\\n\\nReturns:\\n    A string with the simulated weather information for the queried location.\", \"name\": \"get_weather\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_weatherParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Simulates getting the current time for a city.\\n\\nArgs:\\n    city: The name of the city to get the current time for.\\n\\nReturns:\\n    A string with the current time information.\", \"name\": \"get_current_time\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_current_timeParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Safely evaluates a basic arithmetic math expression.\\n\\nArgs:\\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\\n\\nReturns:\\n    A dictionary with the calculation result or error details.\", \"name\": \"calculate\", \"parameters_json_schema\": {\"properties\": {\"expression\": {\"title\": \"Expression\", \"type\": \"string\"}}, \"required\": [\"expression\"], \"title\": \"calculateParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts a temperature between Celsius, Fahrenheit, and Kelvin.\\n\\nArgs:\\n    value: The numerical temperature value to convert.\\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n\\nReturns:\\n    A dictionary with the converted temperature result and unit details.\", \"name\": \"convert_temperature\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_temperatureParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts distance/length between meters, kilometers, miles, and feet.\\n\\nArgs:\\n    value: The numerical distance value to convert.\\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\\n\\nReturns:\\n    A dictionary with the converted distance result and unit details.\", \"name\": \"convert_distance\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_distanceParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"text\": \"Hello! I'm **quickstart_agent**, your calculation and conversion assistant. I can help you with:\\n\\n- **Mathematical calculations:** Basic and complex arithmetic expressions (e.g., multiplication, powers, multi-step math).\\n- **Temperature conversions:** Converting between Celsius, Fahrenheit, and Kelvin.\\n- **Distance conversions:** Converting between meters, kilometers, miles, and feet.\\n- **Quick lookups:** Checking the current time or weather for different cities.\\n\\nFeel free to ask a question or give me a calculation or conversion to solve!\"}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:46.064105Z\"}]}]}"
+      },
+      {
+        "prompt_display_text": "What's the weather like in San Francisco?",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"What's the weather like in San Francisco?\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "The weather in San Francisco is currently 60\u00b0F and foggy.",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"The weather in San Francisco is currently 60\u00b0F and foggy.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"quickstart_agent\": {\"agent_id\": \"quickstart_agent\", \"agent_type\": \"LlmAgent\", \"description\": \"\", \"instruction\": \"You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.\", \"tools\": [{\"function_declarations\": [{\"description\": \"Simulates a web search. Use it get information on weather.\\n\\nArgs:\\n    query: A string containing the location to get weather information for.\\n\\nReturns:\\n    A string with the simulated weather information for the queried location.\", \"name\": \"get_weather\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_weatherParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Simulates getting the current time for a city.\\n\\nArgs:\\n    city: The name of the city to get the current time for.\\n\\nReturns:\\n    A string with the current time information.\", \"name\": \"get_current_time\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_current_timeParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Safely evaluates a basic arithmetic math expression.\\n\\nArgs:\\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\\n\\nReturns:\\n    A dictionary with the calculation result or error details.\", \"name\": \"calculate\", \"parameters_json_schema\": {\"properties\": {\"expression\": {\"title\": \"Expression\", \"type\": \"string\"}}, \"required\": [\"expression\"], \"title\": \"calculateParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts a temperature between Celsius, Fahrenheit, and Kelvin.\\n\\nArgs:\\n    value: The numerical temperature value to convert.\\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n\\nReturns:\\n    A dictionary with the converted temperature result and unit details.\", \"name\": \"convert_temperature\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_temperatureParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts distance/length between meters, kilometers, miles, and feet.\\n\\nArgs:\\n    value: The numerical distance value to convert.\\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\\n\\nReturns:\\n    A dictionary with the converted distance result and unit details.\", \"name\": \"convert_distance\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_distanceParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_call\": {\"id\": \"call_231174\", \"args\": {\"query\": \"San Francisco\"}, \"name\": \"get_weather\"}}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:46.110909Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_response\": {\"id\": \"call_231174\", \"name\": \"get_weather\", \"response\": {\"result\": \"It's 60 degrees and foggy.\"}}}], \"role\": \"user\"}, \"event_time\": \"2026-09-22T17:34:47.776363Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"text\": \"The weather in San Francisco is currently 60\u00b0F and foggy.\"}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:47.778226Z\"}]}]}"
+      },
+      {
+        "prompt_display_text": "What is the capital of France?",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"What is the capital of France?\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "The capital of France is Paris.",
+        "reference_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"The capital of France is Paris.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "response_display_text": "The capital of France is Paris.",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"The capital of France is Paris.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"quickstart_agent\": {\"agent_id\": \"quickstart_agent\", \"agent_type\": \"LlmAgent\", \"description\": \"\", \"instruction\": \"You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.\", \"tools\": [{\"function_declarations\": [{\"description\": \"Simulates a web search. Use it get information on weather.\\n\\nArgs:\\n    query: A string containing the location to get weather information for.\\n\\nReturns:\\n    A string with the simulated weather information for the queried location.\", \"name\": \"get_weather\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_weatherParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Simulates getting the current time for a city.\\n\\nArgs:\\n    city: The name of the city to get the current time for.\\n\\nReturns:\\n    A string with the current time information.\", \"name\": \"get_current_time\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_current_timeParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Safely evaluates a basic arithmetic math expression.\\n\\nArgs:\\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\\n\\nReturns:\\n    A dictionary with the calculation result or error details.\", \"name\": \"calculate\", \"parameters_json_schema\": {\"properties\": {\"expression\": {\"title\": \"Expression\", \"type\": \"string\"}}, \"required\": [\"expression\"], \"title\": \"calculateParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts a temperature between Celsius, Fahrenheit, and Kelvin.\\n\\nArgs:\\n    value: The numerical temperature value to convert.\\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n\\nReturns:\\n    A dictionary with the converted temperature result and unit details.\", \"name\": \"convert_temperature\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_temperatureParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts distance/length between meters, kilometers, miles, and feet.\\n\\nArgs:\\n    value: The numerical distance value to convert.\\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\\n\\nReturns:\\n    A dictionary with the converted distance result and unit details.\", \"name\": \"convert_distance\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_distanceParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"text\": \"The capital of France is Paris.\"}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:46.109170Z\"}]}]}"
+      },
+      {
+        "prompt_display_text": "What is 100 degrees Fahrenheit in Celsius?",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"What is 100 degrees Fahrenheit in Celsius?\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "100 degrees Fahrenheit is approximately **37.78 \u00b0C**.",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"100 degrees Fahrenheit is approximately **37.78 \u00b0C**.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"quickstart_agent\": {\"agent_id\": \"quickstart_agent\", \"agent_type\": \"LlmAgent\", \"description\": \"\", \"instruction\": \"You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.\", \"tools\": [{\"function_declarations\": [{\"description\": \"Simulates a web search. Use it get information on weather.\\n\\nArgs:\\n    query: A string containing the location to get weather information for.\\n\\nReturns:\\n    A string with the simulated weather information for the queried location.\", \"name\": \"get_weather\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_weatherParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Simulates getting the current time for a city.\\n\\nArgs:\\n    city: The name of the city to get the current time for.\\n\\nReturns:\\n    A string with the current time information.\", \"name\": \"get_current_time\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_current_timeParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Safely evaluates a basic arithmetic math expression.\\n\\nArgs:\\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\\n\\nReturns:\\n    A dictionary with the calculation result or error details.\", \"name\": \"calculate\", \"parameters_json_schema\": {\"properties\": {\"expression\": {\"title\": \"Expression\", \"type\": \"string\"}}, \"required\": [\"expression\"], \"title\": \"calculateParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts a temperature between Celsius, Fahrenheit, and Kelvin.\\n\\nArgs:\\n    value: The numerical temperature value to convert.\\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n\\nReturns:\\n    A dictionary with the converted temperature result and unit details.\", \"name\": \"convert_temperature\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_temperatureParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts distance/length between meters, kilometers, miles, and feet.\\n\\nArgs:\\n    value: The numerical distance value to convert.\\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\\n\\nReturns:\\n    A dictionary with the converted distance result and unit details.\", \"name\": \"convert_distance\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_distanceParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_call\": {\"id\": \"call_245739\", \"args\": {\"to_unit\": \"celsius\", \"value\": 100, \"from_unit\": \"fahrenheit\"}, \"name\": \"convert_temperature\"}}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:46.112403Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_response\": {\"id\": \"call_245739\", \"name\": \"convert_temperature\", \"response\": {\"status\": \"success\", \"original_value\": 100, \"from_unit\": \"fahrenheit\", \"converted_value\": 37.78, \"to_unit\": \"celsius\"}}}], \"role\": \"user\"}, \"event_time\": \"2026-09-22T17:34:47.990022Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"text\": \"100 degrees Fahrenheit is approximately **37.78 \u00b0C**.\"}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:47.991886Z\"}]}]}"
+      },
+      {
+        "prompt_display_text": "Calculate 45 * 12 + 18",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Calculate 45 * 12 + 18\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "45 * 12 + 18 = **558**",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"45 * 12 + 18 = **558**\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"quickstart_agent\": {\"agent_id\": \"quickstart_agent\", \"agent_type\": \"LlmAgent\", \"description\": \"\", \"instruction\": \"You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.\", \"tools\": [{\"function_declarations\": [{\"description\": \"Simulates a web search. Use it get information on weather.\\n\\nArgs:\\n    query: A string containing the location to get weather information for.\\n\\nReturns:\\n    A string with the simulated weather information for the queried location.\", \"name\": \"get_weather\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_weatherParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Simulates getting the current time for a city.\\n\\nArgs:\\n    city: The name of the city to get the current time for.\\n\\nReturns:\\n    A string with the current time information.\", \"name\": \"get_current_time\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_current_timeParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Safely evaluates a basic arithmetic math expression.\\n\\nArgs:\\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\\n\\nReturns:\\n    A dictionary with the calculation result or error details.\", \"name\": \"calculate\", \"parameters_json_schema\": {\"properties\": {\"expression\": {\"title\": \"Expression\", \"type\": \"string\"}}, \"required\": [\"expression\"], \"title\": \"calculateParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts a temperature between Celsius, Fahrenheit, and Kelvin.\\n\\nArgs:\\n    value: The numerical temperature value to convert.\\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n\\nReturns:\\n    A dictionary with the converted temperature result and unit details.\", \"name\": \"convert_temperature\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_temperatureParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts distance/length between meters, kilometers, miles, and feet.\\n\\nArgs:\\n    value: The numerical distance value to convert.\\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\\n\\nReturns:\\n    A dictionary with the converted distance result and unit details.\", \"name\": \"convert_distance\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_distanceParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_call\": {\"id\": \"call_330084\", \"args\": {\"expression\": \"45 * 12 + 18\"}, \"name\": \"calculate\"}}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:46.113894Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_response\": {\"id\": \"call_330084\", \"name\": \"calculate\", \"response\": {\"status\": \"success\", \"expression\": \"45 * 12 + 18\", \"result\": 558.0}}}], \"role\": \"user\"}, \"event_time\": \"2026-09-22T17:34:47.368902Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"text\": \"45 * 12 + 18 = **558**\"}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:47.371011Z\"}]}]}"
+      },
+      {
+        "prompt_display_text": "How many miles is 25 kilometers?",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"How many miles is 25 kilometers?\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "**25 kilometers** is approximately **15.53 miles**.",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"**25 kilometers** is approximately **15.53 miles**.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"quickstart_agent\": {\"agent_id\": \"quickstart_agent\", \"agent_type\": \"LlmAgent\", \"description\": \"\", \"instruction\": \"You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.\", \"tools\": [{\"function_declarations\": [{\"description\": \"Simulates a web search. Use it get information on weather.\\n\\nArgs:\\n    query: A string containing the location to get weather information for.\\n\\nReturns:\\n    A string with the simulated weather information for the queried location.\", \"name\": \"get_weather\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_weatherParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Simulates getting the current time for a city.\\n\\nArgs:\\n    city: The name of the city to get the current time for.\\n\\nReturns:\\n    A string with the current time information.\", \"name\": \"get_current_time\", \"parameters_json_schema\": {\"properties\": {\"query\": {\"title\": \"Query\", \"type\": \"string\"}}, \"required\": [\"query\"], \"title\": \"get_current_timeParams\", \"type\": \"object\"}, \"response_json_schema\": {\"type\": \"string\"}}]}, {\"function_declarations\": [{\"description\": \"Safely evaluates a basic arithmetic math expression.\\n\\nArgs:\\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\\n\\nReturns:\\n    A dictionary with the calculation result or error details.\", \"name\": \"calculate\", \"parameters_json_schema\": {\"properties\": {\"expression\": {\"title\": \"Expression\", \"type\": \"string\"}}, \"required\": [\"expression\"], \"title\": \"calculateParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts a temperature between Celsius, Fahrenheit, and Kelvin.\\n\\nArgs:\\n    value: The numerical temperature value to convert.\\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\\n\\nReturns:\\n    A dictionary with the converted temperature result and unit details.\", \"name\": \"convert_temperature\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_temperatureParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}, {\"function_declarations\": [{\"description\": \"Converts distance/length between meters, kilometers, miles, and feet.\\n\\nArgs:\\n    value: The numerical distance value to convert.\\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\\n\\nReturns:\\n    A dictionary with the converted distance result and unit details.\", \"name\": \"convert_distance\", \"parameters_json_schema\": {\"properties\": {\"value\": {\"title\": \"Value\", \"type\": \"number\"}, \"from_unit\": {\"title\": \"From Unit\", \"type\": \"string\"}, \"to_unit\": {\"title\": \"To Unit\", \"type\": \"string\"}}, \"required\": [\"value\", \"from_unit\", \"to_unit\"], \"title\": \"convert_distanceParams\", \"type\": \"object\"}, \"response_json_schema\": {\"additionalProperties\": true, \"type\": \"object\"}}]}], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_call\": {\"id\": \"call_297645\", \"args\": {\"to_unit\": \"miles\", \"from_unit\": \"kilometers\", \"value\": 25}, \"name\": \"convert_distance\"}}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:46.118029Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"function_response\": {\"id\": \"call_297645\", \"name\": \"convert_distance\", \"response\": {\"status\": \"success\", \"original_value\": 25, \"from_unit\": \"kilometers\", \"converted_value\": 15.53, \"to_unit\": \"miles\"}}}], \"role\": \"user\"}, \"event_time\": \"2026-09-22T17:34:48.381162Z\"}, {\"author\": \"quickstart_agent\", \"content\": {\"parts\": [{\"text\": \"**25 kilometers** is approximately **15.53 miles**.\"}], \"role\": \"model\"}, \"event_time\": \"2026-09-22T17:34:48.383116Z\"}]}]}"
+      }
+    ]
+  },
+  "agent_info": null
+}

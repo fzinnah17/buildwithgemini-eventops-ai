@@ -1,0 +1,1366 @@
+{
+  "eval_cases": [
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "Hello, what can you help me with?"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "Hello! I'm **quickstart_agent**, your calculation and conversion assistant. I can help you with:\n\n- **Mathematical calculations:** Basic and complex arithmetic expressions (e.g., multiplication, powers, multi-step math).\n- **Temperature conversions:** Converting between Celsius, Fahrenheit, and Kelvin.\n- **Distance conversions:** Converting between meters, kilometers, miles, and feet.\n- **Quick lookups:** Checking the current time or weather for different cities.\n\nFeel free to ask a question or give me a calculation or conversion to solve!"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "eval_case_id": "greeting",
+      "agent_data": {
+        "agents": {
+          "quickstart_agent": {
+            "agent_id": "quickstart_agent",
+            "agent_type": "LlmAgent",
+            "description": "",
+            "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+            "tools": [
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                    "name": "get_weather",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_weatherParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                    "name": "get_current_time",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_current_timeParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                    "name": "calculate",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "expression": {
+                          "title": "Expression",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "expression"
+                      ],
+                      "title": "calculateParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                    "name": "convert_temperature",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_temperatureParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                    "name": "convert_distance",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_distanceParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              }
+            ],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "Hello! I'm **quickstart_agent**, your calculation and conversion assistant. I can help you with:\n\n- **Mathematical calculations:** Basic and complex arithmetic expressions (e.g., multiplication, powers, multi-step math).\n- **Temperature conversions:** Converting between Celsius, Fahrenheit, and Kelvin.\n- **Distance conversions:** Converting between meters, kilometers, miles, and feet.\n- **Quick lookups:** Checking the current time or weather for different cities.\n\nFeel free to ask a question or give me a calculation or conversion to solve!"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:46.064105Z"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "What's the weather like in San Francisco?"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "The weather in San Francisco is currently 60°F and foggy."
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "eval_case_id": "weather_query",
+      "agent_data": {
+        "agents": {
+          "quickstart_agent": {
+            "agent_id": "quickstart_agent",
+            "agent_type": "LlmAgent",
+            "description": "",
+            "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+            "tools": [
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                    "name": "get_weather",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_weatherParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                    "name": "get_current_time",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_current_timeParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                    "name": "calculate",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "expression": {
+                          "title": "Expression",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "expression"
+                      ],
+                      "title": "calculateParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                    "name": "convert_temperature",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_temperatureParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                    "name": "convert_distance",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_distanceParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              }
+            ],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "call_231174",
+                        "args": {
+                          "query": "San Francisco"
+                        },
+                        "name": "get_weather"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:46.110909Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "call_231174",
+                        "name": "get_weather",
+                        "response": {
+                          "result": "It's 60 degrees and foggy."
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                },
+                "event_time": "2026-09-22T17:34:47.776363Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "The weather in San Francisco is currently 60°F and foggy."
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:47.778226Z"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "What is the capital of France?"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "The capital of France is Paris."
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "reference": {
+        "response": {
+          "parts": [
+            {
+              "text": "The capital of France is Paris."
+            }
+          ],
+          "role": "model"
+        }
+      },
+      "eval_case_id": "capital_lookup",
+      "agent_data": {
+        "agents": {
+          "quickstart_agent": {
+            "agent_id": "quickstart_agent",
+            "agent_type": "LlmAgent",
+            "description": "",
+            "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+            "tools": [
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                    "name": "get_weather",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_weatherParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                    "name": "get_current_time",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_current_timeParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                    "name": "calculate",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "expression": {
+                          "title": "Expression",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "expression"
+                      ],
+                      "title": "calculateParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                    "name": "convert_temperature",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_temperatureParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                    "name": "convert_distance",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_distanceParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              }
+            ],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "The capital of France is Paris."
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:46.109170Z"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "What is 100 degrees Fahrenheit in Celsius?"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "100 degrees Fahrenheit is approximately **37.78 °C**."
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "eval_case_id": "temperature_conversion",
+      "agent_data": {
+        "agents": {
+          "quickstart_agent": {
+            "agent_id": "quickstart_agent",
+            "agent_type": "LlmAgent",
+            "description": "",
+            "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+            "tools": [
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                    "name": "get_weather",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_weatherParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                    "name": "get_current_time",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_current_timeParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                    "name": "calculate",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "expression": {
+                          "title": "Expression",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "expression"
+                      ],
+                      "title": "calculateParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                    "name": "convert_temperature",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_temperatureParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                    "name": "convert_distance",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_distanceParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              }
+            ],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "call_245739",
+                        "args": {
+                          "to_unit": "celsius",
+                          "value": 100,
+                          "from_unit": "fahrenheit"
+                        },
+                        "name": "convert_temperature"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:46.112403Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "call_245739",
+                        "name": "convert_temperature",
+                        "response": {
+                          "status": "success",
+                          "original_value": 100,
+                          "from_unit": "fahrenheit",
+                          "converted_value": 37.78,
+                          "to_unit": "celsius"
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                },
+                "event_time": "2026-09-22T17:34:47.990022Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "100 degrees Fahrenheit is approximately **37.78 °C**."
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:47.991886Z"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "Calculate 45 * 12 + 18"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "45 * 12 + 18 = **558**"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "eval_case_id": "math_calculation",
+      "agent_data": {
+        "agents": {
+          "quickstart_agent": {
+            "agent_id": "quickstart_agent",
+            "agent_type": "LlmAgent",
+            "description": "",
+            "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+            "tools": [
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                    "name": "get_weather",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_weatherParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                    "name": "get_current_time",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_current_timeParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                    "name": "calculate",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "expression": {
+                          "title": "Expression",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "expression"
+                      ],
+                      "title": "calculateParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                    "name": "convert_temperature",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_temperatureParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                    "name": "convert_distance",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_distanceParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              }
+            ],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "call_330084",
+                        "args": {
+                          "expression": "45 * 12 + 18"
+                        },
+                        "name": "calculate"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:46.113894Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "call_330084",
+                        "name": "calculate",
+                        "response": {
+                          "status": "success",
+                          "expression": "45 * 12 + 18",
+                          "result": 558.0
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                },
+                "event_time": "2026-09-22T17:34:47.368902Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "45 * 12 + 18 = **558**"
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:47.371011Z"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "How many miles is 25 kilometers?"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "**25 kilometers** is approximately **15.53 miles**."
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "eval_case_id": "distance_conversion",
+      "agent_data": {
+        "agents": {
+          "quickstart_agent": {
+            "agent_id": "quickstart_agent",
+            "agent_type": "LlmAgent",
+            "description": "",
+            "instruction": "You are a helpful calculation and conversion assistant. Always use the provided tools (calculate, convert_temperature, convert_distance) when asked to perform arithmetic or unit conversions. Provide clear, concise, and helpful explanations.",
+            "tools": [
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates a web search. Use it get information on weather.\n\nArgs:\n    query: A string containing the location to get weather information for.\n\nReturns:\n    A string with the simulated weather information for the queried location.",
+                    "name": "get_weather",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_weatherParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Simulates getting the current time for a city.\n\nArgs:\n    city: The name of the city to get the current time for.\n\nReturns:\n    A string with the current time information.",
+                    "name": "get_current_time",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "query": {
+                          "title": "Query",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "query"
+                      ],
+                      "title": "get_current_timeParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Safely evaluates a basic arithmetic math expression.\n\nArgs:\n    expression: A string containing math arithmetic, e.g., '45 * 12 + 18' or '2 ** 8'.\n\nReturns:\n    A dictionary with the calculation result or error details.",
+                    "name": "calculate",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "expression": {
+                          "title": "Expression",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "expression"
+                      ],
+                      "title": "calculateParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts a temperature between Celsius, Fahrenheit, and Kelvin.\n\nArgs:\n    value: The numerical temperature value to convert.\n    from_unit: The source unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n    to_unit: The target unit ('celsius', 'fahrenheit', or 'kelvin', case-insensitive).\n\nReturns:\n    A dictionary with the converted temperature result and unit details.",
+                    "name": "convert_temperature",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_temperatureParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              },
+              {
+                "function_declarations": [
+                  {
+                    "description": "Converts distance/length between meters, kilometers, miles, and feet.\n\nArgs:\n    value: The numerical distance value to convert.\n    from_unit: The source unit ('meters', 'kilometers', 'miles', 'feet').\n    to_unit: The target unit ('meters', 'kilometers', 'miles', 'feet').\n\nReturns:\n    A dictionary with the converted distance result and unit details.",
+                    "name": "convert_distance",
+                    "parameters_json_schema": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "number"
+                        },
+                        "from_unit": {
+                          "title": "From Unit",
+                          "type": "string"
+                        },
+                        "to_unit": {
+                          "title": "To Unit",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "from_unit",
+                        "to_unit"
+                      ],
+                      "title": "convert_distanceParams",
+                      "type": "object"
+                    },
+                    "response_json_schema": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                ]
+              }
+            ],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "call_297645",
+                        "args": {
+                          "to_unit": "miles",
+                          "from_unit": "kilometers",
+                          "value": 25
+                        },
+                        "name": "convert_distance"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:46.118029Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "call_297645",
+                        "name": "convert_distance",
+                        "response": {
+                          "status": "success",
+                          "original_value": 25,
+                          "from_unit": "kilometers",
+                          "converted_value": 15.53,
+                          "to_unit": "miles"
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                },
+                "event_time": "2026-09-22T17:34:48.381162Z"
+              },
+              {
+                "author": "quickstart_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "**25 kilometers** is approximately **15.53 miles**."
+                    }
+                  ],
+                  "role": "model"
+                },
+                "event_time": "2026-09-22T17:34:48.383116Z"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

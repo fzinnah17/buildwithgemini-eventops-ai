@@ -1,0 +1,39 @@
+{
+  "eval_cases": [
+    {
+      "eval_case_id": "event_overview_lookup",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Can you give me the executive overview of event evt_wit_manhattan_2026?"}]
+      }
+    },
+    {
+      "eval_case_id": "eventops_guard_audit",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "What am I forgetting for evt_wit_manhattan_2026? Please run a readiness audit."}]
+      }
+    },
+    {
+      "eval_case_id": "hitl_budget_proposal",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "I want to add a live jazz trio for $400 during arrival for evt_wit_manhattan_2026. Can you propose this change?"}]
+      }
+    },
+    {
+      "eval_case_id": "playbook_dietary_guidelines",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "What are our operational playbook guidelines for kitchen reserve plates and dietary allergy protocols?"}]
+      }
+    },
+    {
+      "eval_case_id": "organizer_durable_preferences",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Remember that I dislike overly corporate banquet aesthetics and prefer warm, relationship-focused gatherings."}]
+      }
+    }
+  ]
+}
