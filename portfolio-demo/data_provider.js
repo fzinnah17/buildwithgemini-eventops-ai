@@ -259,7 +259,9 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
     const evt = this.events.find(e => e.event_id === eventId);
     if (evt) {
       evt.version = (evt.version || 1) + 1;
-      evt.readiness_score = Math.min(100, (evt.readiness_score || 85) + 5);
+      if (evt.readiness_score != null) {
+        evt.readiness_score = Math.min(100, evt.readiness_score + 5);
+      }
     }
     return {
       status: "approved",
@@ -618,7 +620,7 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
     const rejectedDec = this.decisions.filter(d => d.event_id === eventId && d.approval_status === "rejected").length;
     const pendingDec = this.decisions.filter(d => d.event_id === eventId && ["pending", "proposed", "pending_approval"].includes(d.approval_status)).length;
     const totalReviewed = approvedDec + rejectedDec;
-    const approvalRate = totalReviewed > 0 ? Math.round((approvedDec / totalReviewed) * 100) : 100.0;
+    const approvalRate = totalReviewed > 0 ? Math.round((approvedDec / totalReviewed) * 100) : null;
 
     const completedAct = this.integrationActions.filter(a => a.event_id === eventId && a.status === "completed").length;
     const pendingAct = this.integrationActions.filter(a => a.event_id === eventId && a.status === "pending_approval").length;
@@ -644,8 +646,8 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
         event_id: eventId,
         title: evt.title || "Event Dossier",
         health: {
-          readiness_score: evt.readiness_score || 95,
-          readiness_trend: (evt.readiness_score || 95) >= 90 ? "Stable" : "Attention Required",
+          readiness_score: evt.readiness_score != null ? evt.readiness_score : null,
+          readiness_trend: evt.readiness_score != null ? (evt.readiness_score >= 90 ? "Stable" : "Attention Required") : "Pending Scan",
           critical_risks: criticalRisks,
           attention_items: attentionItems,
           resolved_risks: resolvedRisks,
@@ -691,14 +693,14 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
   async getPortfolioAnalytics() {
     const totalBudget = this.events.reduce((s, e) => s + (Number(e.total_budget) || 0), 0);
     const totalGuests = this.events.reduce((s, e) => s + (Number(e.guest_count) || 0), 0);
-    const scores = this.events.map(e => e.readiness_score || 90);
-    const avgScore = scores.length > 0 ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 : 0.0;
+    const scores = this.events.map(e => e.readiness_score).filter(s => s != null);
+    const avgScore = scores.length > 0 ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 : null;
 
     const approvedDec = this.decisions.filter(d => d.approval_status === "approved").length;
     const rejectedDec = this.decisions.filter(d => d.approval_status === "rejected").length;
     const pendingDec = this.decisions.filter(d => ["pending", "proposed", "pending_approval"].includes(d.approval_status)).length;
     const totalReviewed = approvedDec + rejectedDec;
-    const govRate = totalReviewed > 0 ? Math.round((approvedDec / totalReviewed) * 1000) / 10 : 100.0;
+    const govRate = totalReviewed > 0 ? Math.round((approvedDec / totalReviewed) * 1000) / 10 : null;
 
     let totalRisks = 0;
     this.events.forEach(e => {
@@ -726,13 +728,13 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
         events_breakdown: this.events.map(e => ({
           event_id: e.event_id,
           title: e.title,
-          readiness_score: e.readiness_score || 90,
+          readiness_score: e.readiness_score != null ? e.readiness_score : null,
           total_budget: Number(e.total_budget) || 0,
           guest_count: Number(e.guest_count) || 0
         })),
         system_reliability: {
           total_operations: 0,
-          system_success_rate_pct: null,
+          success_rate_pct: null,
           median_latency_ms: null,
           telemetry_status: "DEMO / NOT MEASURED"
         },
@@ -743,49 +745,117 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
 
   async chat(message, eventId, userId) {
     const q = message.toLowerCase().trim();
+    const evt = this.events.find(e => e.event_id === eventId) || this.events[0] || {};
     
-    // Demo Scenario 1: Readiness scan / What am I forgetting
-    if (q.includes("forget") || q.includes("guard") || q.includes("readiness") || q.includes("risk") || q.includes("scan")) {
+    // Demo Scenario 1: Readiness scan / What am I forgetting / Explain readiness
+    if (q.includes("forget") || q.includes("guard") || q.includes("readiness") || q.includes("risk") || q.includes("scan") || q.includes("explain")) {
+      const score = evt.readiness_score != null ? evt.readiness_score : 90;
+      const openRisks = (evt.risks || []).filter(r => (r.status || "open") === "open");
+      const milestones = (evt.run_of_show || []).length;
+      const totalBudget = Number(evt.total_budget) || 0;
+      
+      const items = [
+        { category: "Budget Invariance", impact: "+25", rationale: `Budget of $${totalBudget.toLocaleString()} verified with zero-variance protection.`, points: 25 },
+        { category: "Run of Show Decompression", impact: "+20", rationale: `${milestones} timeline checkpoints checked against transition caps.`, points: 20 },
+      ];
+      if (openRisks.length > 0) {
+        const topRisk = openRisks[0];
+        items.push({
+          category: topRisk.category || "Operational Risk",
+          impact: topRisk.severity && topRisk.severity.toLowerCase() === "critical" ? "-15" : "-5",
+          rationale: topRisk.details || topRisk.issue || "Identified operational risk item requiring director attention.",
+          points: topRisk.severity && topRisk.severity.toLowerCase() === "critical" ? -15 : -5,
+          action_needed: "Review mitigation plan"
+        });
+      } else {
+        items.push({
+          category: "Operational Risk Posture",
+          impact: "+20",
+          rationale: "All event operational gates clear; no unmitigated critical risks.",
+          points: 20
+        });
+      }
+
       return {
         response_type: "readiness_scan",
         structured: {
           response_type: "readiness_scan",
           is_demo: true,
-          summary: "[Demo Simulation] EventOps Guard evaluated the preserved event dossier against the authoritative playbook standards.",
+          summary: `[Demo Simulation] EventOps Guard evaluated "${evt.title || eventId}" against authoritative playbook standards.`,
           readiness_breakdown: {
-            score: 95,
-            explanation: "[Demo Simulation] Operational readiness is 95/100 based on preserved dossier. 1 minor attention item flagged for arrival buffer.",
-            items: [
-              { category: "Budget Invariance", impact: "+25", rationale: "Exact zero-variance budget balance maintained with 10% safety reserve.", points: 25 },
-              { category: "Run of Show Decompression", impact: "+20", rationale: "Arrival buffer and speaker transition caps verified against playbook.", points: 20 },
-              { category: "Dietary & Allergen Protocol", impact: "+20", rationale: "Zero-proof beverage pairings and cross-contamination rules defined.", points: 20 },
-              { category: "Acoustic Noise Floor", impact: "-5", rationale: "Pre-dinner cocktail area sound check pending at venue.", points: -5, action_needed: "Verify acoustic baffles" }
-            ]
+            score: score,
+            explanation: `[Demo Simulation] Operational readiness is ${score}/100 based on active dossier. ${openRisks.length} open risk item(s) detected.`,
+            items: items
           }
         }
       };
     }
 
     // Demo Scenario 2: Budget Rebalance Proposal
-    if (q.includes("budget") || q.includes("rebalance") || q.includes("adjust") || q.includes("catering") || q.includes("reduce") || q.includes("cost")) {
+    if (q.includes("budget") || q.includes("rebalance") || q.includes("adjust") || q.includes("catering") || q.includes("reduce") || q.includes("cost") || q.includes("cut")) {
+      const currBudget = Number(evt.total_budget) || 4000.0;
+      const match = message.match(/\$([0-9,]+(?:\.[0-9]{2})?)/);
+      let targetBudget = currBudget;
+      if (match) {
+        const parsed = parseFloat(match[1].replace(/,/g, ""));
+        if (!isNaN(parsed) && parsed > 0) {
+          if (q.includes("by") || q.includes("cut") || q.includes("reduce by")) {
+            targetBudget = Math.max(500, currBudget - parsed);
+          } else {
+            targetBudget = parsed;
+          }
+        }
+      }
+
+      const contingency = Math.round(targetBudget * 0.10 * 100) / 100;
+      const remaining = Math.max(0, targetBudget - contingency);
+      const existingAllocs = evt.budget_allocations || evt.budget_breakdown || [];
+      const nonContingency = existingAllocs.filter(a => !(a.category || "").toLowerCase().includes("contingency"));
+
+      const lines = [];
+      let allocatedSoFar = 0;
+      if (nonContingency.length > 0) {
+        const totalExistingNonCont = nonContingency.reduce((s, a) => s + (Number(a.allocated_amount) || 0), 0) || 1;
+        nonContingency.forEach((a, i) => {
+          let amt;
+          if (i === nonContingency.length - 1) {
+            amt = Math.round((remaining - allocatedSoFar) * 100) / 100;
+          } else {
+            const share = (Number(a.allocated_amount) || 0) / totalExistingNonCont;
+            amt = Math.round(remaining * share * 100) / 100;
+            allocatedSoFar += amt;
+          }
+          lines.push(`${a.category} ($${amt.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`);
+        });
+      } else {
+        const cat1 = Math.round(remaining * 0.55 * 100) / 100;
+        const cat2 = Math.round(remaining * 0.30 * 100) / 100;
+        const cat3 = Math.round((remaining - cat1 - cat2) * 100) / 100;
+        lines.push(`Catering & Hospitality ($${cat1.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`);
+        lines.push(`Venue & Staging ($${cat2.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`);
+        lines.push(`AV & Production ($${cat3.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`);
+      }
+      lines.push(`Contingency Reserve ($${contingency.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`);
+
       const decId = `dec_${Math.random().toString(36).substring(2, 8)}`;
       const dec = {
         decision_id: decId,
-        event_id: eventId,
-        proposed_change: "[Demo Simulation] Rebalance budget: Catering ($1,800.00), Venue ($1,200.00), AV ($600.00), Contingency ($400.00)",
-        rationale: "Realign allocations to guarantee mandatory 10% safety contingency reserve while maintaining high culinary standards.",
+        event_id: evt.event_id || eventId,
+        proposed_change: `[Demo Simulation] Rebalance budget for ${evt.title || 'event'}: ${lines.join(", ")}`,
+        rationale: `Rebalance total allocations to $${targetBudget.toLocaleString()} while protecting 10% contingency safety buffer ($${contingency.toLocaleString()}) and core priorities.`,
         approval_status: "pending_approval",
-        expected_impact: "Restores safety margin to 10.0% without exceeding $4,000 ceiling.",
+        expected_impact: `Zero-variance budget ($${targetBudget.toLocaleString()}) with exactly 10.0% contingency reserve.`,
         timestamp: new Date().toISOString()
       };
       this.decisions.unshift(dec);
+
       return {
         response_type: "budget_proposal",
         structured: {
           response_type: "budget_proposal",
           is_demo: true,
           decision_id: decId,
-          title: "[Demo Simulation] Budget Rebalance Proposed",
+          title: `[Demo Simulation] Budget Rebalance Proposed (${evt.title || eventId})`,
           summary: dec.proposed_change
         }
       };
@@ -793,13 +863,23 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
 
     // Demo Scenario 3: Staffing ratio playbook check
     if (q.includes("staff") || q.includes("ratio") || q.includes("coverage")) {
+      const guestCount = Number(evt.guest_count) || 0;
+      const staffList = evt.staffing || [];
+      const totalStaff = staffList.reduce((sum, s) => sum + (Number(s.count) || 1), 0);
+      const ratio = totalStaff > 0 ? Math.round((guestCount / totalStaff) * 10) / 10 : 0;
+      const isGap = ratio > 8.0;
+      const gapText = isGap ? `${(ratio - 8.0).toFixed(1)} guests/staff above 1:8 target` : "Within target policy buffer";
+      const rolesText = staffList.length > 0 
+        ? staffList.map(s => `${s.count || 1} ${s.role || 'Staff'}`).join(", ") 
+        : "Operational delivery staff";
+
       return {
         response_type: "informational",
         is_demo: true,
         parts: [
           {
             kind: "text",
-            text: "[Demo Simulation] Event Operations Playbook Rule (Staffing):\n• Seated VIP dinners require a 1:8 guest-to-staff ratio.\n• For 28 guests, minimum 4 dedicated service staff + 1 culinary lead are required.\n• The preserved dossier allocates 4 servers + 1 event lead, which satisfies the operational standard."
+            text: `### 👥 [Demo Simulation] Event Operations Playbook: Staffing Analysis\n\n• **Event**: ${evt.title || eventId}\n• **Current**: ${guestCount} guests / ${totalStaff} staff = **1 : ${ratio}**\n• **Active Staff Allocation**: ${rolesText}\n• **Policy Target**: **1 : 8** (VIP Seated Dining & Reception Standards)\n• **Assessment**: **${gapText}**\n\nCoverage across guest arrival, floor service, and culinary coordination is verified against event parameters.`
           }
         ]
       };
@@ -812,7 +892,7 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
       parts: [
         {
           kind: "text",
-          text: "Live AI Copilot is unavailable in Portfolio Demo Mode. Choose one of the demo scenarios above to explore the workflow."
+          text: `[Demo Simulation] EventOps Copilot is operating in Portfolio Demo Mode for "${evt.title || eventId}". Use the prompt shortcuts above to trigger verified operational workflows.`
         }
       ]
     };

@@ -81,7 +81,7 @@ def test_analytics_tools_four_domain_metrics():
             title="Women in Tech Leadership Dinner",
             location="Private Dining Room, Midtown Manhattan",
             total_budget=4000.0,
-            guest_count=28
+            guest_count=30
         ))
 
     event_metrics_json = get_event_analytics("evt_wit_manhattan_2026")

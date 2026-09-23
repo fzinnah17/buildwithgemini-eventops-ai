@@ -127,12 +127,24 @@ class AnalyticsService:
         """Compute comprehensive, explainable metrics for a single event."""
         event_id = event_dossier.get("event_id", "")
         total_budget = float(event_dossier.get("total_budget", 0.0))
-        allocations = event_dossier.get("budget_allocations") or event_dossier.get("budget_breakdown") or []
-        allocated_sum = sum(float(a.get("allocated_amount", 0.0)) for a in allocations)
+        allocations = (
+            event_dossier.get("budget_allocations")
+            or event_dossier.get("allocations")
+            or event_dossier.get("budget_breakdown")
+            or []
+        )
+        allocated_sum = sum(
+            float(a.get("allocated_amount") if a.get("allocated_amount") is not None else a.get("amount", 0.0))
+            for a in allocations
+        )
         variance = round(allocated_sum - total_budget, 2)
 
         contingency_items = [a for a in allocations if "contingency" in a.get("category", "").lower()]
-        contingency_amt = float(contingency_items[0]["allocated_amount"]) if contingency_items else 0.0
+        contingency_amt = (
+            float(contingency_items[0].get("allocated_amount", contingency_items[0].get("amount", 0.0)))
+            if contingency_items
+            else 0.0
+        )
         contingency_pct = round((contingency_amt / total_budget * 100), 1) if total_budget > 0 else 0.0
 
         risks = event_dossier.get("risks", [])
@@ -146,7 +158,7 @@ class AnalyticsService:
         rejected_decisions = len([d for d in decisions if d.get("status") == "rejected"])
         pending_decisions = len([d for d in decisions if d.get("status") in ("pending", "proposed", "pending_approval")])
         total_reviewed = approved_decisions + rejected_decisions
-        approval_rate = round((approved_decisions / total_reviewed * 100), 1) if total_reviewed > 0 else 100.0
+        approval_rate = round((approved_decisions / total_reviewed * 100), 1) if total_reviewed > 0 else None
 
         # Integration Actions Metrics
         completed_actions = len([a for a in integration_actions if a.get("status") == "completed"])
@@ -165,7 +177,7 @@ class AnalyticsService:
             "event_id": event_id,
             "title": event_dossier.get("title", "Event Dossier"),
             "health": {
-                "readiness_score": event_dossier.get("readiness_score", 95),
+                "readiness_score": event_dossier.get("readiness_score"),
                 "critical_risks": critical_risks,
                 "attention_items": attention_risks,
                 "resolved_risks": resolved_risks,
@@ -221,17 +233,18 @@ class AnalyticsService:
     ) -> dict[str, Any]:
         """Compute aggregated metrics across all managed events."""
         events_count = len(all_dossiers)
-        scores = [d.get("readiness_score", 95) for d in all_dossiers if "readiness_score" in d]
-        avg_readiness = round(sum(scores) / len(scores), 1) if scores else 0.0
+        scores = [d["readiness_score"] for d in all_dossiers if d.get("readiness_score") is not None]
+        avg_readiness = round(sum(scores) / len(scores), 1) if scores else None
 
         total_portfolio_budget = sum(float(d.get("total_budget", 0.0)) for d in all_dossiers)
         total_guests = sum(int(d.get("guest_count", 0)) for d in all_dossiers)
+        total_risks = sum(len([r for r in d.get("risks", []) if r.get("status", "open") == "open"]) for d in all_dossiers)
 
         approved = len([d for d in all_decisions if d.get("status") == "approved"])
         rejected = len([d for d in all_decisions if d.get("status") == "rejected"])
         pending = len([d for d in all_decisions if d.get("status") in ("pending", "proposed", "pending_approval")])
         total_dec = approved + rejected
-        gov_rate = round((approved / total_dec * 100), 1) if total_dec > 0 else 100.0
+        gov_rate = round((approved / total_dec * 100), 1) if total_dec > 0 else None
 
         tel_list = list(self._buffer)
         total_ops = len(tel_list)
@@ -246,6 +259,7 @@ class AnalyticsService:
                 "avg_readiness_score": avg_readiness,
                 "total_portfolio_budget": round(total_portfolio_budget, 2),
                 "total_guests_managed": total_guests,
+                "total_risks_count": total_risks,
             },
             "governance": {
                 "pending_decisions": pending,
@@ -254,6 +268,16 @@ class AnalyticsService:
                 "portfolio_approval_rate_pct": gov_rate,
                 "total_external_actions": len(all_actions),
             },
+            "events_breakdown": [
+                {
+                    "event_id": d.get("event_id"),
+                    "title": d.get("title"),
+                    "readiness_score": d.get("readiness_score"),
+                    "total_budget": float(d.get("total_budget", 0.0)),
+                    "guest_count": int(d.get("guest_count", 0)),
+                }
+                for d in all_dossiers
+            ],
             "system_reliability": {
                 "total_operations": total_ops,
                 "system_success_rate_pct": round((success_ops / total_ops * 100), 1) if total_ops > 0 else None,

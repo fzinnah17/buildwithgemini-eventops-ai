@@ -133,15 +133,13 @@ def _verify_bundle_361_features(page, url: str):
     assert "Guest Count" in diff_text
     assert f"{new_guests} guests" in diff_text
 
-    # Back to edit then confirm
+    # Back to edit then cancel (do NOT mutate canonical event!)
     page.click("#btnBackToEdit")
     time.sleep(0.2)
     assert page.is_visible("#modalEditEvent")
-    page.click("#btnReviewEditChanges")
+    page.click("#modalEditEvent .btn-header:has-text('✕')")
     time.sleep(0.2)
-    page.click("#btnConfirmSaveEdit")
-    page.wait_for_selector("#modalEditDiff", state="hidden", timeout=10000)
-    assert not page.is_visible("#modalEditDiff")
+    assert not page.is_visible("#modalEditEvent")
 
     # 7. Analytics Multi-Scope & Comparative Bars
     page.click("#btnMoreMenu")
@@ -157,8 +155,8 @@ def _verify_bundle_361_features(page, url: str):
 
     # Portfolio scope
     page.click("#btnScopePortfolio")
-    time.sleep(0.3)
     assert page.is_visible("#portfolioComparisonSection"), "Portfolio comparison visible in portfolio scope"
+    page.wait_for_selector("#comparisonReadinessBars div", timeout=10000)
     r_bars = page.eval_on_selector_all("#comparisonReadinessBars div", "els => els.length")
     b_bars = page.eval_on_selector_all("#comparisonBudgetBars div", "els => els.length")
     assert r_bars >= 1, "Fleet readiness bars must be rendered"

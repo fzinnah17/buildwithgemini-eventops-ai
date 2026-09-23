@@ -1746,13 +1746,13 @@
         <span class="material-symbols-outlined" style="font-size: 18px; color: var(--accent-cyan);">smart_toy</span>
         <span>Operations Copilot</span>
       </div>
-      <span class="badge badge-approved">ADK 1.1.0</span>
+      <span class="badge badge-approved" id="copilotModeBadge">Live Connected</span>
     </div>
 
     <!-- QUICK PROMPT CHIPS -->
     <div class="copilot-chips">
       <button class="chip-btn" data-prompt="What am I forgetting?">🛡️ What am I forgetting?</button>
-      <button class="chip-btn" data-prompt="Propose reducing total budget to $3,000 while protecting food experience">💰 Rebalance budget</button>
+      <button class="chip-btn" data-prompt="Help me rebalance this event's budget.">💰 Rebalance budget</button>
       <button class="chip-btn" data-prompt="Explain our readiness score">📋 Explain readiness</button>
       <button class="chip-btn" data-prompt="Review staffing ratio and arrival coverage">👥 Review staffing</button>
     </div>
@@ -1760,9 +1760,9 @@
     <!-- CONVERSATION TRANSCRIPT -->
     <div class="chat-log" id="chatLog">
       <div class="chat-msg agent">
-        <div class="chat-bubble">
+        <div class="chat-bubble" id="copilotGreetingBubble">
           <strong>EventOps Copilot Ready</strong><br>
-          I am connected to your deployed Reasoning Engine and Cloud Firestore. I maintain cross-session memory in Vertex AI Memory Bank and enforce two-phase human governance for consequential changes.
+          Connected to the deployed EventOps agent and authoritative event state.
         </div>
       </div>
     </div>
@@ -2487,18 +2487,23 @@ function setDemoModeUI(active) {
   const dot = document.getElementById("headerStatusDot");
   const text = document.getElementById("headerStatusText");
   const banner = document.getElementById("offlineFallbackBanner");
-  const initialBubble = document.querySelector("#chatLog .chat-msg.agent:first-child .chat-bubble");
+  const initialBubble = document.getElementById("copilotGreetingBubble") || document.querySelector("#chatLog .chat-msg.agent:first-child .chat-bubble");
   const chatInput = document.getElementById("chatInput");
+  const modeBadge = document.getElementById("copilotModeBadge");
 
   if (active) {
     if (chip) chip.classList.add("demo-chip");
     if (dot) dot.classList.add("demo-dot");
     if (text) text.textContent = "PORTFOLIO DEMO MODE · Zero-Cost Static";
     if (banner) banner.classList.add("hidden");
+    if (modeBadge) {
+      modeBadge.textContent = "Portfolio Demo";
+      modeBadge.className = "badge badge-proposed";
+    }
     if (initialBubble) {
       initialBubble.innerHTML = `
-        <strong>EventOps Demo Ready</strong><br>
-        You are viewing the zero-cost portfolio demo using preserved sample event data. Explore EventOps AI's readiness analysis, budget workflows, Decision Ledger, Run of Show, Guest Journey, and governance model without changing live cloud state.
+        <strong>EventOps Portfolio Demo</strong><br>
+        Using preserved local event fixtures and deterministic workflow simulations. No live cloud or external mutations are performed.
       `;
     }
     if (chatInput) {
@@ -2508,10 +2513,14 @@ function setDemoModeUI(active) {
     if (chip) chip.classList.remove("demo-chip");
     if (dot) dot.classList.remove("demo-dot");
     if (text) text.textContent = "ONLINE · Agent Platform";
+    if (modeBadge) {
+      modeBadge.textContent = "Live Connected";
+      modeBadge.className = "badge badge-approved";
+    }
     if (initialBubble) {
       initialBubble.innerHTML = `
         <strong>EventOps Copilot Ready</strong><br>
-        I am connected to your deployed Reasoning Engine and Cloud Firestore. I maintain cross-session memory in Vertex AI Memory Bank and enforce two-phase human governance for consequential changes.
+        Connected to the deployed EventOps agent and authoritative event state.
       `;
     }
     if (chatInput) {
@@ -2535,66 +2544,60 @@ document.getElementById("btnEnterDemoMode").addEventListener("click", async () =
   await refreshEventData();
 });
 
-// Load event list
+// Load event list with dynamic precedence
 async function loadEventsList() {
+  let events = [];
   try {
-    const events = await dataProvider.listEvents();
+    events = await dataProvider.listEvents();
     if (!events || events.length === 0) throw new Error("No events returned");
-    const select = document.getElementById("eventSelector");
-    select.innerHTML = "";
-
-    events.forEach(e => {
-      const opt = document.createElement("option");
-      opt.value = e.event_id;
-      opt.textContent = `${e.title} (${e.guest_count} guests · $${Number(e.total_budget).toLocaleString()})`;
-      if (e.event_id === CURRENT_EVENT_ID) opt.selected = true;
-      select.appendChild(opt);
-    });
-
-    const createOpt = document.createElement("option");
-    createOpt.value = "__create_new__";
-    createOpt.textContent = "+ Create Event Dossier...";
-    select.appendChild(createOpt);
-
-    select.onchange = (ev) => {
-      if (ev.target.value === "__create_new__") {
-        ev.target.value = CURRENT_EVENT_ID;
-        openCreateEventModal();
-        return;
-      }
-      CURRENT_EVENT_ID = ev.target.value;
-      refreshEventData();
-    };
   } catch (err) {
     console.warn("Live API call failed; displaying fallback banner.", err);
     document.getElementById("offlineFallbackBanner").classList.remove("hidden");
     dataProvider = new DemoEventOpsProvider();
     setDemoModeUI(true);
-    const events = await dataProvider.listEvents();
-    const select = document.getElementById("eventSelector");
-    select.innerHTML = "";
-    events.forEach(e => {
-      const opt = document.createElement("option");
-      opt.value = e.event_id;
-      opt.textContent = `${e.title} (${e.guest_count} guests · $${Number(e.total_budget).toLocaleString()})`;
-      if (e.event_id === CURRENT_EVENT_ID) opt.selected = true;
-      select.appendChild(opt);
-    });
-    const createOpt = document.createElement("option");
-    createOpt.value = "__create_new__";
-    createOpt.textContent = "+ Create Event Dossier...";
-    select.appendChild(createOpt);
-
-    select.onchange = (ev) => {
-      if (ev.target.value === "__create_new__") {
-        ev.target.value = CURRENT_EVENT_ID;
-        openCreateEventModal();
-        return;
-      }
-      CURRENT_EVENT_ID = ev.target.value;
-      refreshEventData();
-    };
+    events = await dataProvider.listEvents();
   }
+
+  ALL_EVENTS = events || [];
+  if (ALL_EVENTS.length === 0) return;
+
+  // Precedence: 1. saved in localStorage, 2. flagship event if exists, 3. first available event
+  const savedId = localStorage.getItem("eventops_selected_event_id");
+  if (savedId && ALL_EVENTS.some(e => e.event_id === savedId)) {
+    CURRENT_EVENT_ID = savedId;
+  } else if (ALL_EVENTS.some(e => e.event_id === "evt_wit_manhattan_2026")) {
+    CURRENT_EVENT_ID = "evt_wit_manhattan_2026";
+  } else {
+    CURRENT_EVENT_ID = ALL_EVENTS[0].event_id;
+  }
+  localStorage.setItem("eventops_selected_event_id", CURRENT_EVENT_ID);
+
+  const select = document.getElementById("eventSelector");
+  select.innerHTML = "";
+
+  ALL_EVENTS.forEach(e => {
+    const opt = document.createElement("option");
+    opt.value = e.event_id;
+    opt.textContent = `${e.title} (${e.guest_count} guests · $${Number(e.total_budget).toLocaleString()})`;
+    if (e.event_id === CURRENT_EVENT_ID) opt.selected = true;
+    select.appendChild(opt);
+  });
+
+  const createOpt = document.createElement("option");
+  createOpt.value = "__create_new__";
+  createOpt.textContent = "+ Create Event Dossier...";
+  select.appendChild(createOpt);
+
+  select.onchange = (ev) => {
+    if (ev.target.value === "__create_new__") {
+      ev.target.value = CURRENT_EVENT_ID;
+      openCreateEventModal();
+      return;
+    }
+    CURRENT_EVENT_ID = ev.target.value;
+    localStorage.setItem("eventops_selected_event_id", CURRENT_EVENT_ID);
+    refreshEventData();
+  };
 }
 
 // Modular, isolated section renderers for robust hydration
@@ -2616,20 +2619,23 @@ function renderHeroSection(data) {
     const versionElem = document.getElementById("heroVersion");
     if (versionElem) versionElem.textContent = data.version || 1;
 
-    const score = data.readiness_score != null ? data.readiness_score : 85;
+    const score = data.readiness_score != null ? data.readiness_score : null;
     const scoreElem = document.getElementById("heroScore");
-    if (scoreElem) scoreElem.textContent = score;
+    if (scoreElem) scoreElem.textContent = score != null ? score : "—";
 
     const whyScoreElem = document.getElementById("whyScoreVal");
-    if (whyScoreElem) whyScoreElem.textContent = score;
+    if (whyScoreElem) whyScoreElem.textContent = score != null ? score : "—";
 
     // SVG Readiness Gauge animation & color
     const gaugePath = document.getElementById("readinessGaugePath");
     if (gaugePath) {
       const circum = 188.5; // arc length for r=60 semicircle
-      const offset = circum * (1 - Math.min(Math.max(score, 0), 100) / 100);
+      const effectiveScore = score != null ? Math.min(Math.max(score, 0), 100) : 0;
+      const offset = circum * (1 - effectiveScore / 100);
       gaugePath.style.strokeDashoffset = offset;
-      if (score >= 90) {
+      if (score == null) {
+        gaugePath.style.stroke = "var(--border-strong)";
+      } else if (score >= 90) {
         gaugePath.style.stroke = "var(--accent-emerald)";
       } else if (score >= 75) {
         gaugePath.style.stroke = "var(--accent-amber)";
@@ -3140,11 +3146,11 @@ function renderVisualAssets(data) {
 
 function renderReadinessModal(data) {
   try {
-    const score = data.readiness_score != null ? data.readiness_score : 85;
+    const score = data.readiness_score != null ? data.readiness_score : null;
     const breakdown = data.readiness_breakdown || {};
     const explanationElem = document.getElementById("breakdownExplanation");
     if (explanationElem) {
-      explanationElem.textContent = breakdown.explanation || `Score is ${score}/100. Evaluated against 6 operational gates.`;
+      explanationElem.textContent = breakdown.explanation || (score != null ? `Score is ${score}/100. Evaluated against 6 operational gates.` : "No readiness scan data available.");
     }
 
     const whyTable = document.getElementById("whyScoreTableBody");
@@ -3358,8 +3364,8 @@ async function switchAnalyticsScope(scope) {
       const sys = an.system || {};
 
       // Domain 1: Health
-      const scoreVal = health.readiness_score != null ? health.readiness_score : (CURRENT_DOSSIER ? CURRENT_DOSSIER.readiness_score : 85);
-      document.getElementById("anHealthScore").textContent = `${scoreVal} / 100`;
+      const scoreVal = health.readiness_score != null ? health.readiness_score : (CURRENT_DOSSIER && CURRENT_DOSSIER.readiness_score != null ? CURRENT_DOSSIER.readiness_score : null);
+      document.getElementById("anHealthScore").textContent = scoreVal != null ? `${scoreVal} / 100` : "No data available";
       document.getElementById("anHealthTrend").textContent = health.readiness_trend || "Stable";
       document.getElementById("anHealthRisks").textContent = `${(health.critical_risks || 0) + (health.attention_items || 0)} Active Risks`;
       document.getElementById("anHealthMilestones").textContent = `${health.timeline_milestones_count || 0} Milestones`;
@@ -3377,7 +3383,7 @@ async function switchAnalyticsScope(scope) {
       const appDec = gov.approved_decisions || 0;
       const totalDec = pendingDec + appDec + (gov.rejected_decisions || 0);
       document.getElementById("anGovDecisions").textContent = `${totalDec} Logged`;
-      document.getElementById("anGovApprovalRate").textContent = `${gov.approval_rate_pct != null ? gov.approval_rate_pct : 100}%`;
+      document.getElementById("anGovApprovalRate").textContent = gov.approval_rate_pct != null ? `${gov.approval_rate_pct}%` : "N/A";
       const extActions = (gov.completed_external_actions || 0) + (gov.pending_external_actions || 0);
       document.getElementById("anGovActions").textContent = `${extActions} Governed`;
 
@@ -3396,8 +3402,8 @@ async function switchAnalyticsScope(scope) {
       const breakdown = port.events_breakdown || [];
 
       // Domain 1: Health (Portfolio aggregate)
-      const avgScore = sum.avg_readiness_score != null ? Math.round(sum.avg_readiness_score) : 90;
-      document.getElementById("anHealthScore").textContent = `${avgScore} / 100`;
+      const avgScore = sum.avg_readiness_score != null ? Math.round(sum.avg_readiness_score) : null;
+      document.getElementById("anHealthScore").textContent = avgScore != null ? `${avgScore} / 100` : "No data available";
       document.getElementById("anHealthTrend").textContent = `${sum.events_managed || breakdown.length} Fleet Events`;
       document.getElementById("anHealthRisks").textContent = `${sum.total_risks_count || 0} Total Across Fleet`;
       document.getElementById("anHealthMilestones").textContent = `${sum.total_guests_managed || 0} Total Guests`;
@@ -3413,7 +3419,7 @@ async function switchAnalyticsScope(scope) {
       const portApp = gov.approved_decisions || 0;
       const portTotal = portPending + portApp + (gov.rejected_decisions || 0);
       document.getElementById("anGovDecisions").textContent = `${portTotal} Logged`;
-      document.getElementById("anGovApprovalRate").textContent = `${gov.portfolio_approval_rate_pct != null ? gov.portfolio_approval_rate_pct : 100}%`;
+      document.getElementById("anGovApprovalRate").textContent = gov.portfolio_approval_rate_pct != null ? `${gov.portfolio_approval_rate_pct}%` : "N/A";
       document.getElementById("anGovActions").textContent = `${gov.total_external_actions || 0} Governed`;
 
       // Domain 4: Reliability
@@ -3432,16 +3438,18 @@ async function switchAnalyticsScope(scope) {
         const maxBudget = Math.max(...breakdown.map(e => Number(e.total_budget || 0)), 1);
 
         breakdown.forEach(e => {
-          const rScore = e.readiness_score != null ? e.readiness_score : 85;
+          const rScore = e.readiness_score != null ? e.readiness_score : null;
+          const scoreDisplay = rScore != null ? rScore : "N/A";
+          const barWidth = rScore != null ? Math.max(0, Math.min(100, rScore)) : 0;
           const rRow = document.createElement("div");
           rRow.style.marginBottom = "0.4rem";
           rRow.innerHTML = `
             <div style="display: flex; justify-content: space-between; font-size: 0.72rem; margin-bottom: 2px;">
               <span style="max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${e.title}</span>
-              <strong style="color: var(--accent-emerald);">${rScore}</strong>
+              <strong style="color: ${rScore != null ? 'var(--accent-emerald)' : 'var(--text-muted)'};">${scoreDisplay}</strong>
             </div>
             <div style="background: rgba(255,255,255,0.06); height: 6px; border-radius: 3px; overflow: hidden;">
-              <div style="width: ${rScore}%; height: 100%; background: var(--accent-emerald);"></div>
+              <div style="width: ${barWidth}%; height: 100%; background: ${rScore != null ? 'var(--accent-emerald)' : 'transparent'};"></div>
             </div>
           `;
           readinessChart.appendChild(rRow);
@@ -3626,9 +3634,31 @@ async function openSlackModal(category, item) {
 
 async function refreshSlackPreview(channel) {
   try {
-    const preview = await dataProvider.previewSlack(CURRENT_EVENT_ID, PENDING_SLACK_CATEGORY, PENDING_SLACK_ITEM, channel);
-    document.getElementById("slackPreviewHeader").textContent = `[EventOps] ${PENDING_SLACK_CATEGORY}`;
-    document.getElementById("slackPreviewSection").textContent = preview.summary || preview.text || JSON.stringify(PENDING_SLACK_ITEM);
+    const res = await dataProvider.previewSlack(CURRENT_EVENT_ID, PENDING_SLACK_CATEGORY, PENDING_SLACK_ITEM, channel);
+    const act = (res && res.action) || {};
+    const item = PENDING_SLACK_ITEM || {};
+    const curEvent = (ALL_EVENTS || []).find(e => e.event_id === CURRENT_EVENT_ID) || {};
+    const eventTitle = curEvent.title || CURRENT_EVENT_ID;
+    const topic = item.title || item.proposed_change || item.issue || PENDING_SLACK_CATEGORY;
+    const details = item.summary || item.details || item.rationale || item.action || "Operational notice and review request.";
+    const actionId = act.action_id || `act_${Math.random().toString(36).substring(2, 8)}`;
+
+    document.getElementById("slackPreviewHeader").textContent = `[EventOps Operational Alert] ${PENDING_SLACK_CATEGORY}`;
+    document.getElementById("slackPreviewSection").innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 0.35rem; line-height: 1.4;">
+        <div><strong style="color: #58a6ff;">Event:</strong> <span style="color: #fff;">${eventTitle}</span></div>
+        <div><strong style="color: #58a6ff;">Decision / Topic:</strong> <span style="color: #fff;">${topic}</span></div>
+        <div><strong style="color: #58a6ff;">Status:</strong> <span class="badge badge-proposed" style="font-size:0.68rem; padding: 0.1rem 0.4rem;">Pending Human Dispatch</span></div>
+        <div style="background: rgba(255,255,255,0.04); border-left: 2px solid var(--accent-cyan); padding: 0.4rem 0.6rem; border-radius: 2px; margin: 0.25rem 0;">
+          <strong style="color: var(--text-secondary); font-size: 0.7rem; text-transform: uppercase;">Rationale / Details:</strong>
+          <div style="color: #e6edf3; margin-top: 0.15rem; font-size: 0.76rem;">${details}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #8b949e; margin-top: 0.2rem;">
+          <span><strong>Target:</strong> <code>${channel}</code></span>
+          <span><strong>Action ID:</strong> <code>${actionId}</code></span>
+        </div>
+      </div>
+    `;
     document.getElementById("slackPreviewContext").textContent = `Target: ${channel} | Human Governed Dispatch`;
   } catch (err) {
     console.error("Error generating slack preview:", err);
@@ -3972,7 +4002,7 @@ if (btnConfirmSave) {
         <div class="copilot-card">
           <div class="copilot-card-title">📝 Event Dossier Updated ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
           <div><strong>Event ID:</strong> <code>${CURRENT_EVENT_ID}</code></div>
-          <div>Version incremented to <code>v${updated.version || 2}</code>. Readiness recomputed: <strong>${updated.readiness_score || 85}/100</strong>.</div>
+          <div>Version incremented to <code>v${updated.version || 2}</code>. Readiness recomputed: <strong>${updated.readiness_score != null ? updated.readiness_score + '/100' : 'Pending re-evaluation'}</strong>.</div>
         </div>
       `;
     } catch (err) {
@@ -4077,7 +4107,7 @@ function renderCopilotReply(bubble, data) {
       <div class="copilot-card">
         <div class="copilot-card-title">
           <span class="material-symbols-outlined" style="font-size: 16px;">security</span>
-          <span>${isDemo ? '[Demo Simulation] EventOps Guard: Readiness' : 'EventOps Guard: Readiness'} (${b.score || 95}/100)</span>
+          <span>${isDemo ? '[Demo Simulation] EventOps Guard: Readiness' : 'EventOps Guard: Readiness'}${b.score != null ? ` (${b.score}/100)` : ''}</span>
         </div>
         <p style="font-size: 0.8rem; margin: 0.25rem 0;">${b.explanation || structured.summary || ""}</p>
         <div style="margin-top: 0.35rem; border-top: 1px solid var(--border-subtle); padding-top: 0.35rem;">

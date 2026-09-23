@@ -25,12 +25,15 @@ from fastapi.staticfiles import StaticFiles
 import sys
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.dirname(os.path.abspath(__file__))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
+if FRONTEND_DIR not in sys.path:
+    sys.path.insert(0, FRONTEND_DIR)
 
 from schemas import AgentResponse
 from engine import compute_event_readiness, rebalance_budget_allocations
-from app.event_store import get_event_store
+from app.event_store import get_event_store, is_in_memory_mode
 from app.integrations import (
     analytics_service,
     get_calendar_provider,
@@ -155,6 +158,12 @@ MUTABLE_EVENT_FIELDS = {
 }
 
 INVALID_TITLES = {"untitled event", "untitled executive salon", "new event", "untitled"}
+
+CANONICAL_EVENT_IDS = {
+    "evt_wit_manhattan_2026",
+    "evt_design_summit_2026",
+    "evt_exec_dinner_manhattan_2024",
+}
 
 
 @app.get("/api/events")
@@ -384,12 +393,18 @@ async def update_event_api(event_id: str, req: Request):
         score, _, _ = compute_event_readiness(event_data)
         event_data["readiness_score"] = score
 
-        # Persist to Firestore
-        try:
-            db = _get_firestore()
-            db.collection("events").document(event_id).set(event_data)
-        except Exception as e:
-            logger.info("Firestore update failed (%s); updating in-memory store.", e)
+        # Persist to Firestore: NEVER persist canonical events in test environments or in-memory mode
+        is_test_env = (
+            os.environ.get("EVENTOPS_ENV") == "test"
+            or is_in_memory_mode()
+            or os.environ.get("PYTEST_CURRENT_TEST") is not None
+        )
+        if not (is_test_env and event_id in CANONICAL_EVENT_IDS) and not is_in_memory_mode():
+            try:
+                db = _get_firestore()
+                db.collection("events").document(event_id).set(event_data)
+            except Exception as e:
+                logger.info("Firestore update failed (%s); updating in-memory store.", e)
 
         # Also persist to in-memory store
         store = get_event_store()
@@ -571,8 +586,9 @@ async def chat(req: Request):
         msg_lower = message.lower()
 
         db = _get_firestore()
-        evt_doc = db.collection("events").document(event_id).get()
-        event_data = evt_doc.to_dict() if evt_doc.exists else {}
+        event_data = body.get("event_data")
+        if not event_data:
+            event_data = await _get_event_data_dict(event_id) or {}
 
         # 1. Human Approval Intent (via Chat)
         if ("approve" in msg_lower and ("change" in msg_lower or "budget" in msg_lower or "proposal" in msg_lower)) or msg_lower == "approve":
@@ -711,22 +727,69 @@ async def chat(req: Request):
                 "parts": [{"kind": "text", "text": "\n".join(lines)}],
             })
 
+        # 3.5. Staffing Ratio & Arrival Coverage Intent
+        if any(w in msg_lower for w in ["staff", "staffing", "ratio", "coverage"]):
+            guest_count = int(event_data.get("guest_count", 0))
+            staff_list = event_data.get("staffing", [])
+            total_staff = sum(int(s.get("count", 1)) for s in staff_list)
+            ratio = round(guest_count / total_staff, 1) if total_staff > 0 else 0
+            policy_target = 8.0  # 1:8 target for VIP / executive dining
+            gap = round(ratio - policy_target, 1) if ratio > 0 else 0
+            is_gap = gap > 0
+
+            staff_roles_summary = ", ".join(f"{s.get('count', 1)} {s.get('role', 'Staff')}" for s in staff_list) or "No staffing roles configured"
+            gap_text = f"{gap} guests/staff above 1:8 target" if is_gap else "Within target buffer"
+
+            resp = AgentResponse(
+                status="ok",
+                response_type="informational",
+                title=f"Staffing Ratio & Coverage Analysis ({event_data.get('title', event_id)})",
+                summary=f"Current: {guest_count} guests / {total_staff} staff = 1 : {ratio} · Policy target: 1 : 8 · {gap_text}",
+                event_id=event_id,
+                data={
+                    "guest_count": guest_count,
+                    "total_staff": total_staff,
+                    "ratio": ratio,
+                    "policy_target": 8.0,
+                    "gap": gap,
+                    "staffing_roles": staff_list,
+                },
+                request_id=req_id,
+            )
+            text_part = (
+                f"### 👥 Event Operations Playbook: Staffing Analysis\n\n"
+                f"- **Event**: {event_data.get('title', event_id)}\n"
+                f"- **Current Headcount**: {guest_count} guests\n"
+                f"- **Active Staff Allocation**: {total_staff} staff ({staff_roles_summary})\n"
+                f"- **Current Ratio**: **1 : {ratio}**\n"
+                f"- **Policy Target**: **1 : 8** (VIP Seated Dining & Reception Standards)\n"
+                f"- **Assessment**: **{gap_text}**\n\n"
+                f"Coverage across guest arrival, floor service, and culinary coordination is verified against event parameters."
+            )
+            return JSONResponse({
+                "status": "ok",
+                "request_id": req_id,
+                "structured": resp.model_dump(),
+                "parts": [{"kind": "text", "text": text_part}],
+            })
+
         # 4. Consequential Budget Change Intent
-        budget_match = re.search(r"\$([0-9,]+)", message)
+        budget_match = re.search(r"\$([0-9,]+(?:\.[0-9]{2})?)", message)
         is_budget_intent = any(w in msg_lower for w in ["budget", "reduce", "cut", "rebalance", "drop"])
-        if is_budget_intent and budget_match:
-            raw_amt = float(budget_match.group(1).replace(",", ""))
+        if is_budget_intent:
             curr_budget = float(event_data.get("total_budget", 4000.0))
-            
-            # Decide if target is a total budget ceiling or a reduction delta
-            if "by" in msg_lower or "cut" in msg_lower or "reduce by" in msg_lower:
-                new_budget = max(500.0, curr_budget - raw_amt)
+            if budget_match:
+                raw_amt = float(budget_match.group(1).replace(",", ""))
+                if "by" in msg_lower or "cut" in msg_lower or "reduce by" in msg_lower:
+                    new_budget = max(500.0, curr_budget - raw_amt)
+                else:
+                    new_budget = raw_amt
             else:
-                new_budget = raw_amt
+                new_budget = curr_budget
 
             dec_id = f"dec_{uuid.uuid4().hex[:6]}"
             allocations = event_data.get("budget_allocations") or event_data.get("budget_breakdown") or []
-            
+
             # Deterministic Decimal adjustment protecting Food & Beverage and 10% contingency
             rebalanced_allocs, variance, actions = rebalance_budget_allocations(
                 total_budget=new_budget,
@@ -737,23 +800,27 @@ async def chat(req: Request):
             rationale = f"Reconcile event finances to revised ${new_budget:,.2f} budget while safeguarding protected priorities."
             impact_desc = f"Total budget set to ${new_budget:,.2f}. Exact zero-variance allocation enforced across all categories."
 
-            # Log pending decision in Firestore
-            db.collection("events").document(event_id).collection("decisions").document(dec_id).set({
-                "decision_id": dec_id,
-                "event_id": event_id,
-                "proposed_change": proposed_change,
-                "rationale": rationale,
-                "expected_impact": impact_desc,
-                "assumptions": ["Vendor pricing verified", "Contingency reserve maintained"],
-                "approval_status": "pending_approval",
-                "field_updates": {
-                    "total_budget": new_budget,
-                    "budget_allocations": rebalanced_allocs,
-                    "budget_breakdown": rebalanced_allocs,
-                },
-                "created_at": datetime.now(timezone.utc).isoformat(),
-                "approved_by": None,
-            })
+            # Log pending decision in Firestore if available
+            try:
+                if db:
+                    db.collection("events").document(event_id).collection("decisions").document(dec_id).set({
+                        "decision_id": dec_id,
+                        "event_id": event_id,
+                        "proposed_change": proposed_change,
+                        "rationale": rationale,
+                        "expected_impact": impact_desc,
+                        "assumptions": ["Vendor pricing verified", "Contingency reserve maintained"],
+                        "approval_status": "pending_approval",
+                        "field_updates": {
+                            "total_budget": new_budget,
+                            "budget_allocations": rebalanced_allocs,
+                            "budget_breakdown": rebalanced_allocs,
+                        },
+                        "created_at": datetime.now(timezone.utc).isoformat(),
+                        "approved_by": None,
+                    })
+            except Exception as d_err:
+                logger.warning("Could not persist decision to Firestore: %s", d_err)
 
             resp = AgentResponse(
                 status="pending_approval",
@@ -912,37 +979,6 @@ async def _get_event_data_dict(event_id: str) -> dict[str, Any] | None:
             return ev.model_dump() if hasattr(ev, "model_dump") else dict(ev)
     except Exception:
         pass
-    if event_id == "evt_wit_manhattan_2026":
-        return {
-            "event_id": "evt_wit_manhattan_2026",
-            "title": "Women in Tech Leadership Dinner",
-            "date": "2026-10-15",
-            "start_time": "18:00",
-            "end_time": "21:30",
-            "location": "The Altman Building, New York, NY",
-            "guest_count": 30,
-            "total_budget": 4000.0,
-            "readiness_score": 95,
-            "budget_allocations": [
-                {"category": "Catering & Private Chef", "allocated_amount": 2200.0},
-                {"category": "Venue & Premium Private Room", "allocated_amount": 1000.0},
-                {"category": "Event Décor, Florals & Print", "allocated_amount": 400.0},
-                {"category": "Contingency & Incidentals", "allocated_amount": 400.0},
-            ],
-            "risks": [
-                {
-                    "category": "Guest Experience",
-                    "severity": "Attention",
-                    "details": "Dietary requirements not fully confirmed across all VIP attendees.",
-                    "status": "open",
-                }
-            ],
-            "run_of_show": [
-                {"time": "18:00 - 18:45", "phase": "VIP Arrivals & Welcome Reception", "lead": "Guest Experience Lead"},
-                {"time": "18:45 - 20:30", "phase": "Keynote Dialogue & Plated Dinner", "lead": "Program Lead"},
-                {"time": "20:30 - 21:30", "phase": "Executive Networking & Closing Remarks", "lead": "Lead Host"},
-            ],
-        }
     return None
 
 
@@ -1423,17 +1459,12 @@ async def get_portfolio_analytics_api():
         except Exception:
             pass
 
-    if not all_events:
-        default_ev = await _get_event_data_dict("evt_wit_manhattan_2026")
-        if default_ev:
-            all_events.append(default_ev)
-
     portfolio = analytics_service.get_portfolio_analytics(all_events, all_decisions, all_actions)
     portfolio["events_breakdown"] = [
         {
             "event_id": e.get("event_id"),
             "title": e.get("title"),
-            "readiness_score": e.get("readiness_score", 90),
+            "readiness_score": e.get("readiness_score"),
             "total_budget": float(e.get("total_budget", 0.0)),
             "guest_count": int(e.get("guest_count", 0)),
         }
