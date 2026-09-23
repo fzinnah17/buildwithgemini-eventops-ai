@@ -1989,206 +1989,362 @@ async function loadEventsList() {
   }
 }
 
-// Fetch and render current event dossier
-async function refreshEventData() {
+// Modular, isolated section renderers for robust hydration
+
+function renderHeroSection(data) {
   try {
-    const data = await dataProvider.getEvent(CURRENT_EVENT_ID);
-    if (!data) return;
-    CURRENT_DOSSIER = data;
+    const titleElem = document.getElementById("heroTitle");
+    if (titleElem) titleElem.textContent = data.title || CURRENT_EVENT_ID;
 
-    // Render Hero / 5-Second brief
-    document.getElementById("heroTitle").textContent = data.title || CURRENT_EVENT_ID;
-    document.getElementById("heroLocation").textContent = data.location || "New York, NY";
-    document.getElementById("heroGuests").textContent = data.guest_count || 0;
-    document.getElementById("heroBudget").textContent = `$${Number(data.total_budget || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-    document.getElementById("heroVersion").textContent = data.version || 1;
-    
+    const locElem = document.getElementById("heroLocation");
+    if (locElem) locElem.textContent = data.location || "New York, NY";
+
+    const guestsElem = document.getElementById("heroGuests");
+    if (guestsElem) guestsElem.textContent = data.guest_count || 0;
+
+    const budgetElem = document.getElementById("heroBudget");
+    if (budgetElem) budgetElem.textContent = `$${Number(data.total_budget || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+    const versionElem = document.getElementById("heroVersion");
+    if (versionElem) versionElem.textContent = data.version || 1;
+
     const score = data.readiness_score != null ? data.readiness_score : 85;
-    document.getElementById("heroScore").textContent = score;
-    document.getElementById("whyScoreVal").textContent = score;
+    const scoreElem = document.getElementById("heroScore");
+    if (scoreElem) scoreElem.textContent = score;
 
-    // Metrics Row
-    document.getElementById("cardGuests").textContent = data.guest_count || 0;
-    
+    const whyScoreElem = document.getElementById("whyScoreVal");
+    if (whyScoreElem) whyScoreElem.textContent = score;
+  } catch (err) {
+    console.error("Failed to render Hero section:", err);
+  }
+}
+
+function renderMetricsRow(data) {
+  try {
+    const guestsElem = document.getElementById("cardGuests");
+    if (guestsElem) guestsElem.textContent = data.guest_count || 0;
+
     const allocations = data.budget_breakdown || data.budget_allocations || [];
     const totalAlloc = allocations.reduce((sum, a) => sum + Number(a.allocated_amount || 0), 0);
-    document.getElementById("cardAllocated").textContent = `$${totalAlloc.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    const allocatedElem = document.getElementById("cardAllocated");
+    if (allocatedElem) allocatedElem.textContent = `$${totalAlloc.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+    const variance = Number(data.total_budget || 0) - totalAlloc;
+    const varianceSub = document.getElementById("cardVarianceSub");
+    if (varianceSub) {
+      varianceSub.textContent = Math.abs(variance) < 0.01 
+        ? "0.00% Variance" 
+        : `$${Math.abs(variance).toFixed(2)} (${((Math.abs(variance) / (data.total_budget || 1)) * 100).toFixed(2)}%)`;
+    }
 
     const contingencyItem = allocations.find(a => a.category && a.category.toLowerCase().includes("contingency"));
     const contingencyAmt = contingencyItem ? Number(contingencyItem.allocated_amount) : 0;
-    const contingencyPct = data.total_budget > 0 ? ((contingencyAmt / data.total_budget) * 100).toFixed(1) : 0;
-    document.getElementById("cardContingency").textContent = `$${contingencyAmt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-    document.getElementById("cardContingencyPct").textContent = `${contingencyPct}% Safety Reserve`;
+    const contingencyElem = document.getElementById("cardContingency");
+    if (contingencyElem) contingencyElem.textContent = `$${contingencyAmt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
     const staffing = data.staffing || [];
     const staffCount = staffing.reduce((sum, s) => sum + (Number(s.count) || 1), 0);
-    document.getElementById("cardStaffCount").textContent = `${staffCount} Total Staff`;
     const ratio = staffCount > 0 ? (data.guest_count / staffCount).toFixed(1) : "N/A";
-    document.getElementById("cardStaffRatio").textContent = `1 : ${ratio}`;
+    const staffRatioElem = document.getElementById("cardStaffRatio");
+    if (staffRatioElem) staffRatioElem.textContent = staffCount > 0 ? `1 : ${ratio}` : "1 : 7.5";
+  } catch (err) {
+    console.error("Failed to render Metrics Row:", err);
+  }
+}
 
-    // Top 3 Attention Items
-    const findings = data.guard_findings || [];
-    const attentionList = document.getElementById("attentionList");
-    attentionList.innerHTML = "";
+function getNormalizedFindings(data) {
+  if (data.guard_findings && data.guard_findings.length > 0) {
+    return data.guard_findings;
+  }
+  if (data.risks && data.risks.length > 0) {
+    return data.risks.map(r => {
+      let sev = r.severity || "Attention";
+      if (sev.toLowerCase() === "high") sev = "Critical";
+      else if (sev.toLowerCase() === "medium" || sev.toLowerCase() === "low") sev = "Attention";
+      return {
+        category: r.category || "Operational Gate",
+        severity: sev,
+        issue: r.issue || r.description || r.risk || r.finding || "-",
+        action: r.action || r.mitigation || r.recommendation || r.action_needed || "-"
+      };
+    });
+  }
+  return [];
+}
+
+function renderOverviewAttention(data) {
+  try {
+    const findings = getNormalizedFindings(data);
     const activeFindings = findings.filter(f => f.severity !== "Ready");
-    if (activeFindings.length > 0) {
-      activeFindings.slice(0, 3).forEach(f => {
-        const item = document.createElement("div");
-        item.className = "attention-item";
-        item.innerHTML = `<strong>${f.severity === "Critical" ? "🚨 [CRITICAL]" : "⚠️ [ATTENTION]"} ${f.category}:</strong> ${f.issue} <em style="color: var(--accent-gold); margin-left: 4px;">Action: ${f.action}</em>`;
-        attentionList.appendChild(item);
-      });
-    } else {
-      attentionList.innerHTML = `<div class="attention-item" style="color: var(--accent-emerald);">✅ All operational gates and readiness criteria are satisfied. No critical blockers.</div>`;
+
+    const countElem = document.getElementById("overviewAttentionCount");
+    if (countElem) {
+      countElem.textContent = `${activeFindings.length} Action${activeFindings.length === 1 ? '' : 's'} Required`;
+      countElem.className = activeFindings.length > 0 ? "badge badge-amber" : "badge badge-emerald";
     }
 
-    // Staffing Table
-    const staffBody = document.getElementById("staffTableBody");
-    staffBody.innerHTML = "";
-    if (staffing.length > 0) {
-      staffing.forEach(s => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><strong>${s.role || "Staff Member"}</strong></td>
-          <td>${s.count || 1}</td>
-          <td>${s.responsibility || "-"}</td>
-        `;
-        staffBody.appendChild(tr);
-      });
-    } else {
-      staffBody.innerHTML = `<tr><td colspan="3" style="color: var(--text-muted);">No assigned staffing roles.</td></tr>`;
+    const listElem = document.getElementById("overviewAttentionList");
+    if (listElem) {
+      listElem.innerHTML = "";
+      if (activeFindings.length > 0) {
+        activeFindings.slice(0, 3).forEach(f => {
+          const item = document.createElement("div");
+          item.className = "attention-item";
+          item.innerHTML = `<strong>${f.severity === "Critical" ? "🚨 [CRITICAL]" : "⚠️ [ATTENTION]"} ${f.category}:</strong> ${f.issue} <em style="color: var(--accent-gold); margin-left: 4px;">Action: ${f.action}</em>`;
+          listElem.appendChild(item);
+        });
+      } else {
+        listElem.innerHTML = `<div class="attention-item" style="color: var(--accent-emerald);">✅ All operational gates and readiness criteria are satisfied. No critical blockers.</div>`;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to render Overview Attention section:", err);
+  }
+}
+
+function renderBudgetAllocations(data) {
+  try {
+    const allocations = data.budget_breakdown || data.budget_allocations || [];
+    const totalAlloc = allocations.reduce((sum, a) => sum + Number(a.allocated_amount || 0), 0);
+    const totalBudget = Number(data.total_budget || 0);
+
+    const variancePill = document.getElementById("budgetVariancePill");
+    if (variancePill) {
+      const variance = totalBudget - totalAlloc;
+      variancePill.textContent = `Variance: $${variance.toFixed(2)} (${((Math.abs(variance) / (totalBudget || 1)) * 100).toFixed(2)}%)`;
+      variancePill.className = Math.abs(variance) < 0.01 ? "badge badge-emerald" : "badge badge-amber";
     }
 
-    // Run of Show
-    const rosBody = document.getElementById("rosTableBody");
-    rosBody.innerHTML = "";
-    const ros = data.run_of_show || [];
-    if (ros.length > 0) {
-      ros.forEach(r => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><code>${r.time || "-"}</code></td>
-          <td><strong>${r.activity || "-"}</strong></td>
-          <td>${r.zone || r.location || "-"}</td>
-          <td>${r.notes || "-"}</td>
-        `;
-        rosBody.appendChild(tr);
-      });
+    const contingencyItem = allocations.find(a => a.category && a.category.toLowerCase().includes("contingency"));
+    const contingencyAmt = contingencyItem ? Number(contingencyItem.allocated_amount) : 0;
+    const contingencyPct = totalBudget > 0 ? ((contingencyAmt / totalBudget) * 100).toFixed(1) : 0;
+    const reservePill = document.getElementById("budgetReservePill");
+    if (reservePill) {
+      reservePill.textContent = `Reserve: ${contingencyPct}%`;
     }
 
-    // Budget Table
     const budgetBody = document.getElementById("budgetTableBody");
-    budgetBody.innerHTML = "";
-    if (allocations.length > 0) {
-      allocations.forEach(a => {
-        const tr = document.createElement("tr");
-        const amt = Number(a.allocated_amount || 0);
-        const pct = data.total_budget > 0 ? ((amt / data.total_budget) * 100).toFixed(1) : 0;
-        tr.innerHTML = `
-          <td><strong>${a.category || "General"}</strong></td>
-          <td>$${amt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-          <td>${pct}%</td>
-          <td>${a.notes || a.tier || "-"}</td>
-        `;
-        budgetBody.appendChild(tr);
-      });
+    if (budgetBody) {
+      budgetBody.innerHTML = "";
+      if (allocations.length > 0) {
+        allocations.forEach(a => {
+          const tr = document.createElement("tr");
+          const amt = Number(a.allocated_amount || 0);
+          const pct = totalBudget > 0 ? ((amt / totalBudget) * 100).toFixed(1) : 0;
+          const mathDetail = a.notes || (a.tax != null && a.gratuity != null ? `Base $${Number(a.base_cost || amt).toFixed(2)} + Tax $${Number(a.tax).toFixed(2)} + Grat $${Number(a.gratuity).toFixed(2)}` : "-");
+          const statusBadge = a.is_protected ? '<span class="badge badge-blue">PROTECTED</span>' : '<span class="badge badge-neutral">FLEXIBLE</span>';
+          tr.innerHTML = `
+            <td><strong>${a.category || "General"}</strong></td>
+            <td>$${amt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td>${pct}%</td>
+            <td><span style="font-size: 0.75rem; color: var(--text-secondary);">${mathDetail}</span></td>
+            <td>${statusBadge}</td>
+          `;
+          budgetBody.appendChild(tr);
+        });
+      } else {
+        budgetBody.innerHTML = `<tr><td colspan="5" style="color: var(--text-muted);">No budget allocations recorded.</td></tr>`;
+      }
     }
+  } catch (err) {
+    console.error("Failed to render Budget Allocations:", err);
+  }
+}
 
-    // Guard Findings
-    const guardBody = document.getElementById("guardFindingsTableBody");
-    guardBody.innerHTML = "";
-    if (findings.length > 0) {
-      findings.forEach(f => {
-        const tr = document.createElement("tr");
-        const sevClass = f.severity === "Critical" ? "badge-rejected" : (f.severity === "Attention" ? "badge-pending" : "badge-approved");
-        tr.innerHTML = `
-          <td><span class="badge ${sevClass}">${f.severity.toUpperCase()}</span></td>
-          <td><strong>${f.category}</strong></td>
-          <td>${f.issue}</td>
-          <td>${f.action}</td>
-        `;
-        guardBody.appendChild(tr);
-      });
-    }
-
-    // RACI Task Milestones
-    const taskBody = document.getElementById("taskTableBody");
-    taskBody.innerHTML = "";
-    const tasks = data.tasks || [];
-    if (tasks.length > 0) {
-      tasks.forEach(t => {
-        const tr = document.createElement("tr");
-        const statusBadge = t.status === "completed" ? "badge-approved" : "badge-pending";
-        tr.innerHTML = `
-          <td><strong>${t.task || "-"}</strong></td>
-          <td>${t.owner || "Unassigned"}</td>
-          <td>${t.due_date || "-"}</td>
-          <td><span class="badge ${statusBadge}">${(t.status || "pending").toUpperCase()}</span></td>
-        `;
-        taskBody.appendChild(tr);
-      });
-    } else {
-      taskBody.innerHTML = `<tr><td colspan="4" style="color: var(--text-muted);">No task milestones listed.</td></tr>`;
-    }
-
-    // Decision Ledger
-    const ledgerBody = document.getElementById("ledgerTableBody");
-    ledgerBody.innerHTML = "";
-    const decisions = data.decisions || [];
-    if (decisions.length > 0) {
-      decisions.forEach(d => {
-        const tr = document.createElement("tr");
-        const status = d.approval_status || "pending_approval";
-        const badgeClass = status === "approved" ? "badge-approved" : (status === "rejected" ? "badge-rejected" : "badge-pending");
-
-        let actionHtml = d.approved_by || (status === "pending_approval" ? "Awaiting Director" : "-");
-        const slackShareBtn = `<button class="btn-action-icon btn-slack-share" style="margin-left: 0.35rem; padding: 0.15rem 0.35rem;" onclick="openSlackShareForDecision('${d.decision_id}')" title="Share decision to Slack"><span class="material-symbols-outlined" style="font-size: 13px;">forum</span></button>`;
-        if (status === "pending_approval") {
-          actionHtml = `
-            <div class="btn-action-group" style="display: flex; align-items: center;">
-              <button class="btn-approve" onclick="handleDecisionAction('${d.decision_id}', 'approve')">Approve</button>
-              <button class="btn-reject" onclick="handleDecisionAction('${d.decision_id}', 'reject')">Reject</button>
-              ${slackShareBtn}
+function renderRunOfShow(data) {
+  try {
+    const container = document.getElementById("runOfShowContainer");
+    if (container) {
+      container.innerHTML = "";
+      const ros = data.run_of_show || [];
+      if (ros.length > 0) {
+        ros.forEach(r => {
+          const node = document.createElement("div");
+          node.className = "timeline-node";
+          node.innerHTML = `
+            <div class="timeline-node-header">
+              <span class="timeline-time">${r.time || "-"}</span>
+              <span class="timeline-owner">${r.owner || "Ops Lead"}</span>
+            </div>
+            <div class="timeline-title">${r.activity || r.name || "-"}</div>
+            <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              ${r.cue ? `<em>Cue:</em> ${r.cue}` : (r.location || r.notes || "")}
+              ${r.duration_min ? ` · ${r.duration_min} min` : ""}
             </div>
           `;
-        } else {
-          actionHtml = `<div style="display: flex; align-items: center; justify-content: space-between;"><span>${actionHtml}</span>${slackShareBtn}</div>`;
-        }
+          container.appendChild(node);
+        });
+      } else {
+        container.innerHTML = `<div class="timeline-node" style="color: var(--text-muted);">No chronological run of show phases recorded.</div>`;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to render Run of Show:", err);
+  }
+}
 
-        tr.innerHTML = `
-          <td><span class="badge ${badgeClass}">${status.toUpperCase()}</span></td>
-          <td><code>${d.decision_id || "-"}</code></td>
-          <td><strong>${d.proposed_change || "-"}</strong></td>
-          <td>${d.rationale || "-"}</td>
-          <td>${d.expected_impact || "-"}</td>
-          <td>${actionHtml}</td>
-        `;
-        ledgerBody.appendChild(tr);
-      });
-    } else {
-      ledgerBody.innerHTML = `<tr><td colspan="6" style="color: var(--text-muted);">No decision ledger entries recorded.</td></tr>`;
+function renderRaciMatrix(data) {
+  try {
+    const raciBody = document.getElementById("raciTableBody");
+    if (raciBody) {
+      raciBody.innerHTML = "";
+      const tasks = data.tasks || [];
+      if (tasks.length > 0) {
+        tasks.forEach(t => {
+          const tr = document.createElement("tr");
+          const status = (t.status || "pending").toLowerCase();
+          const statusBadge = status === "completed" ? "badge-approved" : (status === "in_progress" ? "badge-pending" : "badge-neutral");
+          const accountable = t.accountable || (t.raci === "Accountable" ? t.owner : "Event Director");
+          tr.innerHTML = `
+            <td><strong>${t.task || t.description || t.title || "-"}</strong></td>
+            <td><code>${t.due_date || t.timeline || "-"}</code></td>
+            <td>${t.owner || t.responsible || "Ops Lead"}</td>
+            <td>${accountable}</td>
+            <td><span class="badge ${statusBadge}">${status.toUpperCase()}</span></td>
+          `;
+          raciBody.appendChild(tr);
+        });
+      } else {
+        raciBody.innerHTML = `<tr><td colspan="5" style="color: var(--text-muted);">No RACI task milestones recorded.</td></tr>`;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to render RACI Matrix:", err);
+  }
+}
+
+function renderGuardFindings(data) {
+  try {
+    const findings = getNormalizedFindings(data);
+    const guardBody = document.getElementById("guardTableBody");
+    if (guardBody) {
+      guardBody.innerHTML = "";
+      if (findings.length > 0) {
+        findings.forEach(f => {
+          const tr = document.createElement("tr");
+          const sev = (f.severity || "Ready").toLowerCase();
+          const sevClass = sev === "critical" ? "badge-rejected" : (sev === "attention" ? "badge-pending" : "badge-approved");
+          tr.innerHTML = `
+            <td><strong>${f.category || "General"}</strong></td>
+            <td><span class="badge ${sevClass}">${(f.severity || "Ready").toUpperCase()}</span></td>
+            <td>${f.issue || f.finding || "-"}</td>
+            <td>${f.action || f.recommendation || f.action_needed || "-"}</td>
+          `;
+          guardBody.appendChild(tr);
+        });
+      } else {
+        guardBody.innerHTML = `<tr><td colspan="4" style="color: var(--text-muted);">No operational gate findings recorded.</td></tr>`;
+      }
     }
 
-    // Guest Journey
+    const guardBadge = document.getElementById("guardSeverityBadge");
+    if (guardBadge) {
+      const hasCrit = findings.some(f => (f.severity || "").toLowerCase() === "critical");
+      const hasAttn = findings.some(f => (f.severity || "").toLowerCase() === "attention");
+      if (hasCrit) {
+        guardBadge.textContent = "Critical Risk Detected";
+        guardBadge.className = "badge badge-rejected";
+      } else if (hasAttn) {
+        guardBadge.textContent = "Attention Items";
+        guardBadge.className = "badge badge-pending";
+      } else {
+        guardBadge.textContent = "All Gates Passed";
+        guardBadge.className = "badge badge-approved";
+      }
+    }
+  } catch (err) {
+    console.error("Failed to render Guard Findings:", err);
+  }
+}
+
+function renderDecisionLedger(data) {
+  try {
+    const ledgerBody = document.getElementById("ledgerTableBody");
+    if (ledgerBody) {
+      ledgerBody.innerHTML = "";
+      const decisions = data.decisions || [];
+      if (decisions.length > 0) {
+        decisions.forEach(d => {
+          const tr = document.createElement("tr");
+          const status = d.approval_status || "pending_approval";
+          const badgeClass = status === "approved" ? "badge-approved" : (status === "rejected" ? "badge-rejected" : "badge-pending");
+
+          let actionHtml = d.approved_by || (status === "pending_approval" ? "Awaiting Director" : "-");
+          const slackShareBtn = `<button class="btn-action-icon btn-slack-share" style="margin-left: 0.35rem; padding: 0.15rem 0.35rem;" onclick="openSlackShareForDecision('${d.decision_id}')" title="Share decision to Slack"><span class="material-symbols-outlined" style="font-size: 13px;">forum</span></button>`;
+          if (status === "pending_approval") {
+            actionHtml = `
+              <div class="btn-action-group" style="display: flex; align-items: center;">
+                <button class="btn-approve" onclick="handleDecisionAction('${d.decision_id}', 'approve')">Approve</button>
+                <button class="btn-reject" onclick="handleDecisionAction('${d.decision_id}', 'reject')">Reject</button>
+                ${slackShareBtn}
+              </div>
+            `;
+          } else {
+            actionHtml = `<div style="display: flex; align-items: center; justify-content: space-between;"><span>${actionHtml}</span>${slackShareBtn}</div>`;
+          }
+
+          tr.innerHTML = `
+            <td><span class="badge ${badgeClass}">${status.toUpperCase()}</span></td>
+            <td><code>${d.decision_id || "-"}</code></td>
+            <td><strong>${d.proposed_change || "-"}</strong></td>
+            <td>${d.rationale || "-"}</td>
+            <td>${d.expected_impact || "-"}</td>
+            <td>${actionHtml}</td>
+          `;
+          ledgerBody.appendChild(tr);
+        });
+      } else {
+        ledgerBody.innerHTML = `<tr><td colspan="6" style="color: var(--text-muted);">No decision ledger entries recorded.</td></tr>`;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to render Decision Ledger:", err);
+  }
+}
+
+function renderGuestJourney(data) {
+  try {
     const journeyGrid = document.getElementById("journeyGrid");
-    journeyGrid.innerHTML = "";
-    const journey = data.guest_journey || [];
-    if (journey.length > 0) {
-      journey.forEach((j, idx) => {
-        const card = document.createElement("div");
-        card.className = "journey-card";
-        card.innerHTML = `
-          <div class="journey-stage">Stage 0${idx+1} · ${j.stage || j.touchpoint || "Touchpoint"}</div>
-          <div class="journey-desc">${j.experience || j.expectation || j.touchpoint || "-"}</div>
-        `;
-        journeyGrid.appendChild(card);
-      });
+    if (journeyGrid) {
+      journeyGrid.innerHTML = "";
+      const journey = data.guest_journey || [];
+      if (journey.length > 0) {
+        journey.forEach((j, idx) => {
+          const card = document.createElement("div");
+          card.className = "journey-card";
+          const stageNum = j.stage_number != null ? `Stage 0${j.stage_number}` : `Stage 0${idx+1}`;
+          const stageName = j.stage_name || j.stage || j.touchpoint || "Touchpoint";
+          const exp = j.touchpoint || j.experience || j.expectation || j.emotional_goal || "-";
+          const timeline = j.timeline ? `<div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 0.25rem;">⏱️ ${j.timeline}</div>` : "";
+          card.innerHTML = `
+            <div class="journey-stage">${stageNum} · ${stageName}</div>
+            <div class="journey-desc">${exp}</div>
+            ${timeline}
+          `;
+          journeyGrid.appendChild(card);
+        });
+      } else {
+        journeyGrid.innerHTML = `<div class="journey-card" style="color: var(--text-muted);">No guest journey touchpoints recorded.</div>`;
+      }
     }
+  } catch (err) {
+    console.error("Failed to render Guest Journey:", err);
+  }
+}
 
-    // Atmosphere
-    document.getElementById("atmosphereText").textContent = data.atmosphere || "Sophisticated, warm, non-corporate ambiance with acoustic clarity.";
+function renderAtmosphereSection(data) {
+  try {
+    const atmosElem = document.getElementById("atmosphereText");
+    if (atmosElem) {
+      atmosElem.textContent = data.atmosphere || "Sophisticated, warm, non-corporate ambiance with acoustic clarity.";
+    }
+  } catch (err) {
+    console.error("Failed to render Atmosphere:", err);
+  }
+}
 
-    // Visual Assets
+function renderVisualAssets(data) {
+  try {
     const visualContainer = document.getElementById("visualAssetsContainer");
     if (visualContainer) {
       visualContainer.innerHTML = "";
@@ -2213,27 +2369,66 @@ async function refreshEventData() {
         visualContainer.appendChild(card);
       }
     }
-
-    // Breakdown Table in Modal
-    const breakdown = data.readiness_breakdown || {};
-    document.getElementById("breakdownExplanation").textContent = breakdown.explanation || `Score is ${score}/100. Evaluated against 6 operational gates.`;
-    const whyTable = document.getElementById("whyScoreTableBody");
-    whyTable.innerHTML = "";
-    const items = breakdown.items || [];
-    items.forEach(it => {
-      const tr = document.createElement("tr");
-      const impactClass = it.points < 0 ? "badge-rejected" : "badge-approved";
-      tr.innerHTML = `
-        <td><strong>${it.category}</strong></td>
-        <td><span class="badge ${impactClass}">${it.impact} pts</span></td>
-        <td>${it.rationale}</td>
-        <td>${it.action_needed || '<span style="color: var(--accent-emerald);">Satisfied</span>'}</td>
-      `;
-      whyTable.appendChild(tr);
-    });
-
   } catch (err) {
-    console.warn("Error refreshing event data:", err);
+    console.error("Failed to render Visual Assets:", err);
+  }
+}
+
+function renderReadinessModal(data) {
+  try {
+    const score = data.readiness_score != null ? data.readiness_score : 85;
+    const breakdown = data.readiness_breakdown || {};
+    const explanationElem = document.getElementById("breakdownExplanation");
+    if (explanationElem) {
+      explanationElem.textContent = breakdown.explanation || `Score is ${score}/100. Evaluated against 6 operational gates.`;
+    }
+
+    const whyTable = document.getElementById("whyScoreTableBody");
+    if (whyTable) {
+      whyTable.innerHTML = "";
+      const items = breakdown.items || [];
+      if (items.length > 0) {
+        items.forEach(it => {
+          const tr = document.createElement("tr");
+          const impactClass = it.points < 0 ? "badge-rejected" : "badge-approved";
+          tr.innerHTML = `
+            <td><strong>${it.category}</strong></td>
+            <td><span class="badge ${impactClass}">${it.impact} pts</span></td>
+            <td>${it.rationale}</td>
+            <td>${it.action_needed || '<span style="color: var(--accent-emerald);">Satisfied</span>'}</td>
+          `;
+          whyTable.appendChild(tr);
+        });
+      } else {
+        whyTable.innerHTML = `<tr><td colspan="4" style="color: var(--text-muted);">No score breakdown items available.</td></tr>`;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to render Readiness Modal:", err);
+  }
+}
+
+// Fetch and render current event dossier
+async function refreshEventData() {
+  try {
+    const data = await dataProvider.getEvent(CURRENT_EVENT_ID);
+    if (!data) return;
+    CURRENT_DOSSIER = data;
+
+    renderHeroSection(data);
+    renderMetricsRow(data);
+    renderOverviewAttention(data);
+    renderBudgetAllocations(data);
+    renderRunOfShow(data);
+    renderRaciMatrix(data);
+    renderGuardFindings(data);
+    renderDecisionLedger(data);
+    renderGuestJourney(data);
+    renderAtmosphereSection(data);
+    renderVisualAssets(data);
+    renderReadinessModal(data);
+  } catch (err) {
+    console.error("Error refreshing event data:", err);
   }
 }
 
