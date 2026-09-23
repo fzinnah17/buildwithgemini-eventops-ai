@@ -28,5 +28,9 @@ jobs:
           uv sync --dev
 
       - name: Run unit test suite
+        env:
+          EVENTOPS_ENV: test
+          EVENTOPS_FORCE_DEMO: "true"
+          EVENTOPS_SIMULATED_INTEGRATIONS: "true"
         run: |
           uv run pytest tests/unit -v
