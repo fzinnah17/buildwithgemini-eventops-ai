@@ -200,9 +200,7 @@ Because Google Cloud workshop environments are temporary, I created two ways to 
 For deeper architectural dives, test evidence, and workshop notes, explore the `/docs` directory:
 
 - [Portfolio Case Study](docs/PORTFOLIO_CASE_STUDY.md) — Detailed technical architecture, data schemas, and design trade-offs.
-- [Technical Defense & Interview Stories](docs/INTERVIEW_STORIES.md) — Anticipated technical questions, failure modes, and architectural rationale.
 - [Presentation & Demo Notes](PRESENTATION_NOTES.md) — Live demo script, elevator pitch, and talking points.
-- [Workshop Submission](docs/WORKSHOP_SUBMISSION.md) — Google Cloud Build with Gemini submission details and project summary.
 
 ---
 

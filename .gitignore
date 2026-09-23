@@ -243,3 +243,12 @@ backups/*.tar.gz
 backups/*.zip
 *.zip
 
+
+# Private EventOps documentation
+PRESENTATION_NOTES.md
+docs/CAREER_POSITIONING.md
+docs/INTERVIEW_STORIES.md
+docs/LINKEDIN_POSITIONING.md
+docs/RESUME_WORKFLOW.md
+docs/WORKSHOP_SUBMISSION.md
+docs/TEMPORARY_GCP_RESOURCES.md
