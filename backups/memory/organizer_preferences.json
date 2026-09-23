@@ -1,0 +1,38 @@
+{
+  "organizer_profile": {
+    "user_id": "demo-organizer",
+    "role": "Executive Event Director",
+    "preferences": [
+      {
+        "category": "Atmosphere & Styling",
+        "preference": "Warm, sophisticated, and residential; strictly avoid generic corporate or clinical atmospheres.",
+        "durability": "high",
+        "guidance": "Select venues with architectural character, soft ambient lighting (2700K), and curated acoustic environments."
+      },
+      {
+        "category": "Culinary & Beverage Inclusivity",
+        "preference": "100% dietary inclusivity with parity of presentation; dedicated craft zero-proof cocktail pairings.",
+        "durability": "permanent",
+        "guidance": "Never treat non-drinkers or dietary restrictions (vegan, celiac, nut-free) as an afterthought."
+      },
+      {
+        "category": "Governance & Budget Precision",
+        "preference": "Zero budget variance tolerance; minimum 10% contingency buffer reserved until 48 hours prior to event.",
+        "durability": "permanent",
+        "guidance": "Require explicit two-phase human sign-off on any line-item modifications exceeding 5% of total budget."
+      },
+      {
+        "category": "Acoustic Isolation",
+        "preference": "Private or fully sequestered spaces; conversation noise floor must allow unamplified speech without vocal strain.",
+        "durability": "high",
+        "guidance": "Inspect venue background music policy, kitchen pass noise, and adjacent dining partitions."
+      },
+      {
+        "category": "Networking Dynamics",
+        "preference": "Facilitated organic connection; structured conversation prompts over open unstructured mingling.",
+        "durability": "high",
+        "guidance": "Incorporate thoughtful icebreakers, intimate seating pods (maximum 6-8 guests per table), and personal arrival greetings."
+      }
+    ]
+  }
+}

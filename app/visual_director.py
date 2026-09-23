@@ -28,10 +28,11 @@ from google.cloud import storage
 
 from app.event_store import get_event_store
 
-logger = logging.getLogger(__name__)
-
-MEDIA_BUCKET_NAME = "eventops-ai-media-qwiklabs-gcp-04-a69f0245a9b4"
-PROJECT_ID = "qwiklabs-gcp-04-a69f0245a9b4"
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "qwiklabs-gcp-04-a69f0245a9b4")
+MEDIA_BUCKET_NAME = os.environ.get(
+    "EVENTOPS_MEDIA_BUCKET",
+    f"eventops-ai-media-{PROJECT_ID}",
+)
 
 
 def generate_event_visual(

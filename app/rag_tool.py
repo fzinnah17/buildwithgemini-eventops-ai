@@ -50,10 +50,13 @@ def consult_operations_playbook(query: str) -> str:
     # 1. Attempt Serverless Vertex AI RAG Retrieval if corpus is configured
     if CORPUS_NAME:
         try:
+            import os
             import vertexai
             from vertexai.preview import rag
 
-            vertexai.init(project="qwiklabs-gcp-04-a69f0245a9b4", location="us-central1")
+            project = os.environ.get("GOOGLE_CLOUD_PROJECT", "qwiklabs-gcp-04-a69f0245a9b4")
+            location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+            vertexai.init(project=project, location=location)
             response = rag.retrieval_query(
                 rag_resources=[rag.RagResource(rag_corpus=CORPUS_NAME)],
                 text=query,

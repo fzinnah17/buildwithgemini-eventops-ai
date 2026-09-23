@@ -1,0 +1,31 @@
+{
+  "export_timestamp": "2026-09-23T01:20:00Z",
+  "source_environment": {
+    "project_id": "qwiklabs-gcp-04-a69f0245a9b4",
+    "region": "us-central1",
+    "memory_bank_id": "4178271179141808128",
+    "memory_service_uri": "agentengine://4178271179141808128",
+    "service_class": "google.adk.memory.vertex_ai_memory_bank_service.VertexAiMemoryBankService"
+  },
+  "api_enumeration_results": {
+    "queried_user_ids": ["demo-organizer", "default_user", "organizer"],
+    "search_method": "VertexAiMemoryBankService.search_memory(app_name='app', user_id=..., query='event preferences')",
+    "dynamic_extractions_found": 0,
+    "status": "active_instance_empty_extractions"
+  },
+  "platform_export_limitations": {
+    "description": "Vertex AI Memory Bank (Agent Platform) does not currently provide a bulk table-dump API for cross-project migration. Memories are created asynchronously from conversation sessions via Vertex AI Agent Engine background workers.",
+    "migration_strategy": "When recreating in a new Google Cloud project: (1) Provision a new Memory Bank using Vertex AI Agent Engine / ADK CLI (`agents-cli` or `agentplatform.Client().memory_banks.create()`). (2) Configure MEMORY_BANK_ID in .env. (3) Re-seed durable organizer preferences into sessions or pre-seed via `add_memory`."
+  },
+  "schema_definition": {
+    "entity": "MemoryRecord",
+    "properties": [
+      "user_id",
+      "session_id",
+      "memory_type",
+      "content",
+      "confidence",
+      "created_at"
+    ]
+  }
+}

@@ -234,3 +234,10 @@ application_default_credentials.json
 service-account*.json
 # Keep the demo GIF (README embeds it); ignore the large raw recording.
 *.webm
+browser-data/
+tmp/
+.cache/
+*.log
+backups/*.bundle
+backups/*.tar.gz
+backups/*.zip

@@ -1,0 +1,988 @@
+// EventOps AI — Standalone Portable Demo Fixtures
+// Generated from authoritative Firestore backup
+window.EVENTOPS_DEFAULT_EVENTS = [
+  {
+    "contingencies": [],
+    "accessibility": {},
+    "budget_allocations": [
+      {
+        "category": "Venue & AV Production",
+        "notes": "Industrial loft space and integrated high-fidelity sound/projection",
+        "is_protected": true,
+        "allocated_amount": 6500.0
+      },
+      {
+        "category": "Catering & Artisan Coffee",
+        "notes": "Breakfast, artisan espresso bar, plated buffet lunch, and reception appetizers",
+        "is_protected": false,
+        "allocated_amount": 7200.0
+      },
+      {
+        "category": "Staffing & Operations",
+        "notes": "Greeters, coat check, AV technician, and floor coordination",
+        "is_protected": false,
+        "allocated_amount": 1800.0
+      },
+      {
+        "category": "Signage & Materials",
+        "notes": "Digital badges, directional signage, and workshop materials",
+        "is_protected": false,
+        "allocated_amount": 1000.0
+      },
+      {
+        "category": "Contingency Reserve",
+        "notes": "10.8% operational reserve for unforeseen transit or catering adjustments",
+        "is_protected": true,
+        "allocated_amount": 2000.0
+      }
+    ],
+    "staffing": [
+      {
+        "role": "Event Director & Lead Producer",
+        "responsibility": "Master timeline, VIP facilitation, issue escalation",
+        "count": 1
+      },
+      {
+        "role": "Guest Greeting & Coat Check Attendant",
+        "responsibility": "Arrival flow, NFC badge issue, umbrella and coat management",
+        "count": 2
+      },
+      {
+        "role": "Lead AV & Production Technician",
+        "responsibility": "Stage microphones, projection switching, presentation recording",
+        "count": 1
+      },
+      {
+        "role": "Catering & Hospitality Service Staff",
+        "responsibility": "Food service, table clearing, continuous beverage replenishment",
+        "count": 4
+      }
+    ],
+    "readiness_score": 100,
+    "venue_requirements": {
+      "capacity": 100,
+      "av_needs": "Dual 4K projection, 4 wireless lavaliers, spatial sound reinforcement",
+      "accessibility": "ADA compliant freight and passenger elevator access, all gender restrooms",
+      "space_type": "Private Industrial Loft with acoustic treatment and door closure"
+    },
+    "status": "planning",
+    "atmosphere": "Industrial elegance with warm cedar wood, brushed blackened steel, and natural botanical accents. 2700K warm architectural amber lighting, acoustic jazz at 50 dB.",
+    "event_type": "industry_conference",
+    "guest_count": 85,
+    "event_id": "evt_design_summit_2026",
+    "total_budget": 18500.0,
+    "location": "Brooklyn Navy Yard, Building 77, Brooklyn, NY",
+    "guest_journey": [
+      {
+        "stage": "Arrival",
+        "experience": "Check-in with pre-printed NFC badges, coat check with claim tokens, and espresso bar greeting"
+      },
+      {
+        "stage": "Transition",
+        "experience": "Chime notification 5 minutes before keynote, ambient lighting shifts to presentation focus"
+      },
+      {
+        "stage": "Keynote",
+        "experience": "Tiered seating with direct sightlines and personal charging hubs"
+      },
+      {
+        "stage": "Critique Pods",
+        "experience": "Facilitated pods of 8 participants with high-res interactive displays"
+      },
+      {
+        "stage": "Lunch",
+        "experience": "Seated roundtables organized by topic interest to accelerate peer connection"
+      },
+      {
+        "stage": "Afternoon Labs",
+        "experience": "Live sandbox experimentation with technical mentors circulating"
+      },
+      {
+        "stage": "Reception",
+        "experience": "Passed canap\u00e9s and bespoke drinks, conversational clusters with low acoustic interference"
+      },
+      {
+        "stage": "Departure",
+        "experience": "Streamlined coat retrieval, curated digital event summary emailed instantly"
+      }
+    ],
+    "title": "NYC Product & AI Design Summit 2026",
+    "visual_assets": [],
+    "confirmed_facts": [],
+    "created_at": "2026-09-23T01:02:17.710946+00:00",
+    "currency": "USD",
+    "food_beverage": {
+      "dietary_protocol": "Individual guest dietary survey confirmed 7 days prior; 10 reserve allergy-safe meals held",
+      "beverage_service": "Artisan single-origin coffee and tea; natural wines and craft mocktails at reception",
+      "style": "Farm-to-table seasonal lunch buffet, continuous pour coffee, evening hors doeuvres"
+    },
+    "risks": [
+      {
+        "severity": "Medium",
+        "risk": "Morning ferry and bridge traffic congestion",
+        "mitigation": "Publish transit guide with water taxi options; provide 30-minute arrival hospitality buffer"
+      },
+      {
+        "severity": "Low",
+        "risk": "Breakout pod acoustic bleed",
+        "mitigation": "Deploy directional acoustic baffles between critique pods"
+      }
+    ],
+    "tasks": [
+      {
+        "due_date": "T-2 Days",
+        "task": "Conduct AV sound isolation test with building acoustic engineer",
+        "status": "completed",
+        "owner": "AV Technician"
+      },
+      {
+        "due_date": "T-3 Days",
+        "task": "Confirm dietary and allergen roster with catering head chef",
+        "status": "completed",
+        "owner": "Hospitality Manager"
+      },
+      {
+        "due_date": "T-1 Day",
+        "task": "Test NFC badge check-in scanners and backup offline roster",
+        "status": "in_progress",
+        "owner": "Registration Lead"
+      }
+    ],
+    "protected_priorities": [],
+    "run_of_show": [
+      {
+        "activity": "Registration, Artisan Coffee Bar & Warm Welcome",
+        "location": "Grand Foyer",
+        "time": "08:30 - 09:30",
+        "owner": "Arrival Logistics Lead"
+      },
+      {
+        "activity": "Keynote: Scalable Enterprise AI UX & Design Systems",
+        "location": "Main Stage",
+        "time": "09:30 - 11:00",
+        "owner": "Program Director"
+      },
+      {
+        "activity": "Hands-on Design System Critique Pods",
+        "location": "Studio A & B",
+        "time": "11:15 - 13:00",
+        "owner": "Workshop Facilitator"
+      },
+      {
+        "activity": "Curated Executive Lunch & Peer Roundtables",
+        "location": "Dining Terrace",
+        "time": "13:00 - 14:15",
+        "owner": "Hospitality Manager"
+      },
+      {
+        "activity": "Multimodal Agent Interaction Labs",
+        "location": "Main Stage",
+        "time": "14:15 - 16:30",
+        "owner": "Technical Track Lead"
+      },
+      {
+        "activity": "Closing Reception & Curated Networking",
+        "location": "Skyline Lounge",
+        "time": "16:30 - 18:00",
+        "owner": "Event Director"
+      }
+    ],
+    "updated_at": "2026-09-23T01:02:17.711051+00:00",
+    "version": 1,
+    "formality": "",
+    "guest_profile": {},
+    "objective": "Convene 85 senior product design and AI engineering leaders for interactive design critiques, keynote sessions, and curated networking.",
+    "assumptions": [],
+    "vendors": [],
+    "_doc_id": "evt_design_summit_2026"
+  },
+  {
+    "contingencies": [],
+    "budget_allocations": [],
+    "accessibility": {},
+    "staffing": [],
+    "readiness_score": 40,
+    "venue_requirements": {},
+    "status": "planning",
+    "atmosphere": "Intimate, warm lighting, strictly vegetarian-forward dining, warm, relationship-focused gatherings, non-corporate banquet aesthetics",
+    "event_type": "networking_dinner",
+    "guest_count": 30,
+    "event_id": "evt_exec_dinner_manhattan_2024",
+    "guest_journey": [],
+    "location": "Manhattan, NY",
+    "total_budget": 4000.0,
+    "visual_assets": [],
+    "title": "Executive Dinner",
+    "confirmed_facts": [],
+    "created_at": "2026-09-22T18:55:45.537352+00:00",
+    "currency": "USD",
+    "food_beverage": {},
+    "risks": [],
+    "tasks": [],
+    "protected_priorities": [],
+    "run_of_show": [],
+    "updated_at": "2026-09-22T18:55:45.537389+00:00",
+    "formality": "",
+    "guest_profile": {},
+    "objective": "Foster relationships and facilitate high-level networking",
+    "assumptions": [],
+    "vendors": [],
+    "_doc_id": "evt_exec_dinner_manhattan_2024"
+  },
+  {
+    "contingencies": [
+      {
+        "scenario": "Guest count fluctuation between 25 and 32",
+        "plan": "Venue contract includes flexible \u00b110% headcount adjustment cutoff at T-48 hours",
+        "reserve_amount": 200.0
+      },
+      {
+        "scenario": "Unanticipated kitchen overtime or beverage consumption surge",
+        "plan": "Draw from dedicated $350 Contingency Reserve with Host approval",
+        "reserve_amount": 350.0
+      }
+    ],
+    "accessibility": {
+      "sensory": "Controlled lighting, no strobe or flashing elements, managed acoustic resonance",
+      "dietary_inclusivity": "Full gluten-free, vegan, kosher/halal accommodation upon advance request",
+      "physical": "Elevator access, wide aisle clearance between dining chairs (> 36 inches)",
+      "non_alcoholic": "Sophisticated zero-proof pairings presented with equal elegance to wines"
+    },
+    "budget_allocations": [
+      {
+        "gratuity": 340.0,
+        "base_cost": 1700.0,
+        "is_protected": true,
+        "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+        "tax": 150.88,
+        "allocated_amount": 2200.0,
+        "category": "Food & Beverage"
+      },
+      {
+        "gratuity": 0.0,
+        "base_cost": 1000.0,
+        "is_protected": false,
+        "notes": "Private dining room buyout minimum applied directly against F&B balance",
+        "tax": 0.0,
+        "allocated_amount": 1000.0,
+        "category": "Venue & Space Minimum"
+      },
+      {
+        "gratuity": 0.0,
+        "base_cost": 230.0,
+        "is_protected": false,
+        "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+        "tax": 20.0,
+        "allocated_amount": 250.0,
+        "category": "Atmosphere, D\u00e9cor & Printing"
+      },
+      {
+        "gratuity": 0.0,
+        "base_cost": 200.0,
+        "is_protected": true,
+        "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+        "tax": 0.0,
+        "allocated_amount": 200.0,
+        "category": "Staffing & Hospitality Services"
+      },
+      {
+        "gratuity": 0.0,
+        "base_cost": 350.0,
+        "is_protected": true,
+        "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+        "tax": 0.0,
+        "allocated_amount": 350.0,
+        "category": "Contingency Reserve"
+      }
+    ],
+    "staffing": [
+      {
+        "role": "Event Lead & Producer",
+        "responsibility": "Overall timeline, vendor oversight, guest escort",
+        "count": 1
+      },
+      {
+        "role": "Guest Greeting & Coat Check Attendant",
+        "responsibility": "Street/elevator greeting, coat check, departure gifts",
+        "count": 1
+      },
+      {
+        "role": "Lead Server (Venue Staff)",
+        "responsibility": "Course synchronization and beverage pairings",
+        "count": 2
+      }
+    ],
+    "readiness_score": 95,
+    "venue_requirements": {
+      "capacity": "30 seated guests plus greeting area",
+      "neighborhood": "Manhattan (Flatiron, Gramercy, or SoHo)",
+      "accessibility": "Step-free street access, accessible elevator, ADA restroom on same floor",
+      "space_type": "Fully private dining room with acoustic separation and door closure",
+      "transit": "Within 3 blocks of major subway lines (N/Q/R/W, 4/5/6, or L)",
+      "lighting": "Warm dimmable incandescent/candlelight, no harsh fluorescent overheads",
+      "acoustics": "Soft textiles/carpet to dampen sound; conversational ambient level < 65dB"
+    },
+    "status": "planning",
+    "atmosphere": "Warm, candlelight-lit, sophisticated, conversational, non-corporate, relaxed elegance",
+    "event_type": "executive_networking_dinner",
+    "event_id": "evt_wit_manhattan_2026",
+    "guest_count": 30,
+    "total_budget": 4000.0,
+    "location": "Manhattan, NY (Flatiron / Gramercy)",
+    "guest_journey": [
+      {
+        "stage_number": 1,
+        "timeline": "T-4 weeks to T-3 weeks",
+        "touchpoint": "Personalized digital invitation with clear salon theme, attire guide, and dietary survey",
+        "stage_name": "Invitation & Framing",
+        "emotional_goal": "Intrigue, anticipation, and feeling valued as an invited peer"
+      },
+      {
+        "stage_number": 2,
+        "timeline": "T-7 days & T-24 hours",
+        "touchpoint": "Concise logistics brief: transit, exact private room entry instructions, host contact",
+        "stage_name": "Pre-event Communications & Expectations",
+        "emotional_goal": "Confidence and zero arrival anxiety"
+      },
+      {
+        "stage_number": 3,
+        "timeline": "18:00 - 18:15",
+        "touchpoint": "Curated street-level greeter, swift private elevator to salon, immediate warm coat check",
+        "stage_name": "Arrival & Transition from Street to Space",
+        "emotional_goal": "Decompression from NYC street pace into an exclusive, warm haven"
+      },
+      {
+        "stage_number": 4,
+        "timeline": "18:15 - 18:30",
+        "touchpoint": "Signature welcoming cocktail or artisanal zero-proof elixir, gentle ambient music, effortless introductions",
+        "stage_name": "First 15 Minutes & Welcome Reception",
+        "emotional_goal": "Immediate belonging and psychological safety"
+      },
+      {
+        "stage_number": 5,
+        "timeline": "18:30 - 20:30",
+        "touchpoint": "3-course seasonal seated dinner, thoughtful table conversation prompts, short 5-minute host toast",
+        "stage_name": "Main Experience: Salon & Seated Dinner",
+        "emotional_goal": "Intellectual stimulation, memorable culinary delight, deep connection"
+      },
+      {
+        "stage_number": 6,
+        "timeline": "20:30 - 21:00",
+        "touchpoint": "Post-dinner coffee/tea salon, dessert tasting, fluid movement across tables for open mingling",
+        "stage_name": "Transitions & Room Flow",
+        "emotional_goal": "Dynamic connection with peers from other tables without abruptness"
+      },
+      {
+        "stage_number": 7,
+        "timeline": "21:00 - 21:30",
+        "touchpoint": "Seamless coat retrieval, discreet gift (curated book or artisanal treat), personal thank you from host",
+        "stage_name": "Departure & Closing Impression",
+        "emotional_goal": "Warmth, gratitude, energized perspective"
+      },
+      {
+        "stage_number": 8,
+        "timeline": "T+24 hours",
+        "touchpoint": "Opt-in guest contact roster, shared photo highlights, follow-up resource links",
+        "stage_name": "Post-Event Follow-up & Community Loop",
+        "emotional_goal": "Lasting network bonds and anticipation for future gatherings"
+      }
+    ],
+    "visual_assets": [],
+    "title": "Women in Tech Leadership & Innovation Dinner",
+    "confirmed_facts": [
+      "Total allocated budget is firmly capped at $4,000.00.",
+      "Expected headcount is 30 invited participants.",
+      "Event format is an evening seated salon in Manhattan."
+    ],
+    "created_at": "2026-09-23T01:12:31.790528+00:00",
+    "currency": "USD",
+    "food_beverage": {
+      "beverage_program": "Equal-standing wine pairing and artisanal non-alcoholic botanicals pairing",
+      "service_style": "Synchronized plated service for seamless dining rhythm",
+      "format": "3-course seasonal prix-fixe with pre-selected protein, fish, and vegan options",
+      "dietary_protocol": "Individual guest dietary survey confirmed 72 hours prior; 2 reserve dietary plates held"
+    },
+    "risks": [
+      {
+        "mitigation": "Advance dietary survey at RSVP + mandate venue kitchen keep 2 allergen-free vegan reserve plates.",
+        "severity": "High",
+        "description": "Unaccounted dietary allergy or preference revealed on-site during dinner",
+        "likelihood": "Medium",
+        "risk_id": "rsk_01"
+      },
+      {
+        "mitigation": "Contractually require private room with solid door closure and conduct on-site sound check.",
+        "severity": "High",
+        "description": "Excessive sound bleed from main dining room obstructing intimate conversation",
+        "likelihood": "Low",
+        "risk_id": "rsk_02"
+      },
+      {
+        "mitigation": "Dedicated coat check attendant, umbrella wraps at entry, 15-minute arrival buffer built into Run of Show.",
+        "severity": "Medium",
+        "description": "NYC transit delay or sudden rain causing arrival congestion and wet garments",
+        "likelihood": "High",
+        "risk_id": "rsk_03"
+      }
+    ],
+    "tasks": [
+      {
+        "task_id": "tsk_01",
+        "description": "Lock private dining room contract and deposit",
+        "raci": "Accountable",
+        "due_date": "2026-10-01",
+        "status": "in_progress",
+        "owner": "Event Lead"
+      },
+      {
+        "task_id": "tsk_02",
+        "description": "Send invitations with dietary and accessibility survey",
+        "raci": "Responsible",
+        "due_date": "2026-10-05",
+        "status": "pending",
+        "owner": "Host"
+      },
+      {
+        "task_id": "tsk_03",
+        "description": "Finalize 3-course menu and zero-proof pairings",
+        "raci": "Responsible",
+        "due_date": "2026-10-15",
+        "status": "pending",
+        "owner": "Event Lead"
+      },
+      {
+        "task_id": "tsk_04",
+        "description": "Print custom menu cards and curated conversation prompts",
+        "raci": "Responsible",
+        "due_date": "2026-10-20",
+        "status": "pending",
+        "owner": "Event Lead"
+      },
+      {
+        "task_id": "tsk_05",
+        "description": "Conduct 72-hour dietary lock and final headcount review",
+        "raci": "Accountable",
+        "due_date": "2026-10-22",
+        "status": "pending",
+        "owner": "Event Lead"
+      }
+    ],
+    "protected_priorities": [
+      "Food & Beverage Quality",
+      "Accessible & Inclusive Seating",
+      "Warm Intimate Atmosphere",
+      "Zero-Proof Beverage Excellence"
+    ],
+    "run_of_show": [
+      {
+        "activity": "Host arrival, room acoustic & lighting check, floral placement",
+        "cue": "Room access confirmed",
+        "time": "17:00",
+        "duration_min": 60,
+        "owner": "Event Lead"
+      },
+      {
+        "activity": "Guest arrival, coat check, welcome drinks & passed amuse-bouche",
+        "cue": "Doors open, soft background jazz on",
+        "time": "18:00",
+        "duration_min": 30,
+        "owner": "Host & Greeting Staff"
+      },
+      {
+        "activity": "Transition to seated dining room, brief welcome remarks by Host",
+        "cue": "Guests take designated seats",
+        "time": "18:30",
+        "duration_min": 15,
+        "owner": "Host"
+      },
+      {
+        "activity": "Course 1: Seasonal appetizer, table discussion prompt 1",
+        "cue": "Plates served simultaneously",
+        "time": "18:45",
+        "duration_min": 40,
+        "owner": "Venue Lead / Catering"
+      },
+      {
+        "activity": "Course 2: Main entr\u00e9e & wine/zero-proof pairings, keynote lightning share",
+        "cue": "Table cleared, mains served",
+        "time": "19:25",
+        "duration_min": 50,
+        "owner": "Catering Lead"
+      },
+      {
+        "activity": "Course 3: Dessert & espresso, closing salon reflection",
+        "cue": "Dessert service",
+        "time": "20:15",
+        "duration_min": 30,
+        "owner": "Host"
+      },
+      {
+        "activity": "Open mingling, coffee & tea service, table swapping",
+        "cue": "Lounge music tempo slightly elevated",
+        "time": "20:45",
+        "duration_min": 35,
+        "owner": "Host"
+      },
+      {
+        "activity": "Closing thank you, coat retrieval, departure gift handoff",
+        "cue": "Final guest departure",
+        "time": "21:20",
+        "duration_min": 10,
+        "owner": "Event Lead"
+      },
+      {
+        "activity": "Event wrap, final bill sign-off, room inspection",
+        "cue": "Venue walkthrough",
+        "time": "21:30",
+        "duration_min": 30,
+        "owner": "Event Lead"
+      }
+    ],
+    "updated_at": "2026-09-23T01:12:39.480386+00:00",
+    "formality": "Smart Casual to Elevated Business Attire",
+    "version": 1,
+    "guest_profile": {
+      "dietary_mix": "Estimated 20% vegetarian/vegan, 15% gluten-free, 40% zero-proof beverage preference",
+      "demographic": "30 Senior Women Directors, VPs, and Engineering Founders",
+      "expectations": "Exceptional culinary experience, frictionless logistics, unforced conversation, privacy"
+    },
+    "objective": "Host an intimate, sophisticated networking dinner for 30 senior women technology leaders in Manhattan to foster authentic peer relationships, exchange engineering and product insights, and celebrate community impact in a warm, non-corporate setting.",
+    "assumptions": [
+      "Venue food & beverage minimum is credited 100% against consumption.",
+      "NYC sales tax rate is 8.875% and mandatory dining gratuity is 20%.",
+      "Event does not require external audiovisual projection; acoustic conversation is primary."
+    ],
+    "vendors": [
+      {
+        "status": "Inquiry Sent",
+        "contact": "events@gramercy.mock",
+        "category": "Venue & Catering",
+        "estimated_cost": 3200.0,
+        "name": "Gramercy Tavern Private Dining (Candidate)"
+      },
+      {
+        "status": "Proposed",
+        "contact": "hello@lamipierre.mock",
+        "category": "Florals & Table Styling",
+        "estimated_cost": 180.0,
+        "name": "L'Ami Pierre Floral Atelier"
+      },
+      {
+        "status": "Confirmed",
+        "contact": "cheers@verdant.mock",
+        "category": "Specialty Beverages",
+        "estimated_cost": 150.0,
+        "name": "Verdant Zero-Proof Botanicals"
+      }
+    ],
+    "_doc_id": "evt_wit_manhattan_2026"
+  }
+];
+
+window.EVENTOPS_DEFAULT_DECISIONS = [
+  {
+    "field_updates": {},
+    "proposed_change": "Add dedicated specialty espresso cart to morning arrival",
+    "decision_id": "dec_48cd7ee6",
+    "expected_impact": "+50 to catering, reallocated from printed signage buffer.",
+    "event_id": "evt_design_summit_2026",
+    "approval_status": "approved",
+    "resulting_change": "Approved: Catering updated, signage adjusted to balance budget.",
+    "approved_by": "Design Summit Lead",
+    "idempotency_key": null,
+    "rationale": "Elevate initial arrival experience for design attendees and eliminate foyer queue.",
+    "assumptions": [
+      "Power drop of 20A available near foyer."
+    ],
+    "timestamp": "2026-09-23T01:02:18.062462+00:00",
+    "_doc_id": "dec_48cd7ee6"
+  },
+  {
+    "field_updates": {
+      "budget_breakdown": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, D\u00e9cor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -650.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "budget_allocations": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, D\u00e9cor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -650.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "total_budget": 3000.0
+    },
+    "proposed_change": "Adjust total event budget from $4,000.00 to $3,000.00",
+    "decision_id": "dec_0ab74a",
+    "expected_impact": "Total budget set to $3,000.00. Exact zero-variance allocation enforced across all categories.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "approved_by": "Lead Event Director",
+    "created_at": "2026-09-23T01:05:05.630173+00:00",
+    "approved_at": "2026-09-23T01:05:09.547414+00:00",
+    "resulting_change": "Committed to Event Dossier (v2)",
+    "rationale": "Reconcile event finances to revised $3,000.00 budget while safeguarding protected priorities.",
+    "assumptions": [
+      "Vendor pricing verified",
+      "Contingency reserve maintained"
+    ],
+    "_doc_id": "dec_0ab74a"
+  },
+  {
+    "field_updates": {
+      "budget_breakdown": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, D\u00e9cor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -1150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "budget_allocations": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, D\u00e9cor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -1150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "total_budget": 2500.0
+    },
+    "proposed_change": "Adjust total event budget from $3,000.00 to $2,500.00",
+    "decision_id": "dec_11555f",
+    "expected_impact": "Total budget set to $2,500.00. Exact zero-variance allocation enforced across all categories.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "rejected",
+    "approved_by": "Lead Event Director",
+    "created_at": "2026-09-23T01:05:16.749375+00:00",
+    "approved_at": "2026-09-23T01:05:20.366402+00:00",
+    "resulting_change": "Rejected by human director. No event dossier modifications made.",
+    "rationale": "Reconcile event finances to revised $2,500.00 budget while safeguarding protected priorities.",
+    "assumptions": [
+      "Vendor pricing verified",
+      "Contingency reserve maintained"
+    ],
+    "_doc_id": "dec_11555f"
+  },
+  {
+    "created_at": "2026-09-22T20:42:17.148501+00:00",
+    "proposed_change": "Reduce total event budget from $4,000 to $3,000.",
+    "decision_id": "dec_97c696",
+    "expected_impact": "Overall budget will decrease by $1,000, requiring adjustments across various categories. A rebalance will be required upon approval.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "pending_approval",
+    "approved_by": null,
+    "rationale": "To align with revised financial constraints.",
+    "assumptions": [
+      "This reduction will necessitate re-evaluation of current allocations and potential scope adjustments."
+    ],
+    "_doc_id": "dec_97c696"
+  },
+  {
+    "field_updates": {
+      "budget_breakdown": [
+        {
+          "base_cost": 1700.0,
+          "gratuity": 340.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "base_cost": 1000.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "base_cost": 230.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, D\u00e9cor & Printing"
+        },
+        {
+          "base_cost": 200.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "base_cost": 350.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "budget_allocations": [
+        {
+          "base_cost": 1700.0,
+          "gratuity": 340.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "base_cost": 1000.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "base_cost": 230.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, D\u00e9cor & Printing"
+        },
+        {
+          "base_cost": 200.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "base_cost": 350.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "total_budget": 3500.0
+    },
+    "proposed_change": "Adjust total event budget from $4,000.00 to $3,500.00",
+    "decision_id": "dec_996f92",
+    "expected_impact": "Total budget set to $3,500.00. Exact zero-variance allocation enforced across all categories.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "approved_by": "Lead Event Director",
+    "created_at": "2026-09-23T01:12:18.084889+00:00",
+    "approved_at": "2026-09-23T01:12:24.673151+00:00",
+    "resulting_change": "Committed to Event Dossier (v2)",
+    "rationale": "Reconcile event finances to revised $3,500.00 budget while safeguarding protected priorities.",
+    "assumptions": [
+      "Vendor pricing verified",
+      "Contingency reserve maintained"
+    ],
+    "_doc_id": "dec_996f92"
+  },
+  {
+    "created_at": "2026-09-22T20:39:35.128140+00:00",
+    "proposed_change": "Reduce total event budget from $4,000 to $3,000, maintaining a 30-person headcount.",
+    "decision_id": "dec_f33dcd",
+    "expected_impact": "This will result in a $1,000 decrease in the total event budget. Specific budget categories will need to be reviewed and adjusted to accommodate this reduction, potentially impacting choices in venue, F&B, or decor, while preserving the 30-person headcount.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "approved_by": "Lead Event Director",
+    "approved_at": "2026-09-22T20:39:37.573245+00:00",
+    "rationale": "To improve margin and ensure financial efficiency.",
+    "assumptions": [
+      "This budget reduction will necessitate adjustments across various line items without compromising the core event experience or guest count."
+    ],
+    "_doc_id": "dec_f33dcd"
+  },
+  {
+    "field_updates": {},
+    "proposed_change": "Reallocate $150 from general printing to premium artisanal zero-proof beverage pairings",
+    "decision_id": "dec_init_001",
+    "approved_by": "Executive Host",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "expected_impact": "Elevates guest satisfaction and inclusivity without increasing total event budget.",
+    "resulting_change": "F&B allocation adjusted; Atmosphere/Printing reduced from $400 to $250; Zero-Proof Beverage program added.",
+    "idempotency_key": null,
+    "rationale": "Aligns with inclusive hospitality priority; 40% of guest profile prefers elevated non-alcoholic pairings over standard soda/water.",
+    "assumptions": [
+      "Catering team can source botanical infusions at $5/head wholesale"
+    ],
+    "timestamp": "2026-09-23T01:12:32.078348+00:00",
+    "_doc_id": "dec_init_001"
+  }
+];

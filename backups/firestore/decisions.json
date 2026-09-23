@@ -1,0 +1,407 @@
+[
+  {
+    "field_updates": {},
+    "proposed_change": "Add dedicated specialty espresso cart to morning arrival",
+    "decision_id": "dec_48cd7ee6",
+    "expected_impact": "+50 to catering, reallocated from printed signage buffer.",
+    "event_id": "evt_design_summit_2026",
+    "approval_status": "approved",
+    "resulting_change": "Approved: Catering updated, signage adjusted to balance budget.",
+    "approved_by": "Design Summit Lead",
+    "idempotency_key": null,
+    "rationale": "Elevate initial arrival experience for design attendees and eliminate foyer queue.",
+    "assumptions": [
+      "Power drop of 20A available near foyer."
+    ],
+    "timestamp": "2026-09-23T01:02:18.062462+00:00",
+    "_doc_id": "dec_48cd7ee6"
+  },
+  {
+    "field_updates": {
+      "budget_breakdown": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, Décor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -650.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "budget_allocations": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, Décor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -650.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "total_budget": 3000.0
+    },
+    "proposed_change": "Adjust total event budget from $4,000.00 to $3,000.00",
+    "decision_id": "dec_0ab74a",
+    "expected_impact": "Total budget set to $3,000.00. Exact zero-variance allocation enforced across all categories.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "approved_by": "Lead Event Director",
+    "created_at": "2026-09-23T01:05:05.630173+00:00",
+    "approved_at": "2026-09-23T01:05:09.547414+00:00",
+    "resulting_change": "Committed to Event Dossier (v2)",
+    "rationale": "Reconcile event finances to revised $3,000.00 budget while safeguarding protected priorities.",
+    "assumptions": [
+      "Vendor pricing verified",
+      "Contingency reserve maintained"
+    ],
+    "_doc_id": "dec_0ab74a"
+  },
+  {
+    "field_updates": {
+      "budget_breakdown": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, Décor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -1150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "budget_allocations": [
+        {
+          "gratuity": 340.0,
+          "base_cost": 1700.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 1000.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 230.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, Décor & Printing"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 200.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "gratuity": 0.0,
+          "base_cost": 350.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -1150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "total_budget": 2500.0
+    },
+    "proposed_change": "Adjust total event budget from $3,000.00 to $2,500.00",
+    "decision_id": "dec_11555f",
+    "expected_impact": "Total budget set to $2,500.00. Exact zero-variance allocation enforced across all categories.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "rejected",
+    "approved_by": "Lead Event Director",
+    "created_at": "2026-09-23T01:05:16.749375+00:00",
+    "approved_at": "2026-09-23T01:05:20.366402+00:00",
+    "resulting_change": "Rejected by human director. No event dossier modifications made.",
+    "rationale": "Reconcile event finances to revised $2,500.00 budget while safeguarding protected priorities.",
+    "assumptions": [
+      "Vendor pricing verified",
+      "Contingency reserve maintained"
+    ],
+    "_doc_id": "dec_11555f"
+  },
+  {
+    "created_at": "2026-09-22T20:42:17.148501+00:00",
+    "proposed_change": "Reduce total event budget from $4,000 to $3,000.",
+    "decision_id": "dec_97c696",
+    "expected_impact": "Overall budget will decrease by $1,000, requiring adjustments across various categories. A rebalance will be required upon approval.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "pending_approval",
+    "approved_by": null,
+    "rationale": "To align with revised financial constraints.",
+    "assumptions": [
+      "This reduction will necessitate re-evaluation of current allocations and potential scope adjustments."
+    ],
+    "_doc_id": "dec_97c696"
+  },
+  {
+    "field_updates": {
+      "budget_breakdown": [
+        {
+          "base_cost": 1700.0,
+          "gratuity": 340.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "base_cost": 1000.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "base_cost": 230.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, Décor & Printing"
+        },
+        {
+          "base_cost": 200.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "base_cost": 350.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "budget_allocations": [
+        {
+          "base_cost": 1700.0,
+          "gratuity": 340.0,
+          "is_protected": true,
+          "notes": "3-course dinner for 30 guests @ $56.67/head base, 8.875% NYC sales tax + 20% gratuity",
+          "tax": 150.88,
+          "allocated_amount": 2200.0,
+          "category": "Food & Beverage"
+        },
+        {
+          "base_cost": 1000.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Private dining room buyout minimum applied directly against F&B balance",
+          "tax": 0.0,
+          "allocated_amount": 1000.0,
+          "category": "Venue & Space Minimum"
+        },
+        {
+          "base_cost": 230.0,
+          "gratuity": 0.0,
+          "is_protected": false,
+          "notes": "Custom menu cards, tasteful seasonal bud vases, bespoke name markers",
+          "tax": 20.0,
+          "allocated_amount": 250.0,
+          "category": "Atmosphere, Décor & Printing"
+        },
+        {
+          "base_cost": 200.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "Dedicated coat check attendant and guest greeting host (4 hours @ $25/hr x 2)",
+          "tax": 0.0,
+          "allocated_amount": 200.0,
+          "category": "Staffing & Hospitality Services"
+        },
+        {
+          "base_cost": 350.0,
+          "gratuity": 0.0,
+          "is_protected": true,
+          "notes": "8.75% operational contingency buffer for last-minute dietary adjustments or overages",
+          "tax": 0.0,
+          "allocated_amount": -150.0,
+          "category": "Contingency Reserve"
+        }
+      ],
+      "total_budget": 3500.0
+    },
+    "proposed_change": "Adjust total event budget from $4,000.00 to $3,500.00",
+    "decision_id": "dec_996f92",
+    "expected_impact": "Total budget set to $3,500.00. Exact zero-variance allocation enforced across all categories.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "approved_by": "Lead Event Director",
+    "created_at": "2026-09-23T01:12:18.084889+00:00",
+    "approved_at": "2026-09-23T01:12:24.673151+00:00",
+    "resulting_change": "Committed to Event Dossier (v2)",
+    "rationale": "Reconcile event finances to revised $3,500.00 budget while safeguarding protected priorities.",
+    "assumptions": [
+      "Vendor pricing verified",
+      "Contingency reserve maintained"
+    ],
+    "_doc_id": "dec_996f92"
+  },
+  {
+    "created_at": "2026-09-22T20:39:35.128140+00:00",
+    "proposed_change": "Reduce total event budget from $4,000 to $3,000, maintaining a 30-person headcount.",
+    "decision_id": "dec_f33dcd",
+    "expected_impact": "This will result in a $1,000 decrease in the total event budget. Specific budget categories will need to be reviewed and adjusted to accommodate this reduction, potentially impacting choices in venue, F&B, or decor, while preserving the 30-person headcount.",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "approved_by": "Lead Event Director",
+    "approved_at": "2026-09-22T20:39:37.573245+00:00",
+    "rationale": "To improve margin and ensure financial efficiency.",
+    "assumptions": [
+      "This budget reduction will necessitate adjustments across various line items without compromising the core event experience or guest count."
+    ],
+    "_doc_id": "dec_f33dcd"
+  },
+  {
+    "field_updates": {},
+    "proposed_change": "Reallocate $150 from general printing to premium artisanal zero-proof beverage pairings",
+    "decision_id": "dec_init_001",
+    "approved_by": "Executive Host",
+    "event_id": "evt_wit_manhattan_2026",
+    "approval_status": "approved",
+    "expected_impact": "Elevates guest satisfaction and inclusivity without increasing total event budget.",
+    "resulting_change": "F&B allocation adjusted; Atmosphere/Printing reduced from $400 to $250; Zero-Proof Beverage program added.",
+    "idempotency_key": null,
+    "rationale": "Aligns with inclusive hospitality priority; 40% of guest profile prefers elevated non-alcoholic pairings over standard soda/water.",
+    "assumptions": [
+      "Catering team can source botanical infusions at $5/head wholesale"
+    ],
+    "timestamp": "2026-09-23T01:12:32.078348+00:00",
+    "_doc_id": "dec_init_001"
+  }
+]

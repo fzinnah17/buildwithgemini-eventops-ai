@@ -26,8 +26,8 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
-# Hardcoded GCP project ID per workshop requirements
-FIRESTORE_PROJECT_ID = "qwiklabs-gcp-04-a69f0245a9b4"
+# Firestore project configuration (supports local and cross-project deployment)
+FIRESTORE_PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "qwiklabs-gcp-04-a69f0245a9b4")
 
 
 class DecisionRecord(BaseModel):

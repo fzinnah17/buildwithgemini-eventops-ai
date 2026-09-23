@@ -1,0 +1,25 @@
+{
+  "corpus_display_name": "eventops-operations-playbook",
+  "embedding_model": "publishers/google/models/text-embedding-005",
+  "database_mode": "Serverless (Vertex AI Managed DB)",
+  "chunking": {
+    "chunk_size": 512,
+    "chunk_overlap": 100
+  },
+  "llm_parser": {
+    "model_name": "gemini-2.5-flash",
+    "custom_parsing_prompt": "Extract the practical operational benchmarks, timing rules, accessibility guidelines, budget rules, and event coordination standards described in this text. Ignore and omit all metadata. Output clean, self-contained prose."
+  },
+  "retrieval": {
+    "similarity_top_k": 3,
+    "vector_distance_threshold": 0.5
+  },
+  "topics_covered": [
+    "Budget allocation formulas (F&B, venue, AV, contingency reserve)",
+    "Run-of-show timing benchmarks and speaker transitions",
+    "Staffing ratios (servers, bartenders, coat check, floor managers)",
+    "Dietary and allergen cross-contamination protocols",
+    "Acoustic isolation and room decibel standards",
+    "Accessibility, ADA compliance, and inclusive restroom signage"
+  ]
+}

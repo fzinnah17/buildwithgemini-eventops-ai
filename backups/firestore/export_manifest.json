@@ -1,0 +1,13 @@
+{
+  "export_timestamp": "2026-09-23T01:19:17.560178+00:00",
+  "source_project_id": "qwiklabs-gcp-04-a69f0245a9b4",
+  "events_count": 3,
+  "decisions_count": 7,
+  "event_ids": [
+    "evt_design_summit_2026",
+    "evt_exec_dinner_manhattan_2024",
+    "evt_wit_manhattan_2026"
+  ],
+  "schema_version": "1.0.0",
+  "format": "portable_eventops_json"
+}
