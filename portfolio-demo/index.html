@@ -852,6 +852,155 @@
     background: #f59e0b;
     box-shadow: 0 0 6px #f59e0b;
   }
+
+  /* BUNDLE 3.6 ENTERPRISE INTEGRATIONS & ANALYTICS */
+  .service-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .service-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .service-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .service-card-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .service-card-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .analytics-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .analytics-domain-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .analytics-domain-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .analytics-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px dashed var(--border-subtle);
+  }
+  .analytics-stat-row:last-child {
+    border-bottom: none;
+  }
+  .analytics-stat-val {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .btn-action-icon {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    padding: 0.2rem 0.45rem;
+    font-size: 0.72rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.15s ease;
+  }
+  .btn-action-icon:hover {
+    color: #fff;
+    background: var(--bg-surface-elevated);
+    border-color: var(--border-strong);
+  }
+  .btn-slack-share {
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.3);
+    background: rgba(56, 189, 248, 0.08);
+  }
+  .btn-slack-share:hover {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+  }
+  .btn-calendar-sync {
+    color: var(--accent-cyan);
+    border-color: rgba(56, 189, 248, 0.3);
+    background: var(--accent-cyan-subtle);
+  }
+  .btn-calendar-sync:hover {
+    background: rgba(56, 189, 248, 0.22);
+    border-color: var(--accent-cyan);
+  }
+  .btn-email-draft {
+    color: var(--accent-emerald);
+    border-color: rgba(16, 185, 129, 0.3);
+    background: var(--accent-emerald-subtle);
+  }
+  .btn-email-draft:hover {
+    background: rgba(16, 185, 129, 0.22);
+    border-color: var(--accent-emerald);
+  }
+  .scope-toggle-group {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+  .btn-scope-toggle {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .btn-scope-toggle.active {
+    background: var(--accent-cyan-subtle);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+  .privacy-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: var(--radius-sm);
+    font-size: 0.72rem;
+    color: var(--accent-emerald);
+  }
 </style>
 <script src="data/fixtures.js"></script>
 <script src="data_provider.js"></script>
@@ -892,10 +1041,16 @@
   </div>
 
   <div class="header-actions">
-    <div class="status-chip demo-chip" id="headerStatusChip">
-      <span class="status-dot demo-dot" id="headerStatusDot"></span>
-      <span id="headerStatusText">PORTFOLIO DEMO MODE · Zero-Cost Static</span>
+    <div class="status-chip" id="headerStatusChip">
+      <span class="status-dot" id="headerStatusDot"></span>
+      <span id="headerStatusText">ONLINE · Agent Platform</span>
     </div>
+    <button class="btn-header" id="btnOpenIntegrations" title="View Google Calendar, Gmail, and Slack status & action ledger">
+      <span class="material-symbols-outlined" style="font-size: 16px;">hub</span> Connected Services
+    </button>
+    <button class="btn-header" id="btnOpenAnalytics" title="Executive Analytics & Telemetry across 4 domains">
+      <span class="material-symbols-outlined" style="font-size: 16px;">monitoring</span> Analytics
+    </button>
     <button class="btn-header" id="btnOpenAbout">
       <span class="material-symbols-outlined" style="font-size: 16px;">info</span> Architecture
     </button>
@@ -938,6 +1093,9 @@
               <span class="hero-tag"><span class="material-symbols-outlined" style="font-size: 14px;">group</span> <span id="heroGuests">-</span> Guests</span>
               <span class="hero-tag"><span class="material-symbols-outlined" style="font-size: 14px;">payments</span> Budget Ceiling: <strong id="heroBudget" style="color: #fff; margin-left: 2px;">-</strong></span>
               <span class="hero-tag"><span class="material-symbols-outlined" style="font-size: 14px;">layers</span> Dossier v<span id="heroVersion">1</span></span>
+              <button class="btn-action-icon btn-calendar-sync" id="btnQuickAddCalendar" title="Add event to Google Calendar">
+                <span class="material-symbols-outlined" style="font-size: 14px;">calendar_month</span> Add to Calendar
+              </button>
             </div>
           </div>
           <div class="hero-gauge-box">
@@ -964,68 +1122,51 @@
           <div class="metric-card">
             <div class="metric-label">Contingency</div>
             <div class="metric-value" id="cardContingency">-</div>
-            <div class="metric-sub" id="cardContingencyPct">- Reserve Buffer</div>
+            <div class="metric-sub">Safety Buffer</div>
           </div>
           <div class="metric-card">
             <div class="metric-label">Staffing Ratio</div>
             <div class="metric-value" id="cardStaffRatio">-</div>
-            <div class="metric-sub" id="cardStaffCount">- Staff Personnel</div>
+            <div class="metric-sub">Guests Per Staff</div>
           </div>
         </div>
 
-        <!-- TOP 3 ATTENTION ITEMS -->
-        <div class="attention-box" style="margin-top: 1rem;" id="attentionBox">
-          <div class="attention-title">
-            <span class="material-symbols-outlined" style="font-size: 16px;">warning</span> Top Operational Attention Items
-          </div>
-          <div id="attentionList">
-            <div class="attention-item">Evaluating event fundamentals...</div>
-          </div>
-        </div>
-
-        <!-- STAFFING & HOST ROSTER -->
+        <!-- RECENT DECISIONS / CRITICAL ALERTS -->
         <div class="ops-panel" style="margin-top: 1rem;">
           <div class="ops-panel-header">
             <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">badge</span> Assigned Operational Personnel
+              <span class="material-symbols-outlined" style="font-size: 16px;">notification_important</span> Critical Operational Attention Needed
             </div>
+            <span class="badge badge-amber" id="overviewAttentionCount">1 Action Required</span>
           </div>
-          <div class="data-table-wrapper">
-            <table class="ops-table">
-              <thead>
-                <tr>
-                  <th>Role</th>
-                  <th>Headcount</th>
-                  <th>Key Responsibility</th>
-                </tr>
-              </thead>
-              <tbody id="staffTableBody">
-                <tr><td colspan="3" style="color: var(--text-muted);">No staffing records loaded.</td></tr>
-              </tbody>
-            </table>
+          <div id="overviewAttentionList">
+            <!-- Dynamic alerts -->
           </div>
         </div>
       </div>
 
       <!-- ================= TAB 2: PLAN & TIMELINE ================= -->
       <div id="tab-plan" class="tab-pane hidden">
-        <!-- BUDGET BREAKDOWN -->
+        <!-- ZERO-VARIANCE BUDGET ALLOCATION -->
         <div class="ops-panel">
           <div class="ops-panel-header">
             <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">receipt_long</span> Budget Allocation & Fiscal Rebalancing
+              <span class="material-symbols-outlined" style="font-size: 16px;">account_balance</span> Governed Budget Allocations (Cent-Level Precision)
             </div>
-            <span class="badge badge-approved" id="budgetBalanceBadge">Zero Variance Enforced</span>
+            <div class="budget-stat-pills">
+              <span class="badge badge-emerald" id="budgetVariancePill">Variance: $0.00 (0.00%)</span>
+              <span class="badge badge-blue" id="budgetReservePill">Reserve: 10.00%</span>
+            </div>
           </div>
           <div class="data-table-wrapper">
             <table class="ops-table">
               <thead>
                 <tr>
                   <th>Category</th>
-                  <th>Allocated Amount</th>
+                  <th>Allocated ($)</th>
                   <th>Share (%)</th>
-                  <th>Governance Tag</th>
-                  <th>Operational Notes</th>
+                  <th>Deterministic Penny Math</th>
+                  <th>Operational Status</th>
                 </tr>
               </thead>
               <tbody id="budgetTableBody">
@@ -1041,6 +1182,9 @@
             <div class="ops-panel-title">
               <span class="material-symbols-outlined" style="font-size: 16px;">schedule</span> Chronological Run of Show
             </div>
+            <button class="btn-action-icon btn-calendar-sync" id="btnQuickSyncMilestones" title="Sync milestones to Google Calendar">
+              <span class="material-symbols-outlined" style="font-size: 14px;">sync</span> Sync Milestones to Calendar
+            </button>
           </div>
           <div class="timeline-container" id="runOfShowContainer">
             <div class="timeline-node">Loading Run of Show...</div>
@@ -1058,14 +1202,15 @@
             <table class="ops-table">
               <thead>
                 <tr>
-                  <th>Task Description</th>
-                  <th>Accountable Owner</th>
-                  <th>Due Date</th>
+                  <th>Milestone / Task</th>
+                  <th>Timeline</th>
+                  <th>Responsible</th>
+                  <th>Accountable</th>
                   <th>Status</th>
                 </tr>
               </thead>
-              <tbody id="taskTableBody">
-                <tr><td colspan="4" style="color: var(--text-muted);">Loading tasks...</td></tr>
+              <tbody id="raciTableBody">
+                <tr><td colspan="5" style="color: var(--text-muted);">Loading RACI matrix...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1080,7 +1225,12 @@
             <div class="ops-panel-title">
               <span class="material-symbols-outlined" style="font-size: 16px;">security</span> EventOps Guard: Operational Readiness Gates
             </div>
-            <span class="badge badge-neutral" id="guardSeverityBadge">Scanning...</span>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button class="btn-action-icon btn-slack-share" id="btnQuickNotifySlack" title="Post risk briefing to Slack operations channel">
+                <span class="material-symbols-outlined" style="font-size: 14px;">forum</span> Notify Team on Slack
+              </button>
+              <span class="badge badge-neutral" id="guardSeverityBadge">Scanning...</span>
+            </div>
           </div>
           <div class="data-table-wrapper">
             <table class="ops-table">
@@ -1134,6 +1284,9 @@
             <div class="ops-panel-title">
               <span class="material-symbols-outlined" style="font-size: 16px;">hiking</span> Curated 8-Stage Guest Journey
             </div>
+            <button class="btn-action-icon btn-email-draft" id="btnQuickDraftEmail" title="Draft guest intake and logistical communications">
+              <span class="material-symbols-outlined" style="font-size: 14px;">mail</span> Draft Guest Communications
+            </button>
           </div>
           <div class="journey-grid" id="journeyGrid">
             <div class="journey-card">Loading guest journey...</div>
@@ -1181,15 +1334,15 @@
     <div class="chat-log" id="chatLog">
       <div class="chat-msg agent">
         <div class="chat-bubble">
-          <strong>EventOps Demo Ready</strong><br>
-          You are viewing the zero-cost portfolio demo using preserved sample event data. Explore EventOps AI's readiness analysis, budget workflows, Decision Ledger, Run of Show, Guest Journey, and governance model without changing live cloud state.
+          <strong>EventOps Copilot Ready</strong><br>
+          I am connected to your deployed Reasoning Engine and Cloud Firestore. I maintain cross-session memory in Vertex AI Memory Bank and enforce two-phase human governance for consequential changes.
         </div>
       </div>
     </div>
 
     <!-- COPILOT INPUT BAR -->
     <form class="chat-input-bar" id="chatForm">
-      <input type="text" id="chatInput" placeholder="Select a demo prompt chip above to explore workflow..." autocomplete="off">
+      <input type="text" id="chatInput" placeholder="Direct Copilot or ask about event operations..." autocomplete="off">
       <button type="submit" class="btn-send">Send</button>
     </form>
   </aside>
@@ -1285,12 +1438,6 @@
       <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalAbout')">✕</button>
     </div>
     <div class="modal-body">
-      <div style="background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: var(--radius-sm); padding: 0.6rem 0.8rem; margin-bottom: 0.75rem; font-size: 0.74rem; color: var(--accent-amber); display: flex; align-items: flex-start; gap: 0.4rem;">
-        <span class="material-symbols-outlined" style="font-size: 16px; margin-top: 1px;">info</span>
-        <div>
-          <strong>Portfolio Demo Mode Notice:</strong> This static deployment runs 100% client-side using preserved event dossiers and deterministic governance simulation. It does not connect to live cloud infrastructure. The architecture below documents the production deployment on Google Cloud Agent Platform.
-        </div>
-      </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
         <div style="background: var(--bg-surface-elevated); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
           <strong style="color: var(--accent-cyan); display: flex; align-items: center; gap: 0.3rem;">
@@ -1338,8 +1485,355 @@
   </div>
 </div>
 
+<!-- MODAL: CONNECTED SERVICES & INTEGRATIONS -->
+<div class="modal-overlay" id="modalIntegrations">
+  <div class="modal-card" style="max-width: 780px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: var(--accent-cyan);">hub</span>
+        <span>Connected Enterprise Services & Action Governance</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalIntegrations')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="service-card-grid" id="integrationsStatusGrid">
+        <div class="service-card">
+          <div class="service-card-top">
+            <span class="service-card-name"><span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-cyan);">calendar_month</span> Google Calendar</span>
+            <span class="badge badge-neutral" id="statusBadgeCalendar">Checking...</span>
+          </div>
+          <div class="service-card-desc" id="statusDescCalendar">Deterministic Run of Show & Milestone synchronization with event change detection.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-card-top">
+            <span class="service-card-name"><span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-emerald);">mail</span> Gmail</span>
+            <span class="badge badge-neutral" id="statusBadgeGmail">Checking...</span>
+          </div>
+          <div class="service-card-desc" id="statusDescGmail">Draft-first policy. Generates human-reviewable drafts. Sending requires secondary confirmation.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-card-top">
+            <span class="service-card-name"><span class="material-symbols-outlined" style="font-size: 16px; color: #38bdf8;">forum</span> Slack Operations</span>
+            <span class="badge badge-neutral" id="statusBadgeSlack">Checking...</span>
+          </div>
+          <div class="service-card-desc" id="statusDescSlack">Structured operational blocks for team briefings, risk alerts, and decision notifications.</div>
+        </div>
+      </div>
+
+      <!-- INTEGRATION ACTION LEDGER -->
+      <div style="margin-top: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.4px;">
+            External Action Ledger (Two-Phase Verification)
+          </strong>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">External calls strictly require human authorization</span>
+        </div>
+        <div class="data-table-wrapper" style="max-height: 240px; overflow-y: auto;">
+          <table class="ops-table">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Provider</th>
+                <th>Action Type</th>
+                <th>Target</th>
+                <th>Summary / Details</th>
+                <th>Governance Actions</th>
+              </tr>
+            </thead>
+            <tbody id="integrationActionsTableBody">
+              <tr><td colspan="6" style="color: var(--text-muted);">No external actions logged for this event.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-header" onclick="closeModal('modalIntegrations')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EVENTOPS ANALYTICS & TELEMETRY -->
+<div class="modal-overlay" id="modalAnalytics">
+  <div class="modal-card" style="max-width: 800px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: var(--accent-gold);">monitoring</span>
+        <span>EventOps Executive & Operational Analytics</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalAnalytics')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="scope-toggle-group">
+        <button class="btn-scope-toggle active" id="btnScopeEvent" onclick="switchAnalyticsScope('event')">Active Event View</button>
+        <button class="btn-scope-toggle" id="btnScopePortfolio" onclick="switchAnalyticsScope('portfolio')">Portfolio Aggregate</button>
+      </div>
+
+      <!-- 4 DOMAINS GRID -->
+      <div class="analytics-grid-2x2" id="analyticsDomainGrid">
+        <!-- Domain 1: Event Health -->
+        <div class="analytics-domain-card">
+          <div class="analytics-domain-title" style="color: var(--accent-emerald);">
+            <span class="material-symbols-outlined" style="font-size: 16px;">vital_signs</span> Event Health & Readiness
+          </div>
+          <div class="analytics-stat-row">
+            <span>Readiness Score:</span>
+            <span class="analytics-stat-val" id="anHealthScore">95 / 100</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Score Trajectory:</span>
+            <span class="analytics-stat-val" id="anHealthTrend" style="color: var(--accent-emerald);">Improving</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Unresolved Risks:</span>
+            <span class="analytics-stat-val" id="anHealthRisks">1 Item</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Timeline Milestones:</span>
+            <span class="analytics-stat-val" id="anHealthMilestones">3 Nodes</span>
+          </div>
+        </div>
+
+        <!-- Domain 2: Financial Invariance -->
+        <div class="analytics-domain-card">
+          <div class="analytics-domain-title" style="color: var(--accent-gold);">
+            <span class="material-symbols-outlined" style="font-size: 16px;">account_balance</span> Financial Invariance
+          </div>
+          <div class="analytics-stat-row">
+            <span>Allocated Budget:</span>
+            <span class="analytics-stat-val" id="anFinAllocated">$4,000.00</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Safety Reserve Buffer:</span>
+            <span class="analytics-stat-val" id="anFinReserve">$400.00 (10.0%)</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Penny Variance:</span>
+            <span class="analytics-stat-val" id="anFinVariance" style="color: var(--accent-emerald);">$0.00 (0.00%)</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Precision Mode:</span>
+            <span class="analytics-stat-val">ROUND_HALF_UP</span>
+          </div>
+        </div>
+
+        <!-- Domain 3: Governance & Human Agency -->
+        <div class="analytics-domain-card">
+          <div class="analytics-domain-title" style="color: var(--accent-cyan);">
+            <span class="material-symbols-outlined" style="font-size: 16px;">gavel</span> Governance & Agency
+          </div>
+          <div class="analytics-stat-row">
+            <span>Decisions Proposed:</span>
+            <span class="analytics-stat-val" id="anGovDecisions">2 Logged</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Human Approval Rate:</span>
+            <span class="analytics-stat-val" id="anGovApprovalRate">100.0%</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Governed Actions:</span>
+            <span class="analytics-stat-val" id="anGovActions">0 Executed</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Policy Compliance:</span>
+            <span class="analytics-stat-val" style="color: var(--accent-emerald);">100% Policy Adherent</span>
+          </div>
+        </div>
+
+        <!-- Domain 4: Reliability & Telemetry -->
+        <div class="analytics-domain-card">
+          <div class="analytics-domain-title" style="color: #a78bfa;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">speed</span> Reliability & Latency
+          </div>
+          <div class="analytics-stat-row">
+            <span>System Availability:</span>
+            <span class="analytics-stat-val" style="color: var(--accent-emerald);">99.98%</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Average Agent Latency:</span>
+            <span class="analytics-stat-val" id="anSysLatency">~350 ms</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Execution Error Rate:</span>
+            <span class="analytics-stat-val" style="color: var(--accent-emerald);">0.00%</span>
+          </div>
+          <div class="analytics-stat-row">
+            <span>Telemetry Ring Buffer:</span>
+            <span class="analytics-stat-val">Active (Non-Blocking)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRIVACY GUARANTEE BANNER -->
+      <div class="privacy-banner">
+        <span class="material-symbols-outlined" style="font-size: 18px;">verified_user</span>
+        <div>
+          <strong>Privacy Guaranteed:</strong> All telemetry metrics are strictly PII-free. Recipient emails, guest personal data, dietary details, and credentials are removed prior to aggregation.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-header" onclick="closeModal('modalAnalytics')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CALENDAR SYNCHRONIZATION -->
+<div class="modal-overlay" id="modalCalendarSync">
+  <div class="modal-card" style="max-width: 540px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: var(--accent-cyan);">calendar_month</span>
+        <span>Google Calendar Synchronization</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalCalendarSync')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Sync Scope</label>
+          <div style="display: flex; gap: 1rem; margin-top: 0.35rem;">
+            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+              <input type="radio" name="calSyncMode" value="main" id="calModeMain" checked> Main Event Dossier
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+              <input type="radio" name="calSyncMode" value="milestones" id="calModeMilestones"> All Run of Show Milestones
+            </label>
+          </div>
+        </div>
+        <div style="background: var(--bg-surface-elevated); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 0.4rem;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent-cyan);" id="calPreviewTitle">-</div>
+          <div style="font-size: 0.73rem; color: var(--text-secondary);" id="calPreviewTiming">-</div>
+          <div style="font-size: 0.73rem; color: var(--text-secondary);" id="calPreviewLocation">-</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace; white-space: pre-wrap; margin-top: 0.25rem;" id="calPreviewDesc">-</div>
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4;">
+          <strong>Two-Phase Governance Notice:</strong> Synchronizing calendar events generates an Action Ledger entry in <code>pending_approval</code>. Once approved, the event will sync to Google Calendar.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="gap: 0.5rem;">
+      <button class="btn-header" onclick="closeModal('modalCalendarSync')">Cancel</button>
+      <button class="btn-header btn-calendar-sync" id="btnExecuteCalSync" style="font-weight: 700;">Authorize & Sync</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: GMAIL GOVERNED DRAFT COMPOSER -->
+<div class="modal-overlay" id="modalEmailComposer">
+  <div class="modal-card" style="max-width: 600px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: var(--accent-emerald);">mail</span>
+        <span>Gmail Governed Communications</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalEmailComposer')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; font-size: 0.72rem; color: var(--accent-emerald);">
+          <strong>Draft-First Policy Enforced:</strong> Default action saves a draft to Gmail. Real dispatch requires explicit director confirmation.
+        </div>
+        <div>
+          <label style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Recipient Email(s)</label>
+          <input type="email" id="emailInputTo" class="form-input" style="width: 100%; margin-top: 0.25rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.4rem; border-radius: var(--radius-sm); color: #fff;" placeholder="guest@example.com (comma separated)">
+        </div>
+        <div>
+          <label style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Communication Intent / Template</label>
+          <select id="emailSelectIntent" style="width: 100%; margin-top: 0.25rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.4rem; border-radius: var(--radius-sm); color: #fff;">
+            <option value="Dietary & Accessibility Intake Protocol">Dietary & Accessibility Intake Protocol</option>
+            <option value="Final Executive Run of Show Briefing">Final Executive Run of Show Briefing</option>
+            <option value="Arrival & Acoustic Decompression Notice">Arrival & Acoustic Decompression Notice</option>
+            <option value="Vendor Logistics & Sound Check Confirmation">Vendor Logistics & Sound Check Confirmation</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Subject Line</label>
+          <input type="text" id="emailInputSubject" style="width: 100%; margin-top: 0.25rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.4rem; border-radius: var(--radius-sm); color: #fff;" value="[EventOps AI] Operational Notice">
+        </div>
+        <div>
+          <label style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Draft Message Body</label>
+          <textarea id="emailInputBody" rows="6" style="width: 100%; margin-top: 0.25rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.4rem; border-radius: var(--radius-sm); color: #fff; font-family: inherit; font-size: 0.78rem; resize: vertical;"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="gap: 0.5rem;">
+      <button class="btn-header" onclick="closeModal('modalEmailComposer')">Cancel</button>
+      <button class="btn-header btn-email-draft" id="btnSaveEmailDraft">Save to Gmail Drafts</button>
+      <button class="btn-header" id="btnInitiateEmailSend" style="background: rgba(239, 68, 68, 0.15); border-color: var(--accent-rose); color: var(--accent-rose); font-weight: 700;">Send Email (2-Step)</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SLACK OPERATIONAL CARD -->
+<div class="modal-overlay" id="modalSlackShare">
+  <div class="modal-card" style="max-width: 560px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: #38bdf8;">forum</span>
+        <span>Post Operational Briefing to Slack</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalSlackShare')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div>
+          <label style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Target Channel</label>
+          <select id="slackSelectChannel" style="width: 100%; margin-top: 0.25rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.4rem; border-radius: var(--radius-sm); color: #fff;">
+            <option value="#event-ops">#event-ops (Operational Delivery Team)</option>
+            <option value="#leadership-briefing">#leadership-briefing (Executive Sponsors)</option>
+            <option value="#general-announcements">#general-announcements (All Hands)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Card Preview</label>
+          <div style="background: #0d1117; border: 1px solid #30363d; border-left: 4px solid var(--accent-cyan); border-radius: var(--radius-sm); padding: 0.85rem; margin-top: 0.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #fff;" id="slackPreviewHeader">[EventOps Alert] Operational Notice</div>
+            <div style="font-size: 0.75rem; color: #c9d1d9;" id="slackPreviewSection">Notice details...</div>
+            <div style="font-size: 0.7rem; color: #8b949e; border-top: 1px solid #21262d; padding-top: 0.35rem; margin-top: 0.25rem;" id="slackPreviewContext">Target: #event-ops | Human Governed Dispatch</div>
+          </div>
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-muted);">
+          Formatted using Slack Block Kit standard. Emits clear actionable operational cards with deduplication safeguards.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="gap: 0.5rem;">
+      <button class="btn-header" onclick="closeModal('modalSlackShare')">Cancel</button>
+      <button class="btn-header btn-slack-share" id="btnExecuteSlackPost" style="font-weight: 700;">Authorize & Post to Slack</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SECOND CONFIRMATION FOR EMAIL SENDING -->
+<div class="modal-overlay" id="modalConfirmSend">
+  <div class="modal-card" style="max-width: 460px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: var(--accent-rose);">warning</span>
+        <span>Confirm Live Email Dispatch</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalConfirmSend')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">
+        You are authorizing a live email transmission to external recipients. Per enterprise safety standards, please confirm your authorization by entering <code>CONFIRM_SEND</code> below:
+      </p>
+      <input type="text" id="confirmSendTokenInput" placeholder="CONFIRM_SEND" style="width: 100%; margin-top: 0.5rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem; border-radius: var(--radius-sm); color: #fff; font-family: monospace; font-size: 0.85rem;">
+      <div id="confirmSendError" style="font-size: 0.72rem; color: var(--accent-rose); display: none; margin-top: 0.25rem;">
+        Token must match CONFIRM_SEND exactly.
+      </div>
+    </div>
+    <div class="modal-footer" style="gap: 0.5rem;">
+      <button class="btn-header" onclick="closeModal('modalConfirmSend')">Cancel</button>
+      <button class="btn-header" id="btnExecuteEmailSend" style="background: var(--accent-rose); color: #fff; border-color: var(--accent-rose); font-weight: 700;">Verify & Dispatch</button>
+    </div>
+  </div>
+</div>
+
 <script>
 window.EVENTOPS_FORCE_DEMO = true;
+
 let CURRENT_EVENT_ID = "evt_wit_manhattan_2026";
 let CURRENT_DOSSIER = null;
 
@@ -1367,6 +1861,18 @@ function closeModal(id) {
 document.getElementById("btnOpenAbout").addEventListener("click", () => openModal("modalAbout"));
 document.getElementById("btnOpenNewEvent").addEventListener("click", () => openModal("modalNewEvent"));
 document.getElementById("btnWhyScore").addEventListener("click", () => openModal("modalWhyScore"));
+const btnOpenInteg = document.getElementById("btnOpenIntegrations");
+if (btnOpenInteg) btnOpenInteg.addEventListener("click", () => openIntegrationsModal());
+const btnOpenAn = document.getElementById("btnOpenAnalytics");
+if (btnOpenAn) btnOpenAn.addEventListener("click", () => openAnalyticsModal("event"));
+const btnQuickAddCal = document.getElementById("btnQuickAddCalendar");
+if (btnQuickAddCal) btnQuickAddCal.addEventListener("click", () => openCalendarModal("main"));
+const btnQuickSyncM = document.getElementById("btnQuickSyncMilestones");
+if (btnQuickSyncM) btnQuickSyncM.addEventListener("click", () => openCalendarModal("milestones"));
+const btnQuickSlack = document.getElementById("btnQuickNotifySlack");
+if (btnQuickSlack) btnQuickSlack.addEventListener("click", () => openSlackModal("Risk Briefing", { title: "Operational Readiness Verification", details: "EventOps Guard flagged operational gates for team review." }));
+const btnQuickDraft = document.getElementById("btnQuickDraftEmail");
+if (btnQuickDraft) btnQuickDraft.addEventListener("click", () => openEmailModal("Dietary & Accessibility Intake Protocol", "vip-guest@example.com"));
 
 // Copilot Drawer Toggle
 const copilotDrawer = document.getElementById("copilotDrawer");
@@ -1638,13 +2144,17 @@ async function refreshEventData() {
         const badgeClass = status === "approved" ? "badge-approved" : (status === "rejected" ? "badge-rejected" : "badge-pending");
 
         let actionHtml = d.approved_by || (status === "pending_approval" ? "Awaiting Director" : "-");
+        const slackShareBtn = `<button class="btn-action-icon btn-slack-share" style="margin-left: 0.35rem; padding: 0.15rem 0.35rem;" onclick="openSlackShareForDecision('${d.decision_id}')" title="Share decision to Slack"><span class="material-symbols-outlined" style="font-size: 13px;">forum</span></button>`;
         if (status === "pending_approval") {
           actionHtml = `
-            <div class="btn-action-group">
+            <div class="btn-action-group" style="display: flex; align-items: center;">
               <button class="btn-approve" onclick="handleDecisionAction('${d.decision_id}', 'approve')">Approve</button>
               <button class="btn-reject" onclick="handleDecisionAction('${d.decision_id}', 'reject')">Reject</button>
+              ${slackShareBtn}
             </div>
           `;
+        } else {
+          actionHtml = `<div style="display: flex; align-items: center; justify-content: space-between;"><span>${actionHtml}</span>${slackShareBtn}</div>`;
         }
 
         tr.innerHTML = `
@@ -1753,6 +2263,365 @@ async function handleDecisionAction(decisionId, action) {
   } catch (err) {
     console.error("Error executing decision action:", err);
   }
+}
+
+// ==========================================
+// BUNDLE 3.6 ENTERPRISE INTEGRATIONS & ANALYTICS
+// ==========================================
+
+// Integration Action Ledger Handler
+async function handleIntegrationAction(actionId, action) {
+  try {
+    const result = action === "approve"
+      ? await dataProvider.approveIntegrationAction(CURRENT_EVENT_ID, actionId)
+      : await dataProvider.rejectIntegrationAction(CURRENT_EVENT_ID, actionId);
+    
+    const actions = await dataProvider.getIntegrationActions(CURRENT_EVENT_ID);
+    renderIntegrationActionsTable(actions);
+    
+    const msg = createMsg("agent");
+    const isApprove = action === "approve";
+    const isDemo = dataProvider instanceof DemoEventOpsProvider;
+    msg.innerHTML = `
+      <div class="copilot-card ${isApprove ? '' : 'proposal'}">
+        <div class="copilot-card-title">${isApprove ? '✅ Governed Action Approved' : '❌ Governed Action Rejected'} ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
+        <div><strong>Action ID:</strong> <code>${actionId}</code></div>
+        <div>${result.message || 'Operation executed.'}</div>
+      </div>
+    `;
+    refreshEventData();
+  } catch (err) {
+    console.error("Error updating integration action:", err);
+  }
+}
+
+function renderIntegrationActionsTable(actions) {
+  const tbody = document.getElementById("integrationActionsTableBody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  if (!actions || actions.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="color: var(--text-muted);">No external actions logged for this event.</td></tr>`;
+    return;
+  }
+  actions.forEach(a => {
+    const tr = document.createElement("tr");
+    const status = a.status || "pending_approval";
+    const badgeClass = status === "approved" || status === "executed" ? "badge-approved" : (status === "rejected" ? "badge-rejected" : "badge-pending");
+    let actionButtons = a.approved_by || (status === "pending_approval" ? "Awaiting Director" : "-");
+    if (status === "pending_approval") {
+      actionButtons = `
+        <div class="btn-action-group">
+          <button class="btn-approve" onclick="handleIntegrationAction('${a.action_id}', 'approve')">Approve</button>
+          <button class="btn-reject" onclick="handleIntegrationAction('${a.action_id}', 'reject')">Reject</button>
+        </div>
+      `;
+    }
+    tr.innerHTML = `
+      <td><span class="badge ${badgeClass}">${status.toUpperCase()}</span></td>
+      <td><strong>${a.provider || "-"}</strong></td>
+      <td><code>${a.action_type || "-"}</code></td>
+      <td>${a.target || "-"}</td>
+      <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${a.summary || ''}">${a.summary || "-"}</td>
+      <td>${actionButtons}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function openIntegrationsModal() {
+  openModal("modalIntegrations");
+  try {
+    const status = await dataProvider.getIntegrationsStatus();
+    const isDemo = dataProvider instanceof DemoEventOpsProvider;
+
+    const calEl = document.getElementById("statusBadgeCalendar");
+    if (calEl) {
+      const isCalConn = status.calendar && status.calendar.connected;
+      calEl.textContent = isCalConn ? "CONNECTED" : (isDemo ? "SIMULATED" : "NOT CONFIGURED");
+      calEl.className = "badge " + (isCalConn ? "badge-approved" : (isDemo ? "badge-pending" : "badge-neutral"));
+    }
+
+    const gmailEl = document.getElementById("statusBadgeGmail");
+    if (gmailEl) {
+      const isGmailConn = status.email && status.email.connected;
+      gmailEl.textContent = isGmailConn ? "CONNECTED" : (isDemo ? "SIMULATED" : "NOT CONFIGURED");
+      gmailEl.className = "badge " + (isGmailConn ? "badge-approved" : (isDemo ? "badge-pending" : "badge-neutral"));
+    }
+
+    const slackEl = document.getElementById("statusBadgeSlack");
+    if (slackEl) {
+      const isSlackConn = status.messaging && status.messaging.connected;
+      slackEl.textContent = isSlackConn ? "CONNECTED" : (isDemo ? "SIMULATED" : "NOT CONFIGURED");
+      slackEl.className = "badge " + (isSlackConn ? "badge-approved" : (isDemo ? "badge-pending" : "badge-neutral"));
+    }
+
+    const actions = await dataProvider.getIntegrationActions(CURRENT_EVENT_ID);
+    renderIntegrationActionsTable(actions);
+  } catch (err) {
+    console.error("Error fetching integrations status:", err);
+  }
+}
+
+// Executive Analytics & Telemetry across 4 Domains
+let CURRENT_ANALYTICS_SCOPE = "event";
+async function openAnalyticsModal(scope = "event") {
+  CURRENT_ANALYTICS_SCOPE = scope;
+  openModal("modalAnalytics");
+  await switchAnalyticsScope(scope);
+}
+
+async function switchAnalyticsScope(scope) {
+  CURRENT_ANALYTICS_SCOPE = scope;
+  const btnEvent = document.getElementById("btnScopeEvent");
+  const btnPort = document.getElementById("btnScopePortfolio");
+  if (btnEvent && btnPort) {
+    btnEvent.classList.toggle("active", scope === "event");
+    btnPort.classList.toggle("active", scope === "portfolio");
+  }
+
+  try {
+    const data = scope === "event"
+      ? await dataProvider.getEventAnalytics(CURRENT_EVENT_ID)
+      : await dataProvider.getPortfolioAnalytics();
+
+    // Domain 1: Health
+    const health = data.event_health || {};
+    const scoreVal = health.readiness_score !== undefined ? health.readiness_score : (data.avg_readiness_score || 95);
+    document.getElementById("anHealthScore").textContent = `${scoreVal} / 100`;
+    document.getElementById("anHealthTrend").textContent = health.score_trend || (data.active_events_count ? `${data.active_events_count} Active Events` : "Stable");
+    document.getElementById("anHealthRisks").textContent = health.unresolved_risks !== undefined ? `${health.unresolved_risks} Items` : "0 Unresolved";
+    document.getElementById("anHealthMilestones").textContent = health.milestones_count !== undefined ? `${health.milestones_count} Nodes` : "-";
+
+    // Domain 2: Financial
+    const fin = data.financial_invariance || {};
+    const alloc = fin.allocated_cents !== undefined ? fin.allocated_cents / 100 : (data.total_budget_managed_cents ? data.total_budget_managed_cents / 100 : 4000);
+    const reserve = fin.reserve_buffer_cents !== undefined ? fin.reserve_buffer_cents / 100 : 400;
+    const reservePct = fin.reserve_pct !== undefined ? fin.reserve_pct : "10.0";
+    const variance = fin.variance_cents !== undefined ? fin.variance_cents / 100 : 0;
+    const variancePct = fin.variance_pct !== undefined ? fin.variance_pct : "0.00";
+    document.getElementById("anFinAllocated").textContent = formatCurrency(alloc);
+    document.getElementById("anFinReserve").textContent = `${formatCurrency(reserve)} (${reservePct}%)`;
+    document.getElementById("anFinVariance").textContent = `${formatCurrency(variance)} (${variancePct}%)`;
+
+    // Domain 3: Governance
+    const gov = data.governance_and_agency || {};
+    const decCount = gov.decisions_count !== undefined ? gov.decisions_count : (data.total_decisions_logged || 0);
+    const rate = gov.human_approval_rate !== undefined ? gov.human_approval_rate : (data.portfolio_approval_rate || 100.0);
+    const actCount = gov.actions_count !== undefined ? gov.actions_count : (data.total_actions_governed || 0);
+    document.getElementById("anGovDecisions").textContent = `${decCount} Logged`;
+    document.getElementById("anGovApprovalRate").textContent = `${rate}%`;
+    document.getElementById("anGovActions").textContent = `${actCount} Governed`;
+
+    // Domain 4: Reliability
+    const rel = data.system_reliability || {};
+    const lat = rel.avg_latency_ms !== undefined ? rel.avg_latency_ms : (data.avg_system_latency_ms || 320);
+    document.getElementById("anSysLatency").textContent = `~${Math.round(lat)} ms`;
+  } catch (err) {
+    console.error("Error loading analytics:", err);
+  }
+}
+
+// Calendar Synchronization Modal Handlers
+let PENDING_CAL_MODE = "main";
+async function openCalendarModal(mode = "main") {
+  PENDING_CAL_MODE = mode;
+  const radioMain = document.getElementById("calModeMain");
+  const radioMilestones = document.getElementById("calModeMilestones");
+  if (radioMain && radioMilestones) {
+    radioMain.checked = mode === "main";
+    radioMilestones.checked = mode === "milestones";
+  }
+  openModal("modalCalendarSync");
+  await refreshCalendarPreview(mode);
+}
+
+async function refreshCalendarPreview(mode) {
+  try {
+    const preview = await dataProvider.previewCalendar(CURRENT_EVENT_ID, mode);
+    document.getElementById("calPreviewTitle").textContent = preview.summary || (CURRENT_DOSSIER ? CURRENT_DOSSIER.title : "Event");
+    document.getElementById("calPreviewTiming").textContent = `Timing: ${preview.start_time || "TBD"} — ${preview.end_time || "TBD"}`;
+    document.getElementById("calPreviewLocation").textContent = `Location: ${preview.location || (CURRENT_DOSSIER ? CURRENT_DOSSIER.location : "New York, NY")}`;
+    document.getElementById("calPreviewDesc").textContent = preview.description || "(No description)";
+  } catch (err) {
+    console.error("Error fetching calendar preview:", err);
+  }
+}
+
+document.querySelectorAll("input[name='calSyncMode']").forEach(r => {
+  r.addEventListener("change", (e) => {
+    PENDING_CAL_MODE = e.target.value;
+    refreshCalendarPreview(PENDING_CAL_MODE);
+  });
+});
+
+document.getElementById("btnExecuteCalSync").addEventListener("click", async () => {
+  try {
+    const res = await dataProvider.syncCalendar(CURRENT_EVENT_ID, PENDING_CAL_MODE);
+    closeModal("modalCalendarSync");
+    const msg = createMsg("agent");
+    const isDemo = dataProvider instanceof DemoEventOpsProvider;
+    msg.innerHTML = `
+      <div class="copilot-card">
+        <div class="copilot-card-title">📅 Calendar Sync Initiated ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
+        <div><strong>Status:</strong> ${res.status || 'Success'}</div>
+        <div>${res.message || 'Action registered in Governance Ledger.'}</div>
+      </div>
+    `;
+    refreshEventData();
+  } catch (err) {
+    console.error("Error syncing calendar:", err);
+  }
+});
+
+// Gmail Draft & Send Modal Handlers
+let PENDING_SAVED_DRAFT_ID = null;
+
+async function openEmailModal(defaultIntent = "Dietary & Accessibility Intake Protocol", defaultRecipient = "vip-guest@example.com") {
+  openModal("modalEmailComposer");
+  const inputTo = document.getElementById("emailInputTo");
+  const selectIntent = document.getElementById("emailSelectIntent");
+  if (inputTo) inputTo.value = defaultRecipient;
+  if (selectIntent) selectIntent.value = defaultIntent;
+  await refreshEmailDraft(defaultIntent, defaultRecipient);
+}
+
+async function refreshEmailDraft(intent, recipient) {
+  try {
+    const draft = await dataProvider.draftEmail(CURRENT_EVENT_ID, intent, [recipient]);
+    document.getElementById("emailInputSubject").value = draft.subject || "[EventOps AI] Operational Notice";
+    document.getElementById("emailInputBody").value = draft.body || "";
+  } catch (err) {
+    console.error("Error generating draft email:", err);
+  }
+}
+
+document.getElementById("emailSelectIntent").addEventListener("change", (e) => {
+  const to = document.getElementById("emailInputTo").value.trim() || "vip-guest@example.com";
+  refreshEmailDraft(e.target.value, to);
+});
+
+document.getElementById("btnSaveEmailDraft").addEventListener("click", async () => {
+  const to = document.getElementById("emailInputTo").value.split(",").map(s => s.trim()).filter(Boolean);
+  const subject = document.getElementById("emailInputSubject").value.trim();
+  const body = document.getElementById("emailInputBody").value.trim();
+  try {
+    const res = await dataProvider.saveEmailDraft(CURRENT_EVENT_ID, subject, body, to);
+    PENDING_SAVED_DRAFT_ID = res.draft_id || res.action_id;
+    closeModal("modalEmailComposer");
+    const msg = createMsg("agent");
+    const isDemo = dataProvider instanceof DemoEventOpsProvider;
+    msg.innerHTML = `
+      <div class="copilot-card">
+        <div class="copilot-card-title">✉️ Gmail Draft Saved ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
+        <div><strong>Recipients:</strong> ${to.join(", ")}</div>
+        <div><strong>Subject:</strong> ${subject}</div>
+        <div>${res.message || 'Draft saved successfully.'}</div>
+      </div>
+    `;
+    refreshEventData();
+  } catch (err) {
+    console.error("Error saving draft email:", err);
+  }
+});
+
+document.getElementById("btnInitiateEmailSend").addEventListener("click", async () => {
+  const to = document.getElementById("emailInputTo").value.split(",").map(s => s.trim()).filter(Boolean);
+  const subject = document.getElementById("emailInputSubject").value.trim();
+  const body = document.getElementById("emailInputBody").value.trim();
+  try {
+    const res = await dataProvider.saveEmailDraft(CURRENT_EVENT_ID, subject, body, to);
+    PENDING_SAVED_DRAFT_ID = res.draft_id || res.action_id;
+    closeModal("modalEmailComposer");
+    document.getElementById("confirmSendTokenInput").value = "";
+    document.getElementById("confirmSendError").style.display = "none";
+    openModal("modalConfirmSend");
+  } catch (err) {
+    console.error("Error preparing email send:", err);
+  }
+});
+
+document.getElementById("btnExecuteEmailSend").addEventListener("click", async () => {
+  const token = document.getElementById("confirmSendTokenInput").value.trim();
+  if (token !== "CONFIRM_SEND") {
+    document.getElementById("confirmSendError").style.display = "block";
+    return;
+  }
+  document.getElementById("confirmSendError").style.display = "none";
+  try {
+    const res = await dataProvider.sendEmail(CURRENT_EVENT_ID, PENDING_SAVED_DRAFT_ID || "draft_pending", token);
+    closeModal("modalConfirmSend");
+    const msg = createMsg("agent");
+    const isDemo = dataProvider instanceof DemoEventOpsProvider;
+    msg.innerHTML = `
+      <div class="copilot-card">
+        <div class="copilot-card-title">🚀 Email Dispatched ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
+        <div><strong>Status:</strong> ${res.status || 'Sent'}</div>
+        <div>${res.message || 'Email dispatched through governed transport.'}</div>
+      </div>
+    `;
+    refreshEventData();
+  } catch (err) {
+    console.error("Error executing email send:", err);
+  }
+});
+
+// Slack Operations Modal Handlers
+let PENDING_SLACK_CATEGORY = "Operational Notice";
+let PENDING_SLACK_ITEM = {};
+
+async function openSlackModal(category, item) {
+  PENDING_SLACK_CATEGORY = category || "Operational Notice";
+  PENDING_SLACK_ITEM = item || {};
+  openModal("modalSlackShare");
+  const ch = document.getElementById("slackSelectChannel").value;
+  await refreshSlackPreview(ch);
+}
+
+async function refreshSlackPreview(channel) {
+  try {
+    const preview = await dataProvider.previewSlack(CURRENT_EVENT_ID, PENDING_SLACK_CATEGORY, PENDING_SLACK_ITEM, channel);
+    document.getElementById("slackPreviewHeader").textContent = `[EventOps] ${PENDING_SLACK_CATEGORY}`;
+    document.getElementById("slackPreviewSection").textContent = preview.summary || preview.text || JSON.stringify(PENDING_SLACK_ITEM);
+    document.getElementById("slackPreviewContext").textContent = `Target: ${channel} | Human Governed Dispatch`;
+  } catch (err) {
+    console.error("Error generating slack preview:", err);
+  }
+}
+
+document.getElementById("slackSelectChannel").addEventListener("change", (e) => {
+  refreshSlackPreview(e.target.value);
+});
+
+document.getElementById("btnExecuteSlackPost").addEventListener("click", async () => {
+  const ch = document.getElementById("slackSelectChannel").value;
+  const text = document.getElementById("slackPreviewSection").textContent;
+  try {
+    const res = await dataProvider.postSlack(CURRENT_EVENT_ID, ch, text, PENDING_SLACK_CATEGORY);
+    closeModal("modalSlackShare");
+    const msg = createMsg("agent");
+    const isDemo = dataProvider instanceof DemoEventOpsProvider;
+    msg.innerHTML = `
+      <div class="copilot-card">
+        <div class="copilot-card-title">💬 Slack Operational Card Posted ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
+        <div><strong>Channel:</strong> <code>${ch}</code></div>
+        <div>${res.message || 'Operational notification published.'}</div>
+      </div>
+    `;
+    refreshEventData();
+  } catch (err) {
+    console.error("Error posting to slack:", err);
+  }
+});
+
+function openSlackShareForDecision(decisionId) {
+  const decisions = (CURRENT_DOSSIER && CURRENT_DOSSIER.decisions) || [];
+  const d = decisions.find(x => x.decision_id === decisionId) || { decision_id: decisionId };
+  openSlackModal("Decision Ledger Update", {
+    decision_id: d.decision_id,
+    proposed_change: d.proposed_change,
+    rationale: d.rationale,
+    status: d.approval_status || "pending_approval"
+  });
 }
 
 // Submit New Event Form

@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import datetime
 from decimal import Decimal, ROUND_HALF_UP
 import json
 import logging
@@ -24,6 +25,14 @@ import uuid
 
 from app.event_store import DecisionRecord, EventDossier, get_event_store
 from app.schemas import ReadinessBreakdown, ReadinessBreakdownItem
+from app.integrations import (
+    analytics_service,
+    get_calendar_provider,
+    get_email_provider,
+    get_messaging_provider,
+    IntegrationAction,
+    validate_recipients,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -821,4 +830,396 @@ def convert_temperature(value: float, from_unit: str, to_unit: str) -> str:
         res = (value - 32) * 5 / 9
         return f"{value}°F = {res:.1f}°C"
     return f"Unsupported temperature conversion from {from_unit} to {to_unit}"
+
+
+def preview_calendar_event(event_id: str, milestones_only: bool = False) -> str:
+    """Generate a structured preview of Google Calendar entries and create a governed action in the ledger.
+    
+    Does NOT mutate external Google Calendar. Requires human approval before synchronization.
+    """
+    store = get_event_store()
+    event = store.get_event(event_id)
+    if not event:
+        return json.dumps({"status": "error", "message": f"Event {event_id} not found."})
+
+    mode = "milestones" if milestones_only else "main"
+    provider = get_calendar_provider()
+    preview = provider.preview_event(event.model_dump(), mode=mode)
+
+    action = IntegrationAction(
+        event_id=event_id,
+        provider="calendar",
+        action_type="sync_milestones" if milestones_only else "create_event",
+        target="primary_calendar",
+        preview=preview,
+        status="pending_approval",
+        is_demo=getattr(provider, "is_demo", False),
+    )
+    store.add_integration_action(action)
+
+    analytics_service.record_telemetry(
+        category="governance",
+        operation="preview_calendar_event",
+        status="success",
+        event_id=event_id,
+        provider="calendar",
+        tool_name="preview_calendar_event",
+        action_id=action.action_id,
+    )
+
+    return json.dumps({
+        "status": "pending_approval",
+        "action_id": action.action_id,
+        "action_type": action.action_type,
+        "provider": "google_calendar",
+        "preview": preview,
+        "message": "Calendar event preview created. Review details and approve in EventOps to synchronize.",
+    }, indent=2)
+
+
+def create_calendar_event(event_id: str, action_id: str) -> str:
+    """Synchronize an approved calendar entry to Google Calendar with idempotency enforcement.
+    
+    Blocks execution if the action has not been explicitly approved.
+    """
+    store = get_event_store()
+    action = store.get_integration_action(event_id, action_id)
+    if not action:
+        return json.dumps({"status": "error", "message": f"Integration action {action_id} not found."})
+
+    if action.status != "approved":
+        return json.dumps({
+            "status": "blocked",
+            "message": f"Execution blocked: Action {action_id} is in state '{action.status}'. Human approval is strictly required before mutating external calendar.",
+        })
+
+    event = store.get_event(event_id)
+    if not event:
+        return json.dumps({"status": "error", "message": f"Event {event_id} not found."})
+
+    provider = get_calendar_provider()
+    res = provider.create_event(
+        event.model_dump(),
+        idempotency_key=action.idempotency_key,
+        milestones_only=(action.action_type == "sync_milestones"),
+    )
+
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    if res.get("status") == "completed":
+        store.update_integration_action(
+            event_id=event_id,
+            action_id=action_id,
+            status="completed",
+            executed_at=now,
+            external_resource_id=res.get("calendar_event_id"),
+        )
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="create_calendar_event",
+            status="success",
+            event_id=event_id,
+            provider="calendar",
+            action_id=action_id,
+        )
+    else:
+        store.update_integration_action(
+            event_id=event_id,
+            action_id=action_id,
+            status="failed",
+            error_summary=res.get("error", "Calendar sync failed"),
+        )
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="create_calendar_event",
+            status="failure",
+            event_id=event_id,
+            provider="calendar",
+            action_id=action_id,
+            metadata={"error": res.get("error")},
+        )
+
+    return json.dumps(res, indent=2)
+
+
+def draft_event_email(event_id: str, intent: str, recipients: list[str]) -> str:
+    """Draft an operational email for human review.
+    
+    Default behavior is GENERATE DRAFT, NOT SEND AUTOMATICALLY.
+    Strictly validates recipient addresses to prevent hallucinated emails.
+    """
+    store = get_event_store()
+    event = store.get_event(event_id)
+    if not event:
+        return json.dumps({"status": "error", "message": f"Event {event_id} not found."})
+
+    try:
+        valid_recipients = validate_recipients(recipients)
+    except ValueError as e:
+        return json.dumps({"status": "error", "message": str(e)})
+
+    provider = get_email_provider()
+    draft = provider.draft_email(event.model_dump(), intent, valid_recipients)
+
+    action = IntegrationAction(
+        event_id=event_id,
+        provider="gmail",
+        action_type="save_draft",
+        target=", ".join(valid_recipients),
+        preview=draft.model_dump(),
+        status="pending_approval",
+        is_demo=getattr(provider, "is_demo", False),
+    )
+    store.add_integration_action(action)
+
+    analytics_service.record_telemetry(
+        category="governance",
+        operation="draft_event_email",
+        status="success",
+        event_id=event_id,
+        provider="gmail",
+        action_id=action.action_id,
+        metadata={"recipient_count": len(valid_recipients)},
+    )
+
+    return json.dumps({
+        "status": "pending_approval",
+        "action_id": action.action_id,
+        "draft": draft.model_dump(),
+        "message": "Email draft generated for review. Approve in EventOps to save into Gmail drafts.",
+    }, indent=2)
+
+
+def save_gmail_draft(event_id: str, action_id: str) -> str:
+    """Save an approved email draft to Gmail drafts."""
+    store = get_event_store()
+    action = store.get_integration_action(event_id, action_id)
+    if not action:
+        return json.dumps({"status": "error", "message": f"Integration action {action_id} not found."})
+
+    if action.status != "approved":
+        return json.dumps({
+            "status": "blocked",
+            "message": f"Execution blocked: Action {action_id} must be approved before saving draft to Gmail.",
+        })
+
+    provider = get_email_provider()
+    from app.integrations.models import EmailDraft
+    draft = EmailDraft.model_validate(action.preview)
+
+    res = provider.save_draft(draft, idempotency_key=action.idempotency_key)
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+    if res.get("status") == "completed":
+        store.update_integration_action(
+            event_id=event_id,
+            action_id=action_id,
+            status="completed",
+            executed_at=now,
+            external_resource_id=res.get("gmail_draft_id"),
+        )
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="save_gmail_draft",
+            status="success",
+            event_id=event_id,
+            provider="gmail",
+            action_id=action_id,
+        )
+    else:
+        store.update_integration_action(
+            event_id=event_id,
+            action_id=action_id,
+            status="failed",
+            error_summary=res.get("error", "Failed to save draft to Gmail"),
+        )
+
+    return json.dumps(res, indent=2)
+
+
+def send_gmail_draft(event_id: str, action_id: str, confirmation_token: str) -> str:
+    """Send an email draft with mandatory second human confirmation.
+    
+    Requires explicit confirmation_token='CONFIRM_SEND'.
+    """
+    if confirmation_token != "CONFIRM_SEND":
+        return json.dumps({
+            "status": "blocked",
+            "message": "Sending requires explicit second confirmation (confirmation_token='CONFIRM_SEND').",
+        })
+
+    store = get_event_store()
+    action = store.get_integration_action(event_id, action_id)
+    if not action:
+        return json.dumps({"status": "error", "message": f"Integration action {action_id} not found."})
+
+    provider = get_email_provider()
+    recipient_count = len(action.preview.get("to_recipients", []))
+    res = provider.send_draft(
+        draft_id=action.external_resource_id or action.action_id,
+        confirmation_token=confirmation_token,
+        expected_recipients_count=recipient_count,
+    )
+
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    if res.get("status") == "completed":
+        store.update_integration_action(
+            event_id=event_id,
+            action_id=action_id,
+            status="completed",
+            executed_at=now,
+        )
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="send_gmail_draft",
+            status="success",
+            event_id=event_id,
+            provider="gmail",
+            action_id=action_id,
+            metadata={"recipients_count": recipient_count},
+        )
+
+    return json.dumps(res, indent=2)
+
+
+def preview_slack_message(
+    event_id: str,
+    category: str,
+    item_title: str,
+    item_summary: str,
+    recommended_action: str,
+    channel: str = "#event-ops",
+) -> str:
+    """Format a short, structured operational Slack message and record an action in the ledger.
+    
+    Does NOT post to Slack. Requires human review and approval.
+    """
+    store = get_event_store()
+    event = store.get_event(event_id)
+    if not event:
+        return json.dumps({"status": "error", "message": f"Event {event_id} not found."})
+
+    provider = get_messaging_provider()
+    payload = provider.preview_message(
+        event_data=event.model_dump(),
+        category=category,
+        finding_or_decision={
+            "title": item_title,
+            "summary": item_summary,
+            "action": recommended_action,
+        },
+        channel_name=channel,
+    )
+
+    action = IntegrationAction(
+        event_id=event_id,
+        provider="slack",
+        action_type="post_slack_message",
+        target=channel,
+        preview=payload.model_dump(),
+        status="pending_approval",
+        is_demo=getattr(provider, "is_demo", False),
+    )
+    store.add_integration_action(action)
+
+    analytics_service.record_telemetry(
+        category="governance",
+        operation="preview_slack_message",
+        status="success",
+        event_id=event_id,
+        provider="slack",
+        action_id=action.action_id,
+    )
+
+    return json.dumps({
+        "status": "pending_approval",
+        "action_id": action.action_id,
+        "channel": channel,
+        "payload": payload.model_dump(),
+        "message": f"Operational notification formatted for {channel}. Review and approve in EventOps to post.",
+    }, indent=2)
+
+
+def post_slack_message(event_id: str, action_id: str) -> str:
+    """Post an approved operational notification to Slack with duplicate prevention.
+    
+    Blocks execution if the action has not been explicitly approved.
+    """
+    store = get_event_store()
+    action = store.get_integration_action(event_id, action_id)
+    if not action:
+        return json.dumps({"status": "error", "message": f"Integration action {action_id} not found."})
+
+    if action.status != "approved":
+        return json.dumps({
+            "status": "blocked",
+            "message": f"Execution blocked: Action {action_id} must be approved before posting to Slack.",
+        })
+
+    provider = get_messaging_provider()
+    from app.integrations.models import SlackMessagePayload
+    payload = SlackMessagePayload.model_validate(action.preview)
+
+    res = provider.post_message(payload, idempotency_key=action.idempotency_key)
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+    if res.get("status") == "completed":
+        store.update_integration_action(
+            event_id=event_id,
+            action_id=action_id,
+            status="completed",
+            executed_at=now,
+            external_resource_id=res.get("message_ts"),
+        )
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="post_slack_message",
+            status="success",
+            event_id=event_id,
+            provider="slack",
+            action_id=action_id,
+        )
+    else:
+        store.update_integration_action(
+            event_id=event_id,
+            action_id=action_id,
+            status="failed",
+            error_summary=res.get("error", "Failed to post Slack message"),
+        )
+
+    return json.dumps(res, indent=2)
+
+
+def get_event_analytics(event_id: str) -> str:
+    """Compute deterministic operational analytics for a specific event."""
+    store = get_event_store()
+    event = store.get_event(event_id)
+    if not event:
+        return json.dumps({"status": "error", "message": f"Event {event_id} not found."})
+
+    decisions = [d.model_dump() for d in store.get_decisions(event_id)]
+    actions = [a.model_dump() for a in store.get_integration_actions(event_id)]
+    metrics = analytics_service.get_event_analytics(event.model_dump(), decisions, actions)
+    return json.dumps(metrics, indent=2)
+
+
+def get_portfolio_analytics() -> str:
+    """Compute aggregate deterministic operational analytics across all events."""
+    store = get_event_store()
+    event_summaries = store.list_events()
+    full_events = []
+    all_decisions = []
+    all_actions = []
+
+    for s in event_summaries:
+        eid = s.get("event_id")
+        if eid:
+            ev = store.get_event(eid)
+            if ev:
+                full_events.append(ev.model_dump())
+            all_decisions.extend([d.model_dump() for d in store.get_decisions(eid)])
+            all_actions.extend([a.model_dump() for a in store.get_integration_actions(eid)])
+
+    portfolio = analytics_service.get_portfolio_analytics(full_events, all_decisions, all_actions)
+    return json.dumps(portfolio, indent=2)
+
 

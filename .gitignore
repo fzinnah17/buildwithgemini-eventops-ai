@@ -241,3 +241,5 @@ tmp/
 backups/*.bundle
 backups/*.tar.gz
 backups/*.zip
+*.zip
+

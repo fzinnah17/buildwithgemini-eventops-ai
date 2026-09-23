@@ -22,8 +22,22 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+import sys
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
 from schemas import AgentResponse
 from engine import compute_event_readiness, rebalance_budget_allocations
+from app.integrations import (
+    analytics_service,
+    get_calendar_provider,
+    get_email_provider,
+    get_messaging_provider,
+    IntegrationAction,
+    validate_recipients,
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -708,6 +722,526 @@ async def chat(req: Request):
                 ],
             },
         )
+
+
+# =========================================================================
+# Integration Action Ledger & Analytics Endpoints
+# =========================================================================
+
+_memory_actions: dict[str, list[dict[str, Any]]] = {}
+
+
+async def _get_event_data_dict(event_id: str) -> dict[str, Any] | None:
+    try:
+        db = _get_firestore()
+        doc = db.collection("events").document(event_id).get()
+        if doc.exists:
+            return doc.to_dict()
+    except Exception:
+        pass
+    if event_id == "evt_wit_manhattan_2026":
+        return {
+            "event_id": "evt_wit_manhattan_2026",
+            "title": "Women in Tech Leadership Dinner",
+            "date": "2026-10-15",
+            "start_time": "18:00",
+            "end_time": "21:30",
+            "location": "The Altman Building, New York, NY",
+            "guest_count": 30,
+            "total_budget": 4000.0,
+            "readiness_score": 95,
+            "budget_allocations": [
+                {"category": "Catering & Private Chef", "allocated_amount": 2200.0},
+                {"category": "Venue & Premium Private Room", "allocated_amount": 1000.0},
+                {"category": "Event Décor, Florals & Print", "allocated_amount": 400.0},
+                {"category": "Contingency & Incidentals", "allocated_amount": 400.0},
+            ],
+            "risks": [
+                {
+                    "category": "Guest Experience",
+                    "severity": "Attention",
+                    "details": "Dietary requirements not fully confirmed across all VIP attendees.",
+                    "status": "open",
+                }
+            ],
+            "run_of_show": [
+                {"time": "18:00 - 18:45", "phase": "VIP Arrivals & Welcome Reception", "lead": "Guest Experience Lead"},
+                {"time": "18:45 - 20:30", "phase": "Keynote Dialogue & Plated Dinner", "lead": "Program Lead"},
+                {"time": "20:30 - 21:30", "phase": "Executive Networking & Closing Remarks", "lead": "Lead Host"},
+            ],
+        }
+    return None
+
+
+def _save_action_to_store(action: IntegrationAction) -> None:
+    data = action.model_dump()
+    _memory_actions.setdefault(action.event_id, [])
+    for idx, act in enumerate(_memory_actions[action.event_id]):
+        if act.get("action_id") == action.action_id:
+            _memory_actions[action.event_id][idx] = data
+            break
+    else:
+        _memory_actions[action.event_id].append(data)
+
+    try:
+        db = _get_firestore()
+        db.collection("events").document(action.event_id).collection("integration_actions").document(action.action_id).set(data)
+    except Exception as e:
+        logger.debug("Firestore unavailable for action record, using in-memory store: %s", e)
+
+
+def _get_actions_from_store(event_id: str) -> list[dict[str, Any]]:
+    actions = list(_memory_actions.get(event_id, []))
+    try:
+        db = _get_firestore()
+        docs = db.collection("events").document(event_id).collection("integration_actions").order_by("requested_at").stream()
+        fs_actions = [doc.to_dict() for doc in docs]
+        if fs_actions:
+            return fs_actions
+    except Exception as e:
+        logger.debug("Firestore unavailable for fetching actions, using in-memory store: %s", e)
+    return actions
+
+
+def _get_action_by_id(event_id: str, action_id: str) -> dict[str, Any] | None:
+    actions = _get_actions_from_store(event_id)
+    for a in actions:
+        if a.get("action_id") == action_id:
+            return a
+    return None
+
+
+def _update_action_in_store(event_id: str, action_id: str, updates: dict[str, Any]) -> bool:
+    actions = _memory_actions.get(event_id, [])
+    for a in actions:
+        if a.get("action_id") == action_id:
+            a.update(updates)
+            break
+    try:
+        db = _get_firestore()
+        db.collection("events").document(event_id).collection("integration_actions").document(action_id).update(updates)
+    except Exception as e:
+        logger.debug("Firestore unavailable for action update, using in-memory store: %s", e)
+    return True
+
+
+@app.get("/api/integrations/status")
+async def get_integrations_status():
+    """Return live status of external integrations (Google Calendar, Gmail, Slack)."""
+    cal = get_calendar_provider().get_connection_status()
+    email = get_email_provider().get_connection_status()
+    slack = get_messaging_provider().get_connection_status()
+    return JSONResponse({
+        "status": "ok",
+        "integrations": [
+            cal.model_dump(),
+            email.model_dump(),
+            slack.model_dump(),
+        ],
+    })
+
+
+@app.get("/api/integrations/actions")
+async def get_integration_actions_api(event_id: str = "evt_wit_manhattan_2026"):
+    """Fetch external action ledger records for an event."""
+    actions = _get_actions_from_store(event_id)
+    return JSONResponse({
+        "status": "ok",
+        "event_id": event_id,
+        "actions": actions,
+    })
+
+
+@app.post("/api/integrations/calendar/preview")
+async def preview_calendar_api(req: Request):
+    """Preview Google Calendar entry or milestones without mutating external state."""
+    body = await req.json()
+    event_id = body.get("event_id", "evt_wit_manhattan_2026")
+    mode = body.get("mode", "main")
+    event_data = await _get_event_data_dict(event_id)
+    if not event_data:
+        return JSONResponse(status_code=404, content={"error": f"Event {event_id} not found."})
+
+    provider = get_calendar_provider()
+    preview = provider.preview_event(event_data, mode=mode)
+    action = IntegrationAction(
+        event_id=event_id,
+        provider="calendar",
+        action_type="sync_milestones" if mode == "milestones" else "create_event",
+        target="primary_calendar",
+        preview=preview,
+        status="pending_approval",
+        is_demo=getattr(provider, "is_demo", False),
+    )
+    _save_action_to_store(action)
+
+    analytics_service.record_telemetry(
+        category="governance",
+        operation="preview_calendar_event",
+        status="success",
+        event_id=event_id,
+        provider="calendar",
+        action_id=action.action_id,
+    )
+
+    return JSONResponse({
+        "status": "ok",
+        "action": action.model_dump(),
+        "preview": preview,
+    })
+
+
+@app.post("/api/integrations/calendar/sync")
+async def sync_calendar_api(req: Request):
+    """Sync calendar entry after explicit human approval."""
+    body = await req.json()
+    event_id = body.get("event_id")
+    action_id = body.get("action_id")
+    if not event_id or not action_id:
+        return JSONResponse(status_code=400, content={"error": "event_id and action_id are required."})
+
+    action = _get_action_by_id(event_id, action_id)
+    if not action:
+        return JSONResponse(status_code=404, content={"error": f"Action {action_id} not found."})
+
+    if action.get("status") != "approved":
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": f"Action {action_id} is in status '{action.get('status')}'. Explicit human approval is required."
+            },
+        )
+
+    event_data = await _get_event_data_dict(event_id)
+    provider = get_calendar_provider()
+    res = provider.create_event(
+        event_data or {},
+        idempotency_key=action.get("idempotency_key", uuid.uuid4().hex),
+        milestones_only=(action.get("action_type") == "sync_milestones"),
+    )
+
+    now = datetime.now(timezone.utc).isoformat()
+    if res.get("status") == "completed":
+        _update_action_in_store(event_id, action_id, {
+            "status": "completed",
+            "executed_at": now,
+            "external_resource_id": res.get("calendar_event_id"),
+        })
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="sync_calendar_event",
+            status="success",
+            event_id=event_id,
+            provider="calendar",
+            action_id=action_id,
+        )
+    else:
+        _update_action_in_store(event_id, action_id, {
+            "status": "failed",
+            "error_summary": res.get("error", "Calendar sync failed"),
+        })
+
+    return JSONResponse(res)
+
+
+@app.post("/api/integrations/email/draft")
+async def draft_email_api(req: Request):
+    """Draft an operational email with strict recipient validation."""
+    body = await req.json()
+    event_id = body.get("event_id", "evt_wit_manhattan_2026")
+    intent = body.get("intent", "Dietary and accessibility intake")
+    recipients = body.get("recipients", [])
+
+    try:
+        valid_recipients = validate_recipients(recipients)
+    except ValueError as e:
+        return JSONResponse(status_code=400, content={"error": str(e)})
+
+    event_data = await _get_event_data_dict(event_id)
+    provider = get_email_provider()
+    draft = provider.draft_email(event_data or {}, intent, valid_recipients)
+
+    action = IntegrationAction(
+        event_id=event_id,
+        provider="gmail",
+        action_type="save_draft",
+        target=", ".join(valid_recipients),
+        preview=draft.model_dump(),
+        status="pending_approval",
+        is_demo=getattr(provider, "is_demo", False),
+    )
+    _save_action_to_store(action)
+
+    analytics_service.record_telemetry(
+        category="governance",
+        operation="draft_event_email",
+        status="success",
+        event_id=event_id,
+        provider="gmail",
+        action_id=action.action_id,
+        metadata={"recipient_count": len(valid_recipients)},
+    )
+
+    return JSONResponse({
+        "status": "ok",
+        "action": action.model_dump(),
+        "draft": draft.model_dump(),
+    })
+
+
+@app.post("/api/integrations/email/save-draft")
+async def save_email_draft_api(req: Request):
+    """Save approved email draft into Gmail drafts."""
+    body = await req.json()
+    event_id = body.get("event_id")
+    action_id = body.get("action_id")
+
+    action = _get_action_by_id(event_id, action_id)
+    if not action:
+        return JSONResponse(status_code=404, content={"error": f"Action {action_id} not found."})
+
+    if action.get("status") != "approved":
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Action must be approved before saving draft to Gmail."},
+        )
+
+    from app.integrations.models import EmailDraft
+    draft = EmailDraft.model_validate(action.get("preview", {}))
+    provider = get_email_provider()
+    res = provider.save_draft(draft, idempotency_key=action.get("idempotency_key", uuid.uuid4().hex))
+
+    now = datetime.now(timezone.utc).isoformat()
+    if res.get("status") == "completed":
+        _update_action_in_store(event_id, action_id, {
+            "status": "completed",
+            "executed_at": now,
+            "external_resource_id": res.get("gmail_draft_id"),
+        })
+    else:
+        _update_action_in_store(event_id, action_id, {
+            "status": "failed",
+            "error_summary": res.get("error"),
+        })
+
+    return JSONResponse(res)
+
+
+@app.post("/api/integrations/email/send")
+async def send_email_api(req: Request):
+    """Send email draft with strict second human confirmation."""
+    body = await req.json()
+    event_id = body.get("event_id")
+    action_id = body.get("action_id")
+    confirmation_token = body.get("confirmation_token")
+
+    if confirmation_token != "CONFIRM_SEND":
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Explicit second confirmation token 'CONFIRM_SEND' required to send email."},
+        )
+
+    action = _get_action_by_id(event_id, action_id)
+    if not action:
+        return JSONResponse(status_code=404, content={"error": f"Action {action_id} not found."})
+
+    recipients = action.get("preview", {}).get("to_recipients", [])
+    provider = get_email_provider()
+    res = provider.send_draft(
+        draft_id=action.get("external_resource_id", action_id),
+        confirmation_token=confirmation_token,
+        expected_recipients_count=len(recipients),
+    )
+
+    now = datetime.now(timezone.utc).isoformat()
+    if res.get("status") == "completed":
+        _update_action_in_store(event_id, action_id, {
+            "status": "completed",
+            "executed_at": now,
+        })
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="send_email",
+            status="success",
+            event_id=event_id,
+            provider="gmail",
+            action_id=action_id,
+        )
+
+    return JSONResponse(res)
+
+
+@app.post("/api/integrations/slack/preview")
+async def preview_slack_api(req: Request):
+    """Preview operational Slack notification."""
+    body = await req.json()
+    event_id = body.get("event_id", "evt_wit_manhattan_2026")
+    category = body.get("category", "Operational Update")
+    item = body.get("item", {})
+    channel = body.get("channel", "#event-ops")
+
+    event_data = await _get_event_data_dict(event_id)
+    provider = get_messaging_provider()
+    payload = provider.preview_message(event_data or {}, category, item, channel_name=channel)
+
+    action = IntegrationAction(
+        event_id=event_id,
+        provider="slack",
+        action_type="post_slack_message",
+        target=channel,
+        preview=payload.model_dump(),
+        status="pending_approval",
+        is_demo=getattr(provider, "is_demo", False),
+    )
+    _save_action_to_store(action)
+
+    analytics_service.record_telemetry(
+        category="governance",
+        operation="preview_slack_message",
+        status="success",
+        event_id=event_id,
+        provider="slack",
+        action_id=action.action_id,
+    )
+
+    return JSONResponse({
+        "status": "ok",
+        "action": action.model_dump(),
+        "payload": payload.model_dump(),
+    })
+
+
+@app.post("/api/integrations/slack/post")
+async def post_slack_api(req: Request):
+    """Post operational notification to Slack after human approval."""
+    body = await req.json()
+    event_id = body.get("event_id")
+    action_id = body.get("action_id")
+
+    action = _get_action_by_id(event_id, action_id)
+    if not action:
+        return JSONResponse(status_code=404, content={"error": f"Action {action_id} not found."})
+
+    if action.get("status") != "approved":
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Action must be approved before posting to Slack."},
+        )
+
+    from app.integrations.models import SlackMessagePayload
+    payload = SlackMessagePayload.model_validate(action.get("preview", {}))
+    provider = get_messaging_provider()
+    res = provider.post_message(payload, idempotency_key=action.get("idempotency_key", uuid.uuid4().hex))
+
+    now = datetime.now(timezone.utc).isoformat()
+    if res.get("status") == "completed":
+        _update_action_in_store(event_id, action_id, {
+            "status": "completed",
+            "executed_at": now,
+            "external_resource_id": res.get("message_ts"),
+        })
+        analytics_service.record_telemetry(
+            category="governance",
+            operation="post_slack_message",
+            status="success",
+            event_id=event_id,
+            provider="slack",
+            action_id=action_id,
+        )
+    else:
+        _update_action_in_store(event_id, action_id, {
+            "status": "failed",
+            "error_summary": res.get("error"),
+        })
+
+    return JSONResponse(res)
+
+
+@app.post("/api/integrations/actions/{action_id}/approve")
+async def approve_integration_action_api(action_id: str, req: Request):
+    """Approve a pending external integration action."""
+    body = await req.json() if req.headers.get("content-length") else {}
+    event_id = body.get("event_id", "evt_wit_manhattan_2026")
+    action = _get_action_by_id(event_id, action_id)
+    if not action:
+        return JSONResponse(status_code=404, content={"error": f"Action {action_id} not found."})
+
+    now = datetime.now(timezone.utc).isoformat()
+    _update_action_in_store(event_id, action_id, {
+        "status": "approved",
+        "approved_at": now,
+    })
+    return JSONResponse({
+        "status": "approved",
+        "action_id": action_id,
+        "message": "Action approved by director. Ready for execution.",
+    })
+
+
+@app.post("/api/integrations/actions/{action_id}/reject")
+async def reject_integration_action_api(action_id: str, req: Request):
+    """Reject a pending external integration action."""
+    body = await req.json() if req.headers.get("content-length") else {}
+    event_id = body.get("event_id", "evt_wit_manhattan_2026")
+    action = _get_action_by_id(event_id, action_id)
+    if not action:
+        return JSONResponse(status_code=404, content={"error": f"Action {action_id} not found."})
+
+    _update_action_in_store(event_id, action_id, {
+        "status": "rejected",
+    })
+    return JSONResponse({
+        "status": "rejected",
+        "action_id": action_id,
+        "message": "Action rejected. External systems will not be mutated.",
+    })
+
+
+@app.get("/api/analytics/event/{event_id}")
+async def get_event_analytics_api(event_id: str):
+    """Get deterministic operational metrics for an event."""
+    event_data = await _get_event_data_dict(event_id)
+    if not event_data:
+        return JSONResponse(status_code=404, content={"error": f"Event {event_id} not found."})
+
+    decisions = []
+    try:
+        db = _get_firestore()
+        docs = db.collection("events").document(event_id).collection("decisions").stream()
+        decisions = [d.to_dict() for d in docs]
+    except Exception:
+        pass
+
+    actions = _get_actions_from_store(event_id)
+    metrics = analytics_service.get_event_analytics(event_data, decisions, actions)
+    return JSONResponse({"status": "ok", "analytics": metrics})
+
+
+@app.get("/api/analytics/portfolio")
+async def get_portfolio_analytics_api():
+    """Get aggregated metrics across all portfolio events."""
+    all_events = []
+    all_decisions = []
+    all_actions = []
+    try:
+        db = _get_firestore()
+        for doc in db.collection("events").stream():
+            d = doc.to_dict()
+            all_events.append(d)
+            for dec in db.collection("events").document(doc.id).collection("decisions").stream():
+                all_decisions.append(dec.to_dict())
+            for act in db.collection("events").document(doc.id).collection("integration_actions").stream():
+                all_actions.append(act.to_dict())
+    except Exception:
+        pass
+
+    if not all_events:
+        default_ev = await _get_event_data_dict("evt_wit_manhattan_2026")
+        if default_ev:
+            all_events.append(default_ev)
+
+    portfolio = analytics_service.get_portfolio_analytics(all_events, all_decisions, all_actions)
+    return JSONResponse({"status": "ok", "portfolio": portfolio})
 
 
 # Static assets

@@ -25,6 +25,8 @@ import uuid
 from google.cloud import firestore
 from pydantic import BaseModel, Field
 
+from app.integrations.models import IntegrationAction
+
 logger = logging.getLogger(__name__)
 
 # Firestore project configuration (supports local and cross-project deployment)
@@ -203,6 +205,82 @@ class EventStore:
             updates["approved_by"] = approved_by
         if resulting_change is not None:
             updates["resulting_change"] = resulting_change
+        doc_ref.update(updates)
+        return True
+
+    def add_integration_action(self, action: IntegrationAction) -> str:
+        """Add an integration action record into the event's integration_actions subcollection."""
+        doc_ref = (
+            self.db.collection("events")
+            .document(action.event_id)
+            .collection("integration_actions")
+            .document(action.action_id)
+        )
+        doc_ref.set(action.model_dump())
+        logger.info(
+            "Recorded integration action %s (%s) for event %s",
+            action.action_id,
+            action.action_type,
+            action.event_id,
+        )
+        return action.action_id
+
+    def get_integration_actions(self, event_id: str) -> list[IntegrationAction]:
+        """Fetch all integration actions for an event in chronological order."""
+        docs = (
+            self.db.collection("events")
+            .document(event_id)
+            .collection("integration_actions")
+            .order_by("requested_at")
+            .stream()
+        )
+        actions = []
+        for doc in docs:
+            actions.append(IntegrationAction.model_validate(doc.to_dict()))
+        return actions
+
+    def get_integration_action(self, event_id: str, action_id: str) -> IntegrationAction | None:
+        """Fetch a single integration action by ID."""
+        doc_ref = (
+            self.db.collection("events")
+            .document(event_id)
+            .collection("integration_actions")
+            .document(action_id)
+        )
+        snap = doc_ref.get()
+        if not snap.exists:
+            return None
+        return IntegrationAction.model_validate(snap.to_dict())
+
+    def update_integration_action(
+        self,
+        event_id: str,
+        action_id: str,
+        status: str,
+        approved_at: str | None = None,
+        approved_by: str | None = None,
+        executed_at: str | None = None,
+        external_resource_id: str | None = None,
+        error_summary: str | None = None,
+    ) -> bool:
+        """Update status and metadata on an integration action."""
+        doc_ref = (
+            self.db.collection("events")
+            .document(event_id)
+            .collection("integration_actions")
+            .document(action_id)
+        )
+        updates: dict[str, Any] = {"status": status}
+        if approved_at is not None:
+            updates["approved_at"] = approved_at
+        if approved_by is not None:
+            updates["approved_by"] = approved_by
+        if executed_at is not None:
+            updates["executed_at"] = executed_at
+        if external_resource_id is not None:
+            updates["external_resource_id"] = external_resource_id
+        if error_summary is not None:
+            updates["error_summary"] = error_summary
         doc_ref.update(updates)
         return True
 

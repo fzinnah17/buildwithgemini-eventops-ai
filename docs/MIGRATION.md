@@ -178,3 +178,37 @@ gcloud run deploy eventops-ai-frontend \
 - [ ] Decision approval (`POST /api/decisions/approve`) updates Firestore and ledger status.
 - [ ] Visual direction images load from Cloud Storage bucket.
 - [ ] Error sanitization returns clean `request_id` on internal fault injection.
+
+---
+
+## 11. Enterprise Connected Services & Analytics (Bundle 3.6)
+
+EventOps AI includes built-in two-phase action governance and deterministic operational analytics.
+
+### Optional Integration Environment Variables
+
+```bash
+# Safe simulation mode (Default: true if credentials absent)
+export EVENTOPS_SIMULATED_INTEGRATIONS="true"
+
+# Google Calendar (Service Account or OAuth client secrets JSON)
+export GOOGLE_CALENDAR_CREDENTIALS="/path/to/credentials.json"
+
+# Gmail API (OAuth client secrets JSON)
+export GMAIL_CREDENTIALS="/path/to/gmail_credentials.json"
+
+# Slack Integration (Incoming Webhook or Bot Token)
+export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/..."
+export SLACK_BOT_TOKEN="your-slack-bot-token"
+```
+
+### Connected Services Verification
+
+- [ ] `GET /api/integrations/status` reports truthful connection states.
+- [ ] Action proposals create `pending_approval` entries in the External Action Ledger.
+- [ ] Calendar sync computes `sync_hash` for drift detection.
+- [ ] Email operations require two-step `CONFIRM_SEND` token confirmation.
+- [ ] Slack notifications format as operational Block Kit and prevent duplicate posts.
+- [ ] `GET /api/analytics/event/{event_id}` returns 4-domain metrics with PII sanitization.
+- [ ] `GET /api/analytics/portfolio` aggregates operational health across all managed events.
+
