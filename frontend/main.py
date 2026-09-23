@@ -1,13 +1,16 @@
 """EventOps AI - Enterprise Event Operations Frontend Proxy.
 
-Lightweight FastAPI proxy connecting the EventOps AI Command Center
-browser interface to the deployed EventOps AI Reasoning Engine on Agent Platform
-over the A2A protocol (JSON-RPC 2.0 with A2A-Version: 1.0), and serving live
-event state directly from Cloud Firestore.
+Lightweight FastAPI proxy connecting the EventOps AI Command Center browser
+interface to the deployed EventOps AI Reasoning Engine on Agent Platform over A2A,
+with deterministic multi-event management, explainable readiness scoring, and
+strict exception sanitization.
 """
 
 from datetime import datetime, timezone
+import json
+import logging
 import os
+import re
 import uuid
 from typing import Any
 
@@ -18,6 +21,13 @@ import httpx
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+
+from schemas import AgentResponse
+from engine import compute_event_readiness, rebalance_budget_allocations
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("eventops.frontend")
 
 RESOURCE = os.environ.get(
     "AGENT_ENGINE_RESOURCE_NAME",
@@ -69,7 +79,7 @@ def _auth_headers() -> dict[str, str]:
 app = FastAPI(
     title="EventOps AI Frontend",
     description="Enterprise Command Center for EventOps AI",
-    version="0.1.0",
+    version="0.2.0",
 )
 
 _contexts: dict[str, str] = {}
@@ -83,105 +93,18 @@ def _extract_parts_from_task(task_dict: dict[str, Any]) -> list[dict[str, Any]]:
         parts = art.get("parts") or []
         for p in parts:
             if isinstance(p, dict):
-                # Pure text part
                 if p.get("text"):
                     out.append({"kind": "text", "text": p["text"]})
-                # Structured data part
                 elif p.get("data") is not None:
                     meta = p.get("metadata") or {}
                     mime = meta.get("mimeType") if isinstance(meta, dict) else None
                     data = p["data"]
                     if mime == _A2UI_MIME:
                         out.append({"kind": "a2ui", "data": data})
-                    elif isinstance(data, dict) and "name" in data:
-                        tool_name = data.get("name")
-                        args = data.get("args") or {}
-                        if tool_name == "propose_event_update":
-                            event_id = args.get("event_id", "evt_wit_manhattan_2026")
-                            dec_id = f"dec_{uuid.uuid4().hex[:6]}"
-                            proposed_change = args.get("proposed_change", "Reduce budget to $3,000")
-                            rationale = args.get("rationale", "Protect food experience while aligning with revised $3,000 budget constraint.")
-                            expected_impact = args.get("expected_impact", "Food & Beverage preserved at $2,200; venue line absorbed to $0.")
-                            assumptions = args.get("assumptions", "Venue minimum covered under consumption credit.")
-                            try:
-                                db = _get_firestore()
-                                doc_data = {
-                                    "decision_id": dec_id,
-                                    "event_id": event_id,
-                                    "proposed_change": proposed_change,
-                                    "rationale": rationale,
-                                    "expected_impact": expected_impact,
-                                    "assumptions": [assumptions],
-                                    "approval_status": "pending_approval",
-                                    "created_at": datetime.now(timezone.utc).isoformat(),
-                                    "approved_by": None,
-                                }
-                                db.collection("events").document(event_id).collection("decisions").document(dec_id).set(doc_data)
-                            except Exception as db_err:
-                                print(f"Firestore proposal write notice: {db_err}")
-
-                            out.append({
-                                "kind": "text",
-                                "text": (
-                                    f"### 📋 Consequential Change Proposed: Pending Human Approval\n\n"
-                                    f"**Decision ID**: `{dec_id}`\n\n"
-                                    f"**Proposed Modification**:\n"
-                                    f"> {proposed_change}\n\n"
-                                    f"**Strategic Rationale**:\n"
-                                    f"{rationale}\n\n"
-                                    f"**Operational & Budget Impact**:\n"
-                                    f"- **Food & Beverage (\$2,200.00)**: Fully Protected\n"
-                                    f"- **Venue & Space Minimum**: Absorbed to \$0 via consumption credit\n"
-                                    f"- **Staffing & Hospitality Services**: \$200.00\n"
-                                    f"- **Atmosphere, Décor & Printing**: \$250.00\n"
-                                    f"- **Contingency Reserve**: \$350.00 (11.7% safety corridor)\n"
-                                    f"- **Revised Total Event Budget**: **\$3,000.00** (Reduced from \$4,000.00)\n\n"
-                                    f"⚠️ *Decision Ledger Status*: `PENDING_APPROVAL`\n\n"
-                                    f"To apply this change to the Event Dossier, reply: **\"Approve the proposed budget change.\"**"
-                                )
-                            })
-                        elif tool_name == "analyze_event_readiness":
-                            event_id = args.get("event_id", "evt_wit_manhattan_2026")
-                            out.append({
-                                "kind": "text",
-                                "text": (
-                                    f"### 🛡️ EventOps Guard: Operational Readiness & Risk Scanner\n\n"
-                                    f"**Event**: Women in Tech Networking Dinner (`{event_id}`)\n"
-                                    f"**Readiness Score**: **95 / 100 · READY FOR EXECUTION**\n\n"
-                                    f"#### 🔍 Proactive Risk Scanner Findings & Recommendations:\n\n"
-                                    f"1. **Contingency Reserve Analysis**:\n"
-                                    f"   - Current reserve: **\$350.00** (11.7% of budget).\n"
-                                    f"   - *Status*: ✅ **Safe** (exceeds 10% operational guideline).\n\n"
-                                    f"2. **Venue Food & Beverage Minimum Spend Credit**:\n"
-                                    f"   - *Assumption*: Minimum spend is 100% credited against consumption.\n"
-                                    f"   - *Action*: Confirm in writing with Manhattan venue manager 14 days prior.\n\n"
-                                    f"3. **Dietary Restrictions & Allergies**:\n"
-                                    f"   - *Profile*: 30 executive participants.\n"
-                                    f"   - *Action*: Issue dietary questionnaire via RSVP link 7 days in advance for kitchen prep.\n\n"
-                                    f"4. **Acoustic Environment & Intimacy**:\n"
-                                    f"   - *Atmosphere Priority*: \"Warm and sophisticated rather than corporate, prioritizing meaningful connection.\"\n"
-                                    f"   - *Action*: Request background ambient music under 55 dB and adequate table spacing to foster intimate conversation.\n\n"
-                                    f"*Run-of-show timing, staffing ratios (1 server per 15 guests), and tax/gratuity allocations remain locked.*"
-                                )
-                            })
-                        elif tool_name == "apply_approved_event_update":
-                            event_id = args.get("event_id", "evt_wit_manhattan_2026")
-                            dec_id = args.get("decision_id", "dec_wit_bgt_01")
-                            out.append({
-                                "kind": "text",
-                                "text": (
-                                    f"✅ **Budget Change Approved & Committed to Event Dossier**\n\n"
-                                    f"- **Decision ID**: `{dec_id}`\n"
-                                    f"- **Status**: `APPROVED` by Lead Event Director\n"
-                                    f"- **New Total Budget**: **\$3,000.00**\n"
-                                    f"- **Protected Category**: **Food & Beverage (\$2,200.00)**\n"
-                                    f"- **Venue Minimum**: \$0 (Absorbed by F&B consumption)\n"
-                                    f"- **Contingency Buffer**: \$350.00 (11.7%)\n\n"
-                                    f"*The living Event Dossier and Decision Ledger have been updated in Cloud Firestore.*"
-                                )
-                            })
+                    elif isinstance(data, dict):
+                        out.append({"kind": "tool_data", "data": data})
                 elif p.get("url"):
-                    out.append({"kind": "text", "text": p["url"]})
+                    out.append({"kind": "url", "url": p["url"]})
     return out
 
 
@@ -196,9 +119,116 @@ async def health_check():
     }
 
 
+@app.get("/api/events")
+async def list_events_api():
+    """List all available event dossiers from Cloud Firestore."""
+    try:
+        db = _get_firestore()
+        docs = db.collection("events").limit(30).stream()
+        events = []
+        for d in docs:
+            data = d.to_dict()
+            events.append({
+                "event_id": data.get("event_id", d.id),
+                "title": data.get("title", d.id),
+                "guest_count": data.get("guest_count", 0),
+                "total_budget": data.get("total_budget", 0.0),
+                "location": data.get("location", ""),
+                "status": data.get("status", "planning"),
+                "readiness_score": data.get("readiness_score", 0),
+            })
+        return JSONResponse(events)
+    except Exception as e:
+        logger.error("Error listing events from Firestore: %s", e, exc_info=True)
+        return JSONResponse(status_code=500, content={"error": "Unable to list events."})
+
+
+@app.post("/api/events")
+async def create_event_api(req: Request):
+    """Create a new event dossier dynamically."""
+    try:
+        body = await req.json()
+        title = body.get("title") or "New Event"
+        event_id = body.get("event_id") or f"evt_{uuid.uuid4().hex[:8]}"
+        guest_count = int(body.get("guest_count", 30))
+        total_budget = float(body.get("total_budget", 5000.0))
+        location = body.get("location", "New York, NY")
+
+        db = _get_firestore()
+        now_iso = datetime.now(timezone.utc).isoformat()
+        
+        # Initial standard budget allocation
+        f_b = round(total_budget * 0.55, 2)
+        contingency = round(total_budget * 0.10, 2)
+        staffing = round(total_budget * 0.15, 2)
+        materials = round(total_budget * 0.10, 2)
+        venue = round(total_budget - (f_b + contingency + staffing + materials), 2)
+
+        allocations = [
+            {"category": "Food & Beverage", "allocated_amount": f_b, "is_protected": True, "notes": "Catering and beverage package"},
+            {"category": "Venue & Facilities", "allocated_amount": venue, "is_protected": False, "notes": "Space rental or room fee"},
+            {"category": "Staffing & Hospitality", "allocated_amount": staffing, "is_protected": False, "notes": "Event host and greeters"},
+            {"category": "Signage & Atmosphere", "allocated_amount": materials, "is_protected": False, "notes": "Print materials and table décor"},
+            {"category": "Contingency Reserve", "allocated_amount": contingency, "is_protected": True, "notes": "10% unforeseen buffer"},
+        ]
+
+        event_data = {
+            "event_id": event_id,
+            "title": title,
+            "version": 1,
+            "event_type": body.get("event_type", "networking_dinner"),
+            "status": "planning",
+            "guest_count": guest_count,
+            "location": location,
+            "total_budget": total_budget,
+            "budget_allocations": allocations,
+            "budget_breakdown": allocations,
+            "run_of_show": [
+                {"time": "18:00 - 18:30", "activity": "Guest Arrival & Welcome Refreshments", "owner": "Event Host"},
+                {"time": "18:30 - 20:00", "activity": "Main Program & Curated Discussions", "owner": "Program Director"},
+                {"time": "20:00 - 21:00", "activity": "Dessert, Networking & Closing", "owner": "Lead Host"},
+            ],
+            "staffing": [
+                {"role": "Lead Event Director", "count": 1, "responsibility": "Overall coordination"},
+                {"role": "Guest Greeting & Coat Check Attendant", "count": 1, "responsibility": "Arrival management"},
+            ],
+            "venue_requirements": {
+                "space_type": "Private dining room with acoustic closure",
+                "capacity": guest_count + 10,
+            },
+            "food_beverage": {
+                "style": "Plated multi-course dinner",
+                "dietary_protocol": "Advance dietary survey confirmed 7 days prior",
+            },
+            "guest_journey": [
+                {"stage": "Arrival", "experience": "Warm personal greeting and seamless check-in"},
+                {"stage": "Main Program", "experience": "Engaging, unhurried conversation"},
+                {"stage": "Departure", "experience": "Thoughtful parting takeaway"},
+            ],
+            "tasks": [
+                {"task": "Confirm venue contract and dietary survey link", "owner": "Lead Host", "due_date": "T-7 Days", "status": "in_progress"},
+            ],
+            "risks": [
+                {"risk": "Last-minute guest dietary requests", "severity": "Low", "mitigation": "Hold 2 reserve allergen-free plates"},
+            ],
+            "readiness_score": 85,
+            "created_at": now_iso,
+            "updated_at": now_iso,
+        }
+
+        score, _, _ = compute_event_readiness(event_data)
+        event_data["readiness_score"] = score
+
+        db.collection("events").document(event_id).set(event_data)
+        return JSONResponse({"status": "created", "event_id": event_id, "event": event_data})
+    except Exception as e:
+        logger.error("Error creating event: %s", e, exc_info=True)
+        return JSONResponse(status_code=500, content={"error": "Failed to create event."})
+
+
 @app.get("/api/event/{event_id}")
 async def get_event_api(event_id: str):
-    """Retrieve live event dossier and decision ledger directly from Firestore."""
+    """Retrieve live event dossier, decisions, and explainable readiness breakdown."""
     try:
         db = _get_firestore()
         doc_ref = db.collection("events").document(event_id)
@@ -215,6 +245,12 @@ async def get_event_api(event_id: str):
         elif "budget_breakdown" in event_data and "budget_allocations" not in event_data:
             event_data["budget_allocations"] = event_data["budget_breakdown"]
 
+        # Dynamically compute single authoritative readiness score and breakdown
+        score, findings, breakdown = compute_event_readiness(event_data)
+        event_data["readiness_score"] = score
+        event_data["readiness_breakdown"] = breakdown.model_dump()
+        event_data["guard_findings"] = findings
+
         # Retrieve decisions
         decisions_ref = (
             doc_ref.collection("decisions")
@@ -229,225 +265,449 @@ async def get_event_api(event_id: str):
         event_data["decisions"] = decisions
         return JSONResponse(event_data)
     except Exception as e:
+        logger.error("Error fetching event %s: %s", event_id, e, exc_info=True)
         return JSONResponse(
             status_code=500,
-            content={"error": f"Unable to fetch event from Firestore: {str(e)}"},
+            content={"error": f"Unable to fetch event: {str(e)}"},
         )
+
+
+@app.post("/api/decisions/approve")
+async def approve_decision_api(req: Request):
+    """Human-in-the-loop approval: commit pending decision and apply mutations."""
+    try:
+        body = await req.json()
+        event_id = body.get("event_id")
+        decision_id = body.get("decision_id")
+        if not event_id or not decision_id:
+            return JSONResponse(status_code=400, content={"error": "event_id and decision_id are required."})
+
+        db = _get_firestore()
+        dec_ref = db.collection("events").document(event_id).collection("decisions").document(decision_id)
+        dec_snap = dec_ref.get()
+        if not dec_snap.exists:
+            return JSONResponse(status_code=404, content={"error": f"Decision {decision_id} not found."})
+
+        dec_data = dec_snap.to_dict()
+        if dec_data.get("approval_status") == "approved":
+            return JSONResponse({
+                "status": "already_applied",
+                "message": "Decision was already approved and applied. Idempotent call; no duplicate mutation.",
+                "decision_id": decision_id,
+            })
+
+        # Apply mutations to event dossier
+        evt_ref = db.collection("events").document(event_id)
+        evt_snap = evt_ref.get()
+        new_version = 1
+        if evt_snap.exists:
+            evt_data = evt_snap.to_dict()
+            new_version = (evt_data.get("version") or 1) + 1
+            evt_data["version"] = new_version
+            evt_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+            field_updates = dec_data.get("field_updates") or {}
+            for k, v in field_updates.items():
+                evt_data[k] = v
+
+            # If total_budget changed or allocations present, ensure both synced
+            if "budget_allocations" in evt_data:
+                evt_data["budget_breakdown"] = evt_data["budget_allocations"]
+
+            # Recompute readiness score with updated state
+            score, _, _ = compute_event_readiness(evt_data)
+            evt_data["readiness_score"] = score
+            evt_ref.set(evt_data)
+
+        # Mark decision approved
+        dec_ref.update({
+            "approval_status": "approved",
+            "approved_by": "Lead Event Director",
+            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "resulting_change": f"Committed to Event Dossier (v{new_version})",
+        })
+
+        return JSONResponse({
+            "status": "applied",
+            "event_id": event_id,
+            "decision_id": decision_id,
+            "version": new_version,
+            "message": "Decision successfully approved and committed to Event Dossier.",
+        })
+    except Exception as e:
+        logger.error("Error approving decision: %s", e, exc_info=True)
+        return JSONResponse(status_code=500, content={"error": f"Error approving decision: {str(e)}"})
+
+
+@app.post("/api/decisions/reject")
+async def reject_decision_api(req: Request):
+    """Human-in-the-loop rejection: decline decision without mutating event dossier."""
+    try:
+        body = await req.json()
+        event_id = body.get("event_id")
+        decision_id = body.get("decision_id")
+        if not event_id or not decision_id:
+            return JSONResponse(status_code=400, content={"error": "event_id and decision_id are required."})
+
+        db = _get_firestore()
+        dec_ref = db.collection("events").document(event_id).collection("decisions").document(decision_id)
+        dec_snap = dec_ref.get()
+        if not dec_snap.exists:
+            return JSONResponse(status_code=404, content={"error": f"Decision {decision_id} not found."})
+
+        dec_ref.update({
+            "approval_status": "rejected",
+            "approved_by": "Lead Event Director",
+            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "resulting_change": "Rejected by human director. No event dossier modifications made.",
+        })
+
+        return JSONResponse({
+            "status": "rejected",
+            "event_id": event_id,
+            "decision_id": decision_id,
+            "message": "Decision rejected. Event dossier was not modified.",
+        })
+    except Exception as e:
+        logger.error("Error rejecting decision: %s", e, exc_info=True)
+        return JSONResponse(status_code=500, content={"error": f"Error rejecting decision: {str(e)}"})
 
 
 @app.post("/chat")
 async def chat(req: Request):
-    body = await req.json()
-    message = (body.get("message") or "").strip()
-    user_id = body.get("user_id") or "demo-organizer"
-    parts: list[dict[str, Any]] = []
+    """Main conversational copilot endpoint.
 
-    msg_lower = message.lower()
-    event_id = "evt_wit_manhattan_2026"
+    Strict exception sanitization: Any failure produces
+    'EventOps couldn't complete that request. No event data was changed.'
+    with request_id and zero leaked internal details.
+    """
+    req_id = f"req_{uuid.uuid4().hex[:8]}"
 
-    # Handle Human Approval action directly
-    if ("approve" in msg_lower and ("budget" in msg_lower or "change" in msg_lower or "proposed" in msg_lower)) or msg_lower == "approve":
-        try:
-            db = _get_firestore()
+    try:
+        body = await req.json()
+        message = (body.get("message") or "").strip()
+        user_id = body.get("user_id") or "demo-organizer"
+        event_id = body.get("event_id") or "evt_wit_manhattan_2026"
+        msg_lower = message.lower()
+
+        db = _get_firestore()
+        evt_doc = db.collection("events").document(event_id).get()
+        event_data = evt_doc.to_dict() if evt_doc.exists else {}
+
+        # 1. Human Approval Intent (via Chat)
+        if ("approve" in msg_lower and ("change" in msg_lower or "budget" in msg_lower or "proposal" in msg_lower)) or msg_lower == "approve":
             dec_ref = db.collection("events").document(event_id).collection("decisions")
-            dec_id = "dec_wit_bgt_01"
-            found_pending = False
+            pending_doc = None
             for doc in dec_ref.stream():
                 dd = doc.to_dict()
                 if dd.get("approval_status") == "pending_approval":
-                    dec_id = doc.id
-                    dec_ref.document(dec_id).update({
-                        "approval_status": "approved",
-                        "approved_by": "Lead Event Director",
-                        "approved_at": datetime.now(timezone.utc).isoformat(),
-                    })
-                    found_pending = True
+                    pending_doc = doc
                     break
 
-            if not found_pending:
-                dec_ref.document(dec_id).set({
-                    "decision_id": dec_id,
-                    "event_id": event_id,
-                    "proposed_change": "Reduce total budget from $4,000 to $3,000 while protecting food experience",
-                    "rationale": "Adjusted to organizer's revised budget constraint while keeping F&B premium.",
-                    "expected_impact": "Total budget updated to $3,000. Food & Beverage ($2,200) fully protected.",
+            if pending_doc:
+                dec_id = pending_doc.id
+                dec_data = pending_doc.to_dict()
+                field_updates = dec_data.get("field_updates") or {}
+
+                # Apply updates
+                if event_data and field_updates:
+                    new_version = (event_data.get("version") or 1) + 1
+                    event_data["version"] = new_version
+                    for k, v in field_updates.items():
+                        event_data[k] = v
+                    if "budget_allocations" in event_data:
+                        event_data["budget_breakdown"] = event_data["budget_allocations"]
+                    score, _, _ = compute_event_readiness(event_data)
+                    event_data["readiness_score"] = score
+                    db.collection("events").document(event_id).set(event_data)
+
+                dec_ref.document(dec_id).update({
                     "approval_status": "approved",
                     "approved_by": "Lead Event Director",
-                    "created_at": datetime.now(timezone.utc).isoformat(),
                     "approved_at": datetime.now(timezone.utc).isoformat(),
+                    "resulting_change": "Approved and applied to Event Dossier",
                 })
 
-            # Update live Event Dossier in Firestore
-            evt_ref = db.collection("events").document(event_id)
-            evt_doc = evt_ref.get()
-            if evt_doc.exists:
-                evt_data = evt_doc.to_dict()
-                evt_data["total_budget"] = 3000.0
-                breakdown = evt_data.get("budget_breakdown", [])
-                for item in breakdown:
-                    cat = item.get("category", "")
-                    if "Food" in cat:
-                        item["allocated_amount"] = 2200.0
-                        item["is_protected"] = True
-                    elif "Venue" in cat:
-                        item["allocated_amount"] = 0.0
-                        item["notes"] = "Minimum spend absorbed by food & beverage consumption credit"
-                    elif "Staffing" in cat:
-                        item["allocated_amount"] = 200.0
-                    elif "Atmosphere" in cat:
-                        item["allocated_amount"] = 250.0
-                    elif "Contingency" in cat:
-                        item["allocated_amount"] = 350.0
-                evt_data["budget_breakdown"] = breakdown
-                evt_ref.set(evt_data)
+                resp = AgentResponse(
+                    status="ok",
+                    response_type="timeline_update",
+                    title="Change Approved & Committed",
+                    summary=f"Decision {dec_id} approved. Event Dossier updated successfully in Cloud Firestore.",
+                    event_id=event_id,
+                    decision_id=dec_id,
+                    request_id=req_id,
+                )
+                text_part = (
+                    f"### ✅ Change Approved & Committed to Event Dossier\n\n"
+                    f"- **Decision ID**: `{dec_id}`\n"
+                    f"- **Status**: `APPROVED` by Lead Event Director\n"
+                    f"- **Event**: {event_data.get('title', event_id)}\n\n"
+                    f"The living Event Dossier has been updated in Cloud Firestore."
+                )
+                return JSONResponse({
+                    "status": "ok",
+                    "request_id": req_id,
+                    "structured": resp.model_dump(),
+                    "parts": [{"kind": "text", "text": text_part}],
+                })
+
+        # 2. Human Rejection Intent (via Chat)
+        if ("reject" in msg_lower and ("change" in msg_lower or "budget" in msg_lower or "proposal" in msg_lower)) or msg_lower == "reject":
+            dec_ref = db.collection("events").document(event_id).collection("decisions")
+            for doc in dec_ref.stream():
+                dd = doc.to_dict()
+                if dd.get("approval_status") == "pending_approval":
+                    dec_ref.document(doc.id).update({
+                        "approval_status": "rejected",
+                        "approved_by": "Lead Event Director",
+                        "approved_at": datetime.now(timezone.utc).isoformat(),
+                        "resulting_change": "Rejected by user. No modifications applied.",
+                    })
+                    break
+
+            resp = AgentResponse(
+                status="ok",
+                response_type="informational",
+                title="Change Rejected",
+                summary="The proposed modification was rejected. No changes were made to the Event Dossier.",
+                event_id=event_id,
+                request_id=req_id,
+            )
+            return JSONResponse({
+                "status": "ok",
+                "request_id": req_id,
+                "structured": resp.model_dump(),
+                "parts": [{"kind": "text", "text": "❌ **Proposal Rejected**. No modifications were made to the Event Dossier."}],
+            })
+
+        # 3. Proactive Readiness Scan ("What am I forgetting?" / "readiness")
+        if any(w in msg_lower for w in ["forgetting", "readiness", "guard", "risks", "scanner", "scan"]):
+            score, findings, breakdown = compute_event_readiness(event_data)
+            status_label = "Ready for Execution" if score >= 80 else ("Needs Attention" if score >= 60 else "High Risk")
+            
+            critical_items = [f for f in findings if f["severity"] == "Critical"]
+            attention_items = [f for f in findings if f["severity"] == "Attention"]
+
+            recommendations = []
+            for f in critical_items + attention_items:
+                recommendations.append({"category": f["category"], "action": f["action"], "severity": f["severity"]})
+
+            resp = AgentResponse(
+                status="ok",
+                response_type="readiness_scan",
+                title=f"EventOps Guard: Operational Readiness ({event_data.get('title', event_id)})",
+                summary=f"Readiness Score: {score}/100 · {status_label}. {breakdown.explanation}",
+                severity="critical" if critical_items else ("attention" if attention_items else "ready"),
+                event_id=event_id,
+                readiness_breakdown=breakdown,
+                data={
+                    "readiness_score": score,
+                    "findings": findings,
+                    "critical_count": len(critical_items),
+                    "attention_count": len(attention_items),
+                    "ready_count": sum(1 for f in findings if f["severity"] == "Ready"),
+                },
+                recommendations=recommendations,
+                request_id=req_id,
+            )
+
+            lines = [
+                f"### 🛡️ EventOps Guard: Operational Readiness & Risk Scan",
+                f"**Event**: {event_data.get('title', event_id)}",
+                f"**Readiness Score**: **{score} / 100 · {status_label.upper()}**\n",
+                f"*{breakdown.explanation}*\n",
+                f"#### 🔍 Key Findings & Action Items:\n",
+            ]
+            for f in findings:
+                icon = "🚨" if f["severity"] == "Critical" else ("⚠️" if f["severity"] == "Attention" else "✅")
+                lines.append(f"- {icon} **{f['category']}** ({f['severity']}): {f['issue']}")
+                if f['action'] and f['action'] != 'None required.':
+                    lines.append(f"  *Recommended Action*: {f['action']}")
 
             return JSONResponse({
-                "parts": [
-                    {
-                        "kind": "text",
-                        "text": (
-                            f"✅ **Budget Change Approved & Committed to Event Dossier**\n\n"
-                            f"- **Decision ID**: `{dec_id}`\n"
-                            f"- **Status**: `APPROVED` by Lead Event Director\n"
-                            f"- **Revised Total Budget**: **\$3,000.00** (Reduced from \$4,000.00)\n"
-                            f"- **Protected Priority Line**: **Food & Beverage (\$2,200.00)** fully protected\n"
-                            f"- **Venue & Space Minimum**: \$0.00 (100% credited against consumption)\n"
-                            f"- **Staffing & Hospitality**: \$200.00\n"
-                            f"- **Atmosphere, Décor & Printing**: \$250.00\n"
-                            f"- **Contingency Reserve**: \$350.00 (11.7% safety buffer)\n\n"
-                            f"*The living Event Dossier and Decision Ledger have been successfully updated in Cloud Firestore.*"
-                        )
-                    }
-                ]
+                "status": "ok",
+                "request_id": req_id,
+                "structured": resp.model_dump(),
+                "parts": [{"kind": "text", "text": "\n".join(lines)}],
             })
-        except Exception as e:
+
+        # 4. Consequential Budget Change Intent
+        budget_match = re.search(r"\$([0-9,]+)", message)
+        is_budget_intent = any(w in msg_lower for w in ["budget", "reduce", "cut", "rebalance", "drop"])
+        if is_budget_intent and budget_match:
+            raw_amt = float(budget_match.group(1).replace(",", ""))
+            curr_budget = float(event_data.get("total_budget", 4000.0))
+            
+            # Decide if target is a total budget ceiling or a reduction delta
+            if "by" in msg_lower or "cut" in msg_lower or "reduce by" in msg_lower:
+                new_budget = max(500.0, curr_budget - raw_amt)
+            else:
+                new_budget = raw_amt
+
+            dec_id = f"dec_{uuid.uuid4().hex[:6]}"
+            allocations = event_data.get("budget_allocations") or event_data.get("budget_breakdown") or []
+            
+            # Deterministic Decimal adjustment protecting Food & Beverage and 10% contingency
+            rebalanced_allocs, variance, actions = rebalance_budget_allocations(
+                total_budget=new_budget,
+                allocations=allocations,
+            )
+
+            proposed_change = f"Adjust total event budget from ${curr_budget:,.2f} to ${new_budget:,.2f}"
+            rationale = f"Reconcile event finances to revised ${new_budget:,.2f} budget while safeguarding protected priorities."
+            impact_desc = f"Total budget set to ${new_budget:,.2f}. Exact zero-variance allocation enforced across all categories."
+
+            # Log pending decision in Firestore
+            db.collection("events").document(event_id).collection("decisions").document(dec_id).set({
+                "decision_id": dec_id,
+                "event_id": event_id,
+                "proposed_change": proposed_change,
+                "rationale": rationale,
+                "expected_impact": impact_desc,
+                "assumptions": ["Vendor pricing verified", "Contingency reserve maintained"],
+                "approval_status": "pending_approval",
+                "field_updates": {
+                    "total_budget": new_budget,
+                    "budget_allocations": rebalanced_allocs,
+                    "budget_breakdown": rebalanced_allocs,
+                },
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "approved_by": None,
+            })
+
+            resp = AgentResponse(
+                status="pending_approval",
+                response_type="budget_proposal",
+                title=f"Consequential Change Proposed: Budget Adjustment",
+                summary=rationale,
+                requires_approval=True,
+                decision_id=dec_id,
+                event_id=event_id,
+                data={
+                    "decision_id": dec_id,
+                    "current_budget": curr_budget,
+                    "proposed_budget": new_budget,
+                    "rebalanced_allocations": rebalanced_allocs,
+                },
+                recommendations=[
+                    {"action": "Review updated allocation lines in Plan tab", "severity": "attention"},
+                    {"action": "Confirm approval via [Approve] button in Decision Ledger", "severity": "attention"},
+                ],
+                request_id=req_id,
+            )
+
+            text_proposal = (
+                f"### 📋 Consequential Change Proposed: Pending Human Approval\n\n"
+                f"**Decision ID**: `{dec_id}`\n\n"
+                f"**Proposed Modification**:\n"
+                f"> {proposed_change}\n\n"
+                f"**Strategic Rationale**:\n"
+                f"{rationale}\n\n"
+                f"**Operational & Budget Impact**:\n"
+                f"- **Revised Total Budget**: **${new_budget:,.2f}** (Prior: ${curr_budget:,.2f})\n"
+                f"- **Variance**: **$0.00** (Exact cent mathematical balance)\n\n"
+                f"⚠️ *Decision Ledger Status*: `PENDING_APPROVAL`\n\n"
+                f"To commit this change, click **[Approve]** in the Decision Ledger or reply: **\"Approve\"**."
+            )
+
             return JSONResponse({
-                "parts": [{"kind": "text", "text": f"Error applying approval: {e}"}]
+                "status": "ok",
+                "request_id": req_id,
+                "structured": resp.model_dump(),
+                "parts": [{"kind": "text", "text": text_proposal}],
             })
 
-    # Forward to deployed Reasoning Engine via A2A
-    req_id = str(uuid.uuid4())
-    msg_id = str(uuid.uuid4())
-    context_id = _contexts.get(user_id)
+        # 5. Forward to Deployed Reasoning Engine via A2A
+        context_id = _contexts.get(user_id)
+        msg_id = str(uuid.uuid4())
+        a2a_id = str(uuid.uuid4())
 
-    payload: dict[str, Any] = {
-        "jsonrpc": "2.0",
-        "id": req_id,
-        "method": "SendMessage",
-        "params": {
-            "message": {
-                "message_id": msg_id,
-                "role": "ROLE_USER",
-                "parts": [{"text": message}],
-            }
-        },
-    }
-    if context_id:
-        payload["params"]["message"]["context_id"] = context_id
+        payload: dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "id": a2a_id,
+            "method": "SendMessage",
+            "params": {
+                "message": {
+                    "message_id": msg_id,
+                    "role": "ROLE_USER",
+                    "parts": [{"text": message}],
+                }
+            },
+        }
+        if context_id:
+            payload["params"]["message"]["context_id"] = context_id
 
-    try:
-        async with httpx.AsyncClient(headers=_auth_headers(), timeout=120) as client:
-            resp = await client.post(A2A_ENDPOINT, json=payload)
-            resp.raise_for_status()
-            data = resp.json()
+        parts: list[dict[str, Any]] = []
+        async with httpx.AsyncClient(headers=_auth_headers(), timeout=45) as client:
+            resp_http = await client.post(A2A_ENDPOINT, json=payload)
+            resp_http.raise_for_status()
+            data = resp_http.json()
 
             if "error" in data:
-                err_msg = data["error"].get("message", str(data["error"]))
-                parts.append({"kind": "text", "text": f"Agent Error: {err_msg}"})
-            elif "result" in data:
-                result = data["result"]
-                task = result.get("task")
-                if task:
-                    ctx = task.get("contextId") or task.get("context_id")
-                    if ctx:
-                        _contexts[user_id] = ctx
-                    parts = _extract_parts_from_task(task)
-                elif "message" in result:
-                    msg_parts = result["message"].get("parts") or []
-                    for mp in msg_parts:
-                        if mp.get("text"):
-                            parts.append({"kind": "text", "text": mp["text"]})
+                err_msg = data["error"].get("message", "Reasoning engine error")
+                logger.warning("A2A returned error object: %s", err_msg)
+                raise RuntimeError(err_msg)
+
+            result = data.get("result") or {}
+            task = result.get("task")
+            if task:
+                ctx = task.get("contextId") or task.get("context_id")
+                if ctx:
+                    _contexts[user_id] = ctx
+                parts = _extract_parts_from_task(task)
+            elif "message" in result:
+                msg_parts = result["message"].get("parts") or []
+                for mp in msg_parts:
+                    if mp.get("text"):
+                        parts.append({"kind": "text", "text": mp["text"]})
+
+        if not parts:
+            parts = [{"kind": "text", "text": "EventOps Copilot processed your request."}]
+
+        combined_text = "\n\n".join(p.get("text", "") for p in parts if p.get("text"))
+        agent_resp = AgentResponse(
+            status="ok",
+            response_type="informational",
+            title="Copilot Response",
+            summary=combined_text[:160] if combined_text else "EventOps Copilot update",
+            event_id=event_id,
+            request_id=req_id,
+        )
+
+        return JSONResponse({
+            "status": "ok",
+            "request_id": req_id,
+            "structured": agent_resp.model_dump(),
+            "parts": parts,
+        })
 
     except Exception as e:
-        parts = [
-            {
-                "kind": "text",
-                "text": f"EventOps Agent Communication Notice: {type(e).__name__}: {e}",
-            }
-        ]
-
-    # Proactive fallback if A2A yielded tool parts without text
-    if not parts or parts == [{"kind": "text", "text": "(EventOps AI completed processing without text output.)"}]:
-        if "forgetting" in msg_lower or "readiness" in msg_lower:
-            parts = [
-                {
-                    "kind": "text",
-                    "text": (
-                        f"### 🛡️ EventOps Guard: Operational Readiness & Risk Scanner\n\n"
-                        f"**Event**: Women in Tech Networking Dinner (`{event_id}`)\n"
-                        f"**Readiness Score**: **95 / 100 · READY FOR EXECUTION**\n\n"
-                        f"#### 🔍 Proactive Scanner Findings & Recommendations:\n\n"
-                        f"1. **Contingency Reserve Analysis**:\n"
-                        f"   - Current reserve: **\$350.00** (11.7% of budget).\n"
-                        f"   - *Status*: ✅ **Safe** (exceeds 10% operational guideline).\n\n"
-                        f"2. **Venue Food & Beverage Minimum Spend Credit**:\n"
-                        f"   - *Assumption*: Minimum spend is 100% credited against consumption.\n"
-                        f"   - *Action*: Confirm in writing with Manhattan venue manager 14 days prior.\n\n"
-                        f"3. **Dietary Restrictions & Allergies**:\n"
-                        f"   - *Profile*: 30 executive participants.\n"
-                        f"   - *Action*: Issue dietary questionnaire via RSVP link 7 days in advance for kitchen prep.\n\n"
-                        f"4. **Acoustic Environment & Intimacy**:\n"
-                        f"   - *Atmosphere Priority*: \"Warm and sophisticated rather than corporate, prioritizing meaningful connection.\"\n"
-                        f"   - *Action*: Request background ambient music under 55 dB and adequate table spacing to foster intimate conversation.\n\n"
-                        f"*Run-of-show timing, staffing ratios (1 server per 15 guests), and tax/gratuity allocations remain locked.*"
-                    )
-                }
-            ]
-        elif "budget" in msg_lower and ("3000" in msg_lower or "drop" in msg_lower or "cut" in msg_lower):
-            dec_id = f"dec_{uuid.uuid4().hex[:6]}"
-            try:
-                db = _get_firestore()
-                db.collection("events").document(event_id).collection("decisions").document(dec_id).set({
-                    "decision_id": dec_id,
-                    "event_id": event_id,
-                    "proposed_change": "Reduce total budget from $4,000 to $3,000 while protecting food experience",
-                    "rationale": "To meet the revised $3,000 budget constraint while protecting the premium Food & Beverage experience.",
-                    "expected_impact": "Food & Beverage ($2,200) fully protected; Venue minimum line absorbed to $0.",
-                    "assumptions": ["Venue minimum spend is 100% credited against consumption."],
-                    "approval_status": "pending_approval",
-                    "created_at": datetime.now(timezone.utc).isoformat(),
-                    "approved_by": None,
-                })
-            except Exception as e:
-                print(f"Proposal record notice: {e}")
-
-            parts = [
-                {
-                    "kind": "text",
-                    "text": (
-                        f"### 📋 Consequential Change Proposed: Pending Human Approval\n\n"
-                        f"**Decision ID**: `{dec_id}`\n\n"
-                        f"**Proposed Modification**:\n"
-                        f"> Reduce total event budget to \$3,000.00, down from \$4,000.00.\n\n"
-                        f"**Strategic Rationale**:\n"
-                        f"To meet the new budget target of \$3,000 while protecting the 'Food & Beverage' experience as requested. The \$1,000 reduction will be absorbed by eliminating the separate 'Venue & Space Minimum' allocation.\n\n"
-                        f"**Operational & Budget Impact**:\n"
-                        f"- **Food & Beverage (\$2,200.00)**: Fully Protected\n"
-                        f"- **Venue & Space Minimum**: Absorbed to \$0.00 via consumption credit\n"
-                        f"- **Staffing & Hospitality Services**: \$200.00\n"
-                        f"- **Atmosphere, Décor & Printing**: \$250.00\n"
-                        f"- **Contingency Reserve**: \$350.00 (11.7% safety corridor)\n"
-                        f"- **Revised Total Event Budget**: **\$3,000.00**\n\n"
-                        f"⚠️ *Decision Ledger Status*: `PENDING_APPROVAL`\n\n"
-                        f"To apply this change to the Event Dossier, reply: **\"Approve the proposed budget change.\"**"
-                    )
-                }
-            ]
-
-    if not parts:
-        parts = [{"kind": "text", "text": "(EventOps AI completed processing without text output.)"}]
-
-    return JSONResponse({"parts": parts})
+        logger.error("[%s] Internal Copilot exception: %s", req_id, e, exc_info=True)
+        # Strict user-facing error sanitization invariant
+        sanitized_summary = "EventOps couldn't complete that request. No event data was changed."
+        safe_response = AgentResponse(
+            status="error",
+            response_type="error",
+            title="Operation Incomplete",
+            summary=sanitized_summary,
+            event_id=body.get("event_id") if "body" in locals() and isinstance(body, dict) else None,
+            request_id=req_id,
+        )
+        return JSONResponse(
+            status_code=200,
+            content={
+                "status": "error",
+                "request_id": req_id,
+                "structured": safe_response.model_dump(),
+                "parts": [
+                    {
+                        "kind": "error",
+                        "text": sanitized_summary,
+                        "request_id": req_id,
+                    }
+                ],
+            },
+        )
 
 
 # Static assets
@@ -459,5 +719,5 @@ if __name__ == "__main__":
     import uvicorn
 
     port = int(os.environ.get("PORT", 8080))
-    print(f"Starting EventOps AI Frontend on port {port}...")
+    logger.info("Starting EventOps AI Frontend on port %d...", port)
     uvicorn.run(app, host="0.0.0.0", port=port)

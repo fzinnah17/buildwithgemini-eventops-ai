@@ -57,6 +57,12 @@ class DummyEventStore:
     def get_decisions(self, event_id: str):
         return self.decisions.get(event_id, [])
 
+    def get_decision(self, event_id: str, decision_id: str):
+        for d in self.decisions.get(event_id, []):
+            if d.decision_id == decision_id:
+                return d
+        return None
+
     def update_decision_status(self, event_id: str, decision_id: str, status: str, approved_by=None, resulting_change=None):
         for d in self.decisions.get(event_id, []):
             if d.decision_id == decision_id:

@@ -45,6 +45,8 @@ class DecisionRecord(BaseModel):
     approval_status: str = "pending_approval"  # "pending_approval", "approved", "rejected"
     approved_by: str | None = None
     resulting_change: str | None = None
+    idempotency_key: str | None = None
+    field_updates: dict[str, Any] = Field(default_factory=dict)
 
 
 class EventDossier(BaseModel):
@@ -52,6 +54,7 @@ class EventDossier(BaseModel):
 
     event_id: str
     title: str
+    version: int = 1
     event_type: str = "networking_dinner"
     objective: str = ""
     status: str = "planning"  # "planning", "confirmed", "in_progress", "completed"
@@ -165,6 +168,19 @@ class EventStore:
         for doc in docs:
             decisions.append(DecisionRecord.model_validate(doc.to_dict()))
         return decisions
+
+    def get_decision(self, event_id: str, decision_id: str) -> DecisionRecord | None:
+        """Fetch a single decision record by ID."""
+        doc_ref = (
+            self.db.collection("events")
+            .document(event_id)
+            .collection("decisions")
+            .document(decision_id)
+        )
+        snap = doc_ref.get()
+        if not snap.exists:
+            return None
+        return DecisionRecord.model_validate(snap.to_dict())
 
     def update_decision_status(
         self,
