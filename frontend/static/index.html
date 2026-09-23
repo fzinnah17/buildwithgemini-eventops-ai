@@ -1388,15 +1388,36 @@ function setDemoModeUI(active) {
   const dot = document.getElementById("headerStatusDot");
   const text = document.getElementById("headerStatusText");
   const banner = document.getElementById("offlineFallbackBanner");
+  const initialBubble = document.querySelector("#chatLog .chat-msg.agent:first-child .chat-bubble");
+  const chatInput = document.getElementById("chatInput");
+
   if (active) {
     if (chip) chip.classList.add("demo-chip");
     if (dot) dot.classList.add("demo-dot");
     if (text) text.textContent = "PORTFOLIO DEMO MODE · Zero-Cost Static";
     if (banner) banner.classList.add("hidden");
+    if (initialBubble) {
+      initialBubble.innerHTML = `
+        <strong>EventOps Demo Ready</strong><br>
+        You are viewing the zero-cost portfolio demo using preserved sample event data. Explore EventOps AI's readiness analysis, budget workflows, Decision Ledger, Run of Show, Guest Journey, and governance model without changing live cloud state.
+      `;
+    }
+    if (chatInput) {
+      chatInput.placeholder = "Select a demo prompt chip above to explore workflow...";
+    }
   } else {
     if (chip) chip.classList.remove("demo-chip");
     if (dot) dot.classList.remove("demo-dot");
     if (text) text.textContent = "ONLINE · Agent Platform";
+    if (initialBubble) {
+      initialBubble.innerHTML = `
+        <strong>EventOps Copilot Ready</strong><br>
+        I am connected to your deployed Reasoning Engine and Cloud Firestore. I maintain cross-session memory in Vertex AI Memory Bank and enforce two-phase human governance for consequential changes.
+      `;
+    }
+    if (chatInput) {
+      chatInput.placeholder = "Direct Copilot or ask about event operations...";
+    }
   }
 }
 
@@ -1711,9 +1732,10 @@ async function handleDecisionAction(decisionId, action) {
     // Add confirmation message to copilot transcript
     const msg = createMsg("agent");
     const isApprove = action === "approve";
+    const isDemo = dataProvider instanceof DemoEventOpsProvider;
     msg.innerHTML = `
       <div class="copilot-card ${isApprove ? '' : 'proposal'}">
-        <div class="copilot-card-title">${isApprove ? '✅ Decision Committed' : '❌ Decision Rejected'}</div>
+        <div class="copilot-card-title">${isApprove ? '✅ Decision Committed' : '❌ Decision Rejected'} ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
         <div><strong>Decision ID:</strong> <code>${decisionId}</code></div>
         <div>${result.message || 'Operation executed.'}</div>
       </div>
@@ -1769,8 +1791,11 @@ async function sendMessage(text) {
   userBubble.textContent = text;
   chatInput.value = "";
 
+  const isDemo = dataProvider instanceof DemoEventOpsProvider;
   const agentBubble = createMsg("agent");
-  agentBubble.innerHTML = '<span class="spin"></span> EventOps Copilot evaluating operational state...';
+  agentBubble.innerHTML = isDemo 
+    ? '<span class="spin"></span> Evaluating preserved event state (Demo Mode)...'
+    : '<span class="spin"></span> EventOps Copilot evaluating operational state...';
 
   try {
     const data = await dataProvider.chat(text, CURRENT_EVENT_ID, "demo-organizer");
@@ -1786,17 +1811,34 @@ function renderCopilotReply(bubble, data) {
   const structured = data.structured || {};
   const respType = structured.response_type || data.response_type || "informational";
 
+  if (respType === "demo_notice") {
+    bubble.innerHTML = `
+      <div class="copilot-card" style="border-left: 3px solid var(--accent-amber); background: rgba(251, 191, 36, 0.08);">
+        <div class="copilot-card-title" style="color: var(--accent-amber); display: flex; align-items: center; gap: 0.3rem;">
+          <span class="material-symbols-outlined" style="font-size: 16px;">info</span>
+          <span>Portfolio Demo Notice</span>
+        </div>
+        <p style="font-size: 0.8rem; margin: 0.35rem 0 0 0; color: var(--text-primary); line-height: 1.4;">
+          Live AI Copilot is unavailable in Portfolio Demo Mode. Choose one of the demo scenarios above to explore the workflow.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
   if (respType === "budget_proposal") {
     const decId = structured.decision_id || "dec_prop";
+    const isDemo = structured.is_demo || (dataProvider instanceof DemoEventOpsProvider);
     bubble.innerHTML = `
       <div class="copilot-card proposal">
         <div class="copilot-card-title">
           <span class="material-symbols-outlined" style="font-size: 16px;">gavel</span>
-          <span>${structured.title || "Budget Adjustment Proposed"}</span>
+          <span>${structured.title || (isDemo ? "[Demo Simulation] Budget Rebalance Proposed" : "Budget Adjustment Proposed")}</span>
         </div>
         <p style="font-size: 0.8rem; margin: 0.25rem 0;">${structured.summary || ""}</p>
         <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.4rem;">
           Decision ID: <code>${decId}</code> · Status: <strong>PENDING APPROVAL</strong>
+          ${isDemo ? '<span style="color: var(--accent-amber); margin-left: 0.4rem;">(In-Memory Simulation)</span>' : ''}
         </div>
         <div class="btn-action-group">
           <button class="btn-approve" onclick="handleDecisionAction('${decId}', 'approve')">Approve Proposal</button>
@@ -1809,6 +1851,7 @@ function renderCopilotReply(bubble, data) {
 
   if (respType === "readiness_scan") {
     const b = structured.readiness_breakdown || {};
+    const isDemo = structured.is_demo || (dataProvider instanceof DemoEventOpsProvider);
     const items = (b.items || []).map(it => `
       <div style="font-size: 0.75rem; margin-top: 0.2rem;">
         <strong>${it.points < 0 ? '⚠️' : '✅'} ${it.category}</strong> (${it.impact} pts): ${it.rationale}
@@ -1818,7 +1861,7 @@ function renderCopilotReply(bubble, data) {
       <div class="copilot-card">
         <div class="copilot-card-title">
           <span class="material-symbols-outlined" style="font-size: 16px;">security</span>
-          <span>EventOps Guard: Readiness (${b.score || 95}/100)</span>
+          <span>${isDemo ? '[Demo Simulation] EventOps Guard: Readiness' : 'EventOps Guard: Readiness'} (${b.score || 95}/100)</span>
         </div>
         <p style="font-size: 0.8rem; margin: 0.25rem 0;">${b.explanation || structured.summary || ""}</p>
         <div style="margin-top: 0.35rem; border-top: 1px solid var(--border-subtle); padding-top: 0.35rem;">

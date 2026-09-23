@@ -109,7 +109,7 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
       status: "approved",
       decision_id: decisionId,
       idempotency_status: "executed",
-      message: `Decision committed. Event dossier updated to v${evt ? evt.version : 2}.`
+      message: `Simulated decision committed to local demo dossier (v${evt ? evt.version : 2}). No external cloud state was modified.`
     };
   }
 
@@ -124,7 +124,7 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
       status: "rejected",
       decision_id: decisionId,
       idempotency_status: "executed",
-      message: "Decision rejected. Operational state preserved."
+      message: "Simulated decision rejected. Local operational state preserved."
     };
   }
 
@@ -167,17 +167,19 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
   }
 
   async chat(message, eventId, userId) {
-    const q = message.toLowerCase();
+    const q = message.toLowerCase().trim();
     
+    // Demo Scenario 1: Readiness scan / What am I forgetting
     if (q.includes("forget") || q.includes("guard") || q.includes("readiness") || q.includes("risk") || q.includes("scan")) {
       return {
         response_type: "readiness_scan",
         structured: {
           response_type: "readiness_scan",
-          summary: "EventOps Guard scanned the living dossier against the authoritative playbook standards.",
+          is_demo: true,
+          summary: "[Demo Simulation] EventOps Guard evaluated the preserved event dossier against the authoritative playbook standards.",
           readiness_breakdown: {
             score: 95,
-            explanation: "Operational readiness is 95/100. 1 minor attention item flagged for arrival buffer.",
+            explanation: "[Demo Simulation] Operational readiness is 95/100 based on preserved dossier. 1 minor attention item flagged for arrival buffer.",
             items: [
               { category: "Budget Invariance", impact: "+25", rationale: "Exact zero-variance budget balance maintained with 10% safety reserve.", points: 25 },
               { category: "Run of Show Decompression", impact: "+20", rationale: "Arrival buffer and speaker transition caps verified against playbook.", points: 20 },
@@ -189,12 +191,13 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
       };
     }
 
-    if (q.includes("budget") || q.includes("rebalance") || q.includes("adjust") || q.includes("catering") || q.includes("reduce")) {
+    // Demo Scenario 2: Budget Rebalance Proposal
+    if (q.includes("budget") || q.includes("rebalance") || q.includes("adjust") || q.includes("catering") || q.includes("reduce") || q.includes("cost")) {
       const decId = `dec_${Math.random().toString(36).substring(2, 8)}`;
       const dec = {
         decision_id: decId,
         event_id: eventId,
-        proposed_change: "Rebalance budget: Catering ($1,800.00), Venue ($1,200.00), AV ($600.00), Contingency ($400.00)",
+        proposed_change: "[Demo Simulation] Rebalance budget: Catering ($1,800.00), Venue ($1,200.00), AV ($600.00), Contingency ($400.00)",
         rationale: "Realign allocations to guarantee mandatory 10% safety contingency reserve while maintaining high culinary standards.",
         approval_status: "pending_approval",
         expected_impact: "Restores safety margin to 10.0% without exceeding $4,000 ceiling.",
@@ -205,31 +208,36 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
         response_type: "budget_proposal",
         structured: {
           response_type: "budget_proposal",
+          is_demo: true,
           decision_id: decId,
-          title: "Budget Rebalance Proposed",
+          title: "[Demo Simulation] Budget Rebalance Proposed",
           summary: dec.proposed_change
         }
       };
     }
 
-    if (q.includes("staff") || q.includes("ratio")) {
+    // Demo Scenario 3: Staffing ratio playbook check
+    if (q.includes("staff") || q.includes("ratio") || q.includes("coverage")) {
       return {
         response_type: "informational",
+        is_demo: true,
         parts: [
           {
             kind: "text",
-            text: "Event Operations Playbook Rule (Staffing):\n• Seated VIP dinners require a 1:8 guest-to-staff ratio.\n• For 28 guests, minimum 4 dedicated service staff + 1 culinary lead are required.\n• The current dossier allocates 4 servers + 1 event lead, which satisfies the operational standard."
+            text: "[Demo Simulation] Event Operations Playbook Rule (Staffing):\n• Seated VIP dinners require a 1:8 guest-to-staff ratio.\n• For 28 guests, minimum 4 dedicated service staff + 1 culinary lead are required.\n• The preserved dossier allocates 4 servers + 1 event lead, which satisfies the operational standard."
           }
         ]
       };
     }
 
+    // Free-form fallback: Gracefully disable arbitrary chat and guide to demo scenarios
     return {
-      response_type: "informational",
+      response_type: "demo_notice",
+      is_demo: true,
       parts: [
         {
           kind: "text",
-          text: `[Portfolio Demo Mode] EventOps Copilot evaluated the active event dossier (${eventId}).\n\nAll operational constraints (seating, run-of-show pacing, budget invariance) are in compliance with Playbook standards. Try asking:\n• "What am I forgetting?" to trigger an EventOps Guard scan\n• "Rebalance budget" to generate a human-in-the-loop decision proposal\n• "Review staffing ratio" to check staffing metrics`
+          text: "Live AI Copilot is unavailable in Portfolio Demo Mode. Choose one of the demo scenarios above to explore the workflow."
         }
       ]
     };
