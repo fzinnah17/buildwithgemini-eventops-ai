@@ -10,7 +10,6 @@
 [![Cloud Run Live](https://img.shields.io/badge/Cloud%20Run-Live%20Verified-blue.svg)](https://eventops-ai-frontend-282776913855.us-central1.run.app)
 [![Permanent Demo](https://img.shields.io/badge/GitHub%20Pages-Permanent%20Demo-orange.svg)](https://fzinnah17.github.io/buildwithgemini-eventops-ai/)
 [![Release](https://img.shields.io/badge/Release-v1.0.0-gold.svg)](https://github.com/fzinnah17/buildwithgemini-eventops-ai/releases/tag/v1.0.0)
-[![License: MIT](https://img.shields.io/badge/License-MIT-gray.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
@@ -26,7 +25,7 @@ Built during **Google Cloud Build with Gemini**, the system was architected arou
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                      REASONING IS NOT EXECUTION                         │
 ├─────────────────────────────────────────────────────────────────────────┤
-│ • Gemini 2.5 Pro       → Interprets intent, spots risk, and recommends  │
+│ • Gemini 2.5 Flash     → Interprets intent, spots risk, and recommends  │
 │ • Deterministic Code   → Calculates, validates, and mutates to penny   │
 │ • Cloud Firestore      → Authoritative operational state & audit trails │
 │ • Vertex Memory Bank   → Durable cross-session organizer preferences    │
@@ -84,7 +83,7 @@ EventOps AI organizes high-consequence event management into **four structured o
 - **Live Event Dossier**: Authoritative event snapshot covering location, contracted headcount (30 guests), hard budget ceiling ($4,000.00), and operational status.
 - **EventOps Guard (Readiness Scoring)**: Real-time 100-point readiness engine calculating severity profiles (`0 Critical`, `1 Attention`, `5 Ready`). The "Why 95?" inspectable breakdown explains exact point deductions (e.g. `-5 pts` for an 8.8% contingency buffer vs 10% threshold).
 - **Governed Run of Show & Plan**: Visual budget allocation bar enforcing zero-penny variance ($0.00 drift across 6 categories) coupled with a chronological timeline.
-- **Operations Copilot Drawer**: An on-demand 400px slide-over workspace connected to Gemini 2.5 Pro that analyzes constraints and presents structured change proposals.
+- **Operations Copilot Drawer**: An on-demand 400px slide-over workspace connected to Gemini 2.5 Flash that analyzes constraints and presents structured change proposals.
 - **Two-Phase Governance Ledger**: Every consequential recommendation generates a `PENDING_APPROVAL` decision object. Organizers retain explicit `Approve` and `Reject` controls. No state is modified until the human signs off.
 - **Executive & Portfolio Analytics**: 4-domain telemetry grid (Event Health, Financial Invariance, Governance, Reliability) plus portfolio-level cross-event comparative fleet analysis.
 - **Provider-Ready Integrations**: Unified operational workflows for Google Calendar, Gmail, and Slack, powered by deterministic simulation providers for credential-free portfolio demonstration and automated CI validation.
@@ -122,7 +121,7 @@ flowchart TD
 
     subgraph AgentPlatform ["Google Vertex AI Agent Platform"]
         ReasoningEngine["Vertex AI Reasoning Engine\n(ID: 1788548626868338688)"]
-        GeminiModel["Gemini 2.5 Pro Foundation Model\n(Structured Function Calling)"]
+        GeminiModel["Gemini 2.5 Flash Foundation Model\n(Structured Function Calling)"]
         MemoryBank["Vertex AI Memory Bank\n(Durable Organizer Preferences)"]
         RAGCorpus["Serverless RAG Engine\n(ID: 1710444268633456640 / SOP Playbook)"]
         Sandbox["Code Sandbox Execution\n(Deterministic Python Arithmetic)"]
@@ -130,7 +129,7 @@ flowchart TD
 
     subgraph OperationalStorage ["Authoritative Operational Store"]
         FirestoreEvents["Cloud Firestore: events\n(Authoritative Dossier & Budget)"]
-        FirestoreDecisions["Cloud Firestore: events/{id}/decisions\n(Two-Phase Immutable Audit Ledger)"]
+        FirestoreDecisions["Cloud Firestore: events/{id}/decisions\n(Auditable Two-Phase Decision Ledger)"]
         GCSMedia["Google Cloud Storage\n(Atmospheric Visual Assets)"]
     end
 
@@ -159,7 +158,7 @@ sequenceDiagram
     actor Organizer as Human Event Director
     participant UI as Operations Workspace
     participant Proxy as Cloud Run Application Gateway
-    participant Agent as Gemini 2.5 Pro / ADK Agent
+    participant Agent as Gemini 2.5 Flash / ADK Agent
     participant DB as Cloud Firestore (Audit Store)
     participant Tool as Deterministic Financial Engine
 
@@ -192,7 +191,7 @@ sequenceDiagram
 ## 5. Staff Engineering Decisions & Design Principles
 
 ### 1. Decoupling Reasoning from Execution
-- **Decision**: Restrict Gemini 2.5 Pro to interpreting context, querying retrieval corpora, and generating proposal envelopes. Never allow the LLM to write directly to production tables or trigger external dispatches.
+- **Decision**: Restrict Gemini 2.5 Flash to interpreting context, querying retrieval corpora, and generating proposal envelopes. Never allow the LLM to write directly to production tables or trigger external dispatches.
 - **Rationale**: LLM non-determinism makes direct API execution hazardous. By funneling all state changes through a two-phase proposal pipeline, the system captures full traceability and enforces strict human agency.
 
 ### 2. Firestore as the Single Source of Truth
@@ -356,8 +355,8 @@ EventOps AI features **provider-ready workflows with deterministic simulation pr
 ┌───────────────────────┬─────────────────────────────────────────────────┐
 │ Layer                 │ Technologies                                    │
 ├───────────────────────┼─────────────────────────────────────────────────┤
-│ Foundation Model      │ Google Gemini 2.5 Pro (Vertex AI API)           │
-│ Agent Framework       │ Google Agent Development Kit (ADK) v1.7.0       │
+│ Foundation Model      │ Google Gemini 2.5 Flash (Vertex AI API)         │
+│ Agent Framework       │ Google Agent Development Kit (ADK 2.8.x)        │
 │ Agent Runtime         │ Vertex AI Agent Platform Reasoning Engine       │
 │ Application Gateway   │ FastAPI (Python 3.12), Uvicorn, ASGI            │
 │ Container Platform    │ Google Cloud Run (us-central1, fully managed)   │
@@ -420,6 +419,6 @@ uv run python frontend/main.py
 
 ---
 
-## License
+## License & Attribution
 
-Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
+This repository is developed for demonstration purposes as part of Google Cloud Build with Gemini. Upstream Google Agent Development Kit and sample components retain their respective copyright notices and Apache License 2.0 terms where designated in file headers.

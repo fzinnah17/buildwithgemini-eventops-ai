@@ -17,7 +17,7 @@ Traditional software treats event operations as static spreadsheets or rigid CRU
 
 ## The Product
 
-**EventOps AI** is an enterprise AI Event Concierge and Run-of-Show Governance Agent. It pairs generative language reasoning with deterministic financial verification, live Cloud Firestore state persistence, and an immutable two-phase decision ledger.
+**EventOps AI** is an enterprise AI Event Concierge and Run-of-Show Governance Agent. It pairs generative language reasoning with deterministic financial verification, live Cloud Firestore state persistence, and an auditable two-phase decision ledger.
 
 ![EventOps Command Center](images/01_hero_overview_dark.png)
 *Figure 1: The EventOps AI Executive Command Center, featuring the Authoritative Event Dossier, 95/100 Readiness Ring with transparent point deductions, and the Operational Visual Intelligence matrix.*
@@ -43,7 +43,7 @@ The architectural foundation of EventOps AI is that **reasoning is not execution
 flowchart TD
     User([Human Event Director]) <--> UI[Command Center Canvas]
     UI <--> Proxy[Cloud Run FastAPI Gateway]
-    Proxy <--> Agent[Gemini 2.5 Pro / ADK Agent]
+    Proxy <--> Agent[Gemini 2.5 Flash / ADK Agent]
     
     Agent --> |Deterministic RPC| Calc[Python Decimal Engine]
     Agent --> |Semantic Retrieval| RAG[Serverless RAG SOP Corpus]
@@ -54,9 +54,9 @@ flowchart TD
     Proxy --> |Commit Mutation| DB
 ```
 
-- **Gemini 2.5 Pro**: Interprets requirements, identifies operational risks, and recommends adjustments.
+- **Gemini 2.5 Flash**: Interprets requirements, identifies operational risks, and recommends adjustments.
 - **Deterministic Services**: Compute taxes, balances, and contingency buffers with penny precision ($0.00 variance).
-- **Cloud Firestore**: Holds authoritative operational records and immutable audit ledgers.
+- **Cloud Firestore**: Holds authoritative operational records and auditable decision ledgers.
 - **Vertex AI Memory Bank**: Preserves durable organizer preferences across multiple engagements.
 - **Human Director**: Retains absolute approval authority over consequential changes.
 
