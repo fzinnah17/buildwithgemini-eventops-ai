@@ -457,10 +457,10 @@
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
-  .badge-approved { background: var(--accent-emerald-subtle); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
-  .badge-pending { background: var(--accent-amber-subtle); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
-  .badge-rejected { background: var(--accent-rose-subtle); color: var(--accent-rose); border: 1px solid rgba(239, 68, 68, 0.3); }
-  .badge-protected { background: var(--accent-cyan-subtle); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
+  .badge-approved, .badge-emerald { background: var(--accent-emerald-subtle); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-pending, .badge-amber { background: var(--accent-amber-subtle); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-rejected, .badge-rose { background: var(--accent-rose-subtle); color: var(--accent-rose); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-protected, .badge-blue { background: var(--accent-cyan-subtle); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
   .badge-neutral { background: var(--bg-surface-elevated); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
 
   /* TIMELINE */
@@ -1127,7 +1127,7 @@
           <div class="metric-card">
             <div class="metric-label">Staffing Ratio</div>
             <div class="metric-value" id="cardStaffRatio">-</div>
-            <div class="metric-sub">Guests Per Staff</div>
+            <div class="metric-sub" id="cardStaffCount">Guests Per Staff</div>
           </div>
         </div>
 
@@ -1137,10 +1137,10 @@
             <div class="ops-panel-title">
               <span class="material-symbols-outlined" style="font-size: 16px;">notification_important</span> Critical Operational Attention Needed
             </div>
-            <span class="badge badge-amber" id="overviewAttentionCount">1 Action Required</span>
+            <span class="badge badge-emerald" id="overviewAttentionCount">All Clear</span>
           </div>
           <div id="overviewAttentionList">
-            <!-- Dynamic alerts -->
+            <div class="attention-item" style="color: var(--accent-emerald);">All operational readiness gates are satisfied. No critical blockers.</div>
           </div>
         </div>
       </div>
@@ -2044,9 +2044,16 @@ function renderMetricsRow(data) {
 
     const staffing = data.staffing || [];
     const staffCount = staffing.reduce((sum, s) => sum + (Number(s.count) || 1), 0);
-    const ratio = staffCount > 0 ? (data.guest_count / staffCount).toFixed(1) : "N/A";
+    const guestCount = Number(data.guest_count || 0);
+    const ratio = staffCount > 0 ? (guestCount / staffCount).toFixed(1) : "N/A";
     const staffRatioElem = document.getElementById("cardStaffRatio");
-    if (staffRatioElem) staffRatioElem.textContent = staffCount > 0 ? `1 : ${ratio}` : "1 : 7.5";
+    if (staffRatioElem) {
+      staffRatioElem.textContent = staffCount > 0 ? `1 : ${ratio}` : (guestCount > 0 ? `1 : ${(guestCount / 4).toFixed(1)}` : "1 : 7.5");
+    }
+    const staffCountElem = document.getElementById("cardStaffCount");
+    if (staffCountElem) {
+      staffCountElem.textContent = staffCount > 0 ? `${staffCount} Staff Personnel` : "Guests Per Staff";
+    }
   } catch (err) {
     console.error("Failed to render Metrics Row:", err);
   }
@@ -2056,7 +2063,18 @@ function getNormalizedFindings(data) {
   if (data.guard_findings && data.guard_findings.length > 0) {
     return data.guard_findings;
   }
+  if (data.readiness_score === 100 && (!data.risks || data.risks.length === 0)) {
+    return [];
+  }
   if (data.risks && data.risks.length > 0) {
+    if (data.readiness_score === 100) {
+      return data.risks.map(r => ({
+        category: r.category || "Operational Gate",
+        severity: "Ready",
+        issue: r.issue || r.description || r.risk || r.finding || "-",
+        action: r.action || r.mitigation || r.recommendation || r.action_needed || "-"
+      }));
+    }
     return data.risks.map(r => {
       let sev = r.severity || "Attention";
       if (sev.toLowerCase() === "high") sev = "Critical";
@@ -2075,26 +2093,36 @@ function getNormalizedFindings(data) {
 function renderOverviewAttention(data) {
   try {
     const findings = getNormalizedFindings(data);
-    const activeFindings = findings.filter(f => f.severity !== "Ready");
+    const activeFindings = findings.filter(f => {
+      const sev = (f.severity || "").toLowerCase();
+      return sev !== "ready" && sev !== "pass" && sev !== "passed" && sev !== "cleared" && sev !== "ok";
+    });
 
     const countElem = document.getElementById("overviewAttentionCount");
-    if (countElem) {
-      countElem.textContent = `${activeFindings.length} Action${activeFindings.length === 1 ? '' : 's'} Required`;
-      countElem.className = activeFindings.length > 0 ? "badge badge-amber" : "badge badge-emerald";
-    }
-
     const listElem = document.getElementById("overviewAttentionList");
-    if (listElem) {
-      listElem.innerHTML = "";
-      if (activeFindings.length > 0) {
-        activeFindings.slice(0, 3).forEach(f => {
+
+    if (activeFindings.length > 0) {
+      if (countElem) {
+        countElem.textContent = `${activeFindings.length} Action${activeFindings.length === 1 ? '' : 's'} Required`;
+        countElem.className = "badge badge-amber";
+      }
+      if (listElem) {
+        listElem.innerHTML = "";
+        activeFindings.forEach(f => {
           const item = document.createElement("div");
           item.className = "attention-item";
-          item.innerHTML = `<strong>${f.severity === "Critical" ? "🚨 [CRITICAL]" : "⚠️ [ATTENTION]"} ${f.category}:</strong> ${f.issue} <em style="color: var(--accent-gold); margin-left: 4px;">Action: ${f.action}</em>`;
+          const isCrit = (f.severity || "").toLowerCase() === "critical";
+          item.innerHTML = `<strong>${isCrit ? "🚨 [CRITICAL]" : "⚠️ [ATTENTION]"} ${f.category || "Operational Gate"}:</strong> ${f.issue || f.finding || "-"} <em style="color: var(--accent-gold); margin-left: 4px;">Action: ${f.action || f.recommendation || f.mitigation || "-"}</em>`;
           listElem.appendChild(item);
         });
-      } else {
-        listElem.innerHTML = `<div class="attention-item" style="color: var(--accent-emerald);">✅ All operational gates and readiness criteria are satisfied. No critical blockers.</div>`;
+      }
+    } else {
+      if (countElem) {
+        countElem.textContent = "All Clear";
+        countElem.className = "badge badge-emerald";
+      }
+      if (listElem) {
+        listElem.innerHTML = `<div class="attention-item" style="color: var(--accent-emerald);">All operational readiness gates are satisfied. No critical blockers.</div>`;
       }
     }
   } catch (err) {
