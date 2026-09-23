@@ -1047,8 +1047,13 @@ async def send_email_api(req: Request):
 
     recipients = action.get("preview", {}).get("to_recipients", [])
     provider = get_email_provider()
+    draft_id = (
+        action.get("external_resource_id")
+        or action.get("preview", {}).get("draft_id")
+        or action_id
+    )
     res = provider.send_draft(
-        draft_id=action.get("external_resource_id", action_id),
+        draft_id=draft_id,
         confirmation_token=confirmation_token,
         expected_recipients_count=len(recipients),
     )
