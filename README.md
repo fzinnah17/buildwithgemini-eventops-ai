@@ -200,7 +200,6 @@ Because Google Cloud workshop environments are temporary, I created two ways to 
 For deeper architectural dives, test evidence, and workshop notes, explore the `/docs` directory:
 
 - [Portfolio Case Study](docs/PORTFOLIO_CASE_STUDY.md) — Detailed technical architecture, data schemas, and design trade-offs.
-- [Presentation & Demo Notes](PRESENTATION_NOTES.md) — Live demo script, elevator pitch, and talking points.
 
 ---
 
