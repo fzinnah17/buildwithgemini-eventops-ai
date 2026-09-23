@@ -141,6 +141,9 @@ def _verify_staffing_ratio_and_overview_attention(page, url: str):
     page.on("pageerror", lambda exc: console_errors.append(str(exc)))
 
     page.goto(url)
+    if not page.is_visible("#eventSelector") and page.is_visible("#btnEventControl"):
+        page.click("#btnEventControl")
+        time.sleep(0.2)
     page.wait_for_selector("#eventSelector")
     page.wait_for_function(
         "document.getElementById(\"heroTitle\").textContent !== \"Loading Event Dossier...\"",
@@ -149,6 +152,9 @@ def _verify_staffing_ratio_and_overview_attention(page, url: str):
     time.sleep(0.5)
 
     # 1. Switch to evt_design_summit_2026
+    if not page.is_visible("#eventSelector") and page.is_visible("#btnEventControl"):
+        page.click("#btnEventControl")
+        time.sleep(0.2)
     page.select_option("#eventSelector", "evt_design_summit_2026")
     time.sleep(0.5)
 
@@ -180,6 +186,9 @@ def _verify_staffing_ratio_and_overview_attention(page, url: str):
     # Assertion 4: Overview attention count matches rendered findings across all events
     options = page.eval_on_selector_all("#eventSelector option", "els => els.map(o => o.value)")
     for eid in options:
+        if not page.is_visible("#eventSelector") and page.is_visible("#btnEventControl"):
+            page.click("#btnEventControl")
+            time.sleep(0.2)
         page.select_option("#eventSelector", eid)
         time.sleep(0.5)
 

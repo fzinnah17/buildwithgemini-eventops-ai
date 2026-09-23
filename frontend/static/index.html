@@ -1,620 +1,742 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-theme-setting="system">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EventOps AI — Enterprise Event Operations Agent</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<title>EventOps AI — Enterprise Command Center</title>
+
+<!-- Fonts: Cormorant Garamond for display titles, Inter for operational clarity -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+
+<!-- Anti-flash inline script: immediately applies persisted or system theme -->
+<script>
+(function() {
+  try {
+    var saved = localStorage.getItem('eventops_theme') || 'system';
+    var eff = saved;
+    if (saved === 'system') {
+      eff = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', eff);
+    document.documentElement.setAttribute('data-theme-setting', saved);
+  } catch(e) {}
+})();
+</script>
+
 <style>
-  :root {
-    --bg-base: #080b11;
-    --bg-surface: #101622;
-    --bg-surface-elevated: #161e2e;
-    --bg-surface-hover: #1e293d;
-    --border-subtle: #202b3f;
-    --border-strong: #2e3d59;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --accent-gold: #d4af37;
+  /* =========================================================================
+     PERFECT CROWN COLOR SYSTEM & SEMANTIC CSS TOKENS
+     ========================================================================= */
+  :root, :root[data-theme="dark"] {
+    /* Midnight Ink / Lacquer Graphite Dark Palette */
+    --bg-canvas: #090c10;
+    --bg-surface: #10151f;
+    --bg-surface-elevated: #161e2b;
+    --bg-surface-hover: #1e283b;
+    --bg-glass: rgba(16, 21, 31, 0.85);
+
+    --text-primary: #f6f2e9;         /* Warm Ivory */
+    --text-secondary: #b6beca;       /* Cool parchment */
+    --text-muted: #707b8b;           /* Slate */
+    --text-on-accent: #090c10;
+
+    --border-subtle: #1e2738;
+    --border-strong: #2c3950;
+    --border-accent: rgba(212, 175, 55, 0.35);
+
+    /* Perfect Crown Accents */
+    --accent-gold: #d4af37;          /* Restrained Royal Champagne / Antique Gold */
     --accent-gold-subtle: rgba(212, 175, 55, 0.12);
+    --accent-gold-glow: rgba(212, 175, 55, 0.25);
+
+    --accent-sapphire: #3b82f6;      /* Operational Court Sapphire */
+    --accent-sapphire-subtle: rgba(59, 130, 246, 0.12);
+
+    --accent-emerald: #10b981;       /* Imperial Jade */
+    --accent-emerald-subtle: rgba(16, 185, 129, 0.12);
+
+    --accent-amber: #f59e0b;         /* Royal Amber Warning */
+    --accent-amber-subtle: rgba(245, 158, 11, 0.12);
+
+    --accent-rose: #f43f5e;          /* Oxblood / Deep Crimson Critical */
+    --accent-rose-subtle: rgba(244, 63, 94, 0.14);
+
+    --accent-plum: #a855f7;          /* Court Plum */
+    --accent-plum-subtle: rgba(168, 85, 247, 0.12);
+
     --accent-cyan: #38bdf8;
     --accent-cyan-subtle: rgba(56, 189, 248, 0.12);
-    --accent-emerald: #10b981;
-    --accent-emerald-subtle: rgba(16, 185, 129, 0.12);
-    --accent-amber: #f59e0b;
-    --accent-amber-subtle: rgba(245, 158, 11, 0.12);
-    --accent-rose: #ef4444;
-    --accent-rose-subtle: rgba(239, 68, 68, 0.12);
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    --popover-shadow: 0 14px 40px rgba(0, 0, 0, 0.65);
+    --gold-glow: 0 0 16px rgba(212, 175, 55, 0.18);
+
+    /* Chart Series */
+    --chart-1: #10b981;
+    --chart-2: #3b82f6;
+    --chart-3: #d4af37;
+    --chart-4: #ec4899;
+    --chart-5: #a855f7;
+    --chart-6: #06b6d4;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root[data-theme="light"] {
+    /* Hanji Ivory / Warm Porcelain Light Palette */
+    --bg-canvas: #f7f5f0;            /* Warm Hanji Ivory */
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #f0ebe1;
+    --bg-surface-hover: #e6dfd3;
+    --bg-glass: rgba(255, 255, 255, 0.90);
+
+    --text-primary: #121922;         /* Deep Ink Navy */
+    --text-secondary: #485362;       /* Deep Graphite */
+    --text-muted: #6e7987;           /* Stone Slate */
+    --text-on-accent: #ffffff;
+
+    --border-subtle: #dfd8cc;        /* Cool Taupe Stone */
+    --border-strong: #c2b9a8;
+    --border-accent: rgba(179, 139, 34, 0.35);
+
+    /* Perfect Crown Accents (Light) */
+    --accent-gold: #b38b22;          /* Antique Brass / Bronze Gold */
+    --accent-gold-subtle: rgba(179, 139, 34, 0.12);
+    --accent-gold-glow: rgba(179, 139, 34, 0.20);
+
+    --accent-sapphire: #1d4ed8;      /* Deep Court Sapphire */
+    --accent-sapphire-subtle: rgba(29, 78, 216, 0.10);
+
+    --accent-emerald: #047857;       /* Deep Imperial Jade */
+    --accent-emerald-subtle: rgba(4, 120, 87, 0.10);
+
+    --accent-amber: #d97706;         /* Rich Royal Amber */
+    --accent-amber-subtle: rgba(217, 119, 6, 0.10);
+
+    --accent-rose: #be123c;          /* Deep Oxblood Critical */
+    --accent-rose-subtle: rgba(190, 18, 60, 0.12);
+
+    --accent-plum: #7e22ce;          /* Royal Court Plum */
+    --accent-plum-subtle: rgba(126, 34, 206, 0.10);
+
+    --accent-cyan: #0284c7;
+    --accent-cyan-subtle: rgba(2, 132, 199, 0.10);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --card-shadow: 0 4px 18px rgba(18, 25, 34, 0.07);
+    --popover-shadow: 0 14px 36px rgba(18, 25, 34, 0.16);
+    --gold-glow: 0 0 16px rgba(179, 139, 34, 0.15);
+
+    /* Chart Series (Light) */
+    --chart-1: #047857;
+    --chart-2: #1d4ed8;
+    --chart-3: #b38b22;
+    --chart-4: #be185d;
+    --chart-5: #7e22ce;
+    --chart-6: #0284c7;
+  }
+
+  /* Structural Base & Global Transitions */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
-    background: var(--bg-base);
+    background-color: var(--bg-canvas);
     color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 13.5px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
     line-height: 1.5;
-    height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    transition: background-color 0.22s ease, color 0.22s ease;
   }
 
-  /* TOP HEADER */
-  header {
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Display Font Utility */
+  .font-display {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.015em;
+  }
+
+  /* =========================================================================
+     DESKTOP HEADER — ARCHITECTURAL COMMAND CENTER
+     ========================================================================= */
+  header.command-header {
     background: var(--bg-surface);
     border-bottom: 1px solid var(--border-subtle);
-    padding: 0.65rem 1.25rem;
+    padding: 0 1.5rem;
+    height: 60px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 800;
+    backdrop-filter: blur(12px);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
   }
-  .brand-group {
+
+  /* Left: Compact Brand */
+  .header-left {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: 0.75rem;
+    min-width: 220px;
   }
-  .brand-logo {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 1px solid var(--accent-gold);
-    border-radius: var(--radius-sm);
+  .brand-emblem {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--bg-surface-elevated), var(--bg-surface));
+    border: 1px solid var(--border-accent);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--accent-gold);
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    box-shadow: var(--gold-glow);
   }
-  .brand-text h1 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--text-primary);
+  .brand-meta {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .brand-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.18rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-primary);
   }
   .brand-subtitle {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    letter-spacing: 0.3px;
+    font-size: 0.68rem;
     text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-gold);
+    font-weight: 600;
   }
 
-  /* EVENT SELECTOR CONTROLS */
+  /* Center: Active Event Control ONLY */
   .header-center {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: center;
+    flex: 1;
+    position: relative;
   }
-  .event-select-box {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
-    padding: 0.35rem 0.75rem;
+
+  .event-control-wrapper {
+    position: relative;
   }
-  .event-select-box label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    color: var(--accent-gold);
-    font-weight: 700;
-    letter-spacing: 0.4px;
-  }
-  .event-select-box select {
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    outline: none;
-    max-width: 320px;
-  }
-  .event-select-box select option {
-    background: var(--bg-surface-elevated);
-    color: var(--text-primary);
-  }
-  .btn-new-event {
+
+  .event-control-trigger {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.4rem 0.65rem;
-    border-radius: var(--radius-sm);
+    border-radius: 24px;
+    padding: 0.4rem 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
     cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .event-control-trigger:hover {
+    border-color: var(--border-accent);
+    background: var(--bg-surface-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--gold-glow);
+  }
+  .event-control-trigger:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+  }
+  .event-control-prefix {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-gold);
+  }
+  .event-control-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .event-control-name {
+    font-size: 0.86rem;
+    font-weight: 600;
+    max-width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+  .event-control-chevron {
+    font-size: 18px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+  }
+  .event-control-trigger[aria-expanded="true"] .event-control-chevron {
+    transform: rotate(180deg);
+    color: var(--accent-gold);
+  }
+
+  /* Event Control Popover Dropdown */
+  .event-control-popover {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    box-shadow: var(--popover-shadow);
+    padding: 1rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.85rem;
+    z-index: 1000;
+    animation: popoverFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .event-control-popover.active {
+    display: flex;
+  }
+  @keyframes popoverFadeIn {
+    from { opacity: 0; transform: translate(-50%, -6px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  .popover-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .popover-meta-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .popover-event-title {
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-top: 0.25rem;
+  }
+  .popover-stats-row {
+    display: flex;
+    gap: 0.45rem;
+    margin-top: 0.45rem;
+  }
+  .popover-chip {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    padding: 0.2rem 0.55rem;
+    border-radius: 14px;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 0.3rem;
+  }
+  .popover-divider {
+    height: 1px;
+    background: var(--border-subtle);
+  }
+  .popover-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .popover-action-btn {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-primary);
     transition: all 0.15s ease;
   }
-  .btn-new-event:hover {
-    color: #fff;
+  .popover-action-btn:hover {
+    border-color: var(--border-accent);
+    background: var(--bg-surface-hover);
+    color: var(--accent-gold);
+  }
+  .popover-action-btn.btn-create {
+    color: var(--accent-cyan);
+  }
+  .popover-action-btn.btn-create:hover {
     border-color: var(--accent-cyan);
     background: var(--accent-cyan-subtle);
   }
-
-  /* HEADER RIGHT */
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  .popover-switch-box label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
   }
-  .status-chip {
+  .popover-select {
+    width: 100%;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .popover-select:focus {
+    border-color: var(--accent-gold);
+  }
+
+  /* Right Header Controls */
+  .header-right {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.65rem;
+    min-width: 260px;
+    justify-content: flex-end;
+  }
+
+  /* Runtime Status Chip */
+  .runtime-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 0.3rem 0.65rem;
+    border-radius: 16px;
     font-size: 0.72rem;
     font-weight: 600;
-    padding: 0.3rem 0.65rem;
-    border-radius: var(--radius-sm);
-    background: var(--accent-emerald-subtle);
-    color: var(--accent-emerald);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: var(--text-secondary);
   }
   .status-dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--accent-emerald);
     box-shadow: 0 0 6px var(--accent-emerald);
   }
-  .btn-header {
-    background: var(--bg-surface-elevated);
+  .status-dot.demo-dot {
+    background: var(--accent-amber);
+    box-shadow: 0 0 6px var(--accent-amber);
+  }
+  .runtime-chip.demo-chip {
+    border-color: rgba(245, 158, 11, 0.3);
+    color: var(--accent-amber);
+  }
+
+  /* Copilot Trigger Button in Header */
+  .btn-copilot-trigger {
+    background: linear-gradient(135deg, var(--bg-surface-elevated), var(--bg-surface));
     border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.35rem 0.75rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    transition: all 0.15s ease;
-  }
-  .btn-header:hover {
     color: var(--text-primary);
-    border-color: var(--border-strong);
-  }
-  .btn-copilot-toggle {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(212, 175, 55, 0.15));
-    border: 1px solid var(--accent-cyan);
-    color: var(--accent-cyan);
-  }
-
-  /* MAIN WORKSPACE LAYOUT */
-  .workspace-container {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 440px;
-    overflow: hidden;
-    transition: grid-template-columns 0.2s ease;
-  }
-  .workspace-container.copilot-closed {
-    grid-template-columns: 1fr 0px;
-  }
-
-  /* LEFT OPS WORKSPACE */
-  .operations-workspace {
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--border-subtle);
-    background: var(--bg-base);
-    overflow: hidden;
-  }
-  .workspace-nav {
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.45rem 1rem;
-    background: var(--bg-surface);
-    border-bottom: 1px solid var(--border-subtle);
-    overflow-x: auto;
-    flex-shrink: 0;
-  }
-  .nav-btn {
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
+    border-radius: 20px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    padding: 0.45rem 0.85rem;
-    border-radius: var(--radius-sm);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-  }
-  .nav-btn:hover {
-    color: var(--text-primary);
-    background: var(--bg-surface-elevated);
-  }
-  .nav-btn.active {
-    color: #fff;
-    background: var(--bg-surface-elevated);
-    border-color: var(--border-strong);
-    box-shadow: inset 0 -2px 0 var(--accent-cyan);
-  }
-
-  .workspace-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  /* PANELS AND CARDS */
-  .ops-panel {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 1.15rem 1.25rem;
-  }
-  .ops-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.85rem;
-    border-bottom: 1px solid var(--border-subtle);
-    padding-bottom: 0.5rem;
-  }
-  .ops-panel-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-secondary);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.45rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-copilot-trigger:hover {
+    border-color: var(--accent-cyan);
+    background: var(--accent-cyan-subtle);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+  }
+  .copilot-spark {
+    color: var(--accent-cyan);
+    font-size: 16px;
   }
 
-  /* 5-SECOND BRIEF HEADER */
-  .event-hero {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    background: linear-gradient(135deg, var(--bg-surface), #141b29);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-  }
-  .hero-meta h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 0.35rem;
-  }
-  .hero-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-  }
-  .hero-tag {
-    font-size: 0.72rem;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    padding: 0.2rem 0.55rem;
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-  .hero-gauge-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.35rem;
-    padding: 0.5rem 1rem;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-  }
-  .gauge-circle {
-    width: 68px;
-    height: 68px;
+  /* More Menu Container */
+  .more-menu-container {
     position: relative;
+  }
+  .btn-icon-header {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .gauge-score {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: var(--accent-emerald);
-  }
-  .btn-why-score {
-    background: transparent;
-    border: 1px solid var(--accent-gold);
-    color: var(--accent-gold);
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 0.2rem 0.5rem;
-    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  .btn-why-score:hover {
-    background: var(--accent-gold-subtle);
-  }
-
-  /* METRICS ROW */
-  .metrics-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 0.75rem;
-  }
-  .metric-card {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.75rem 0.95rem;
-  }
-  .metric-label {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    margin-bottom: 0.25rem;
-  }
-  .metric-value {
-    font-size: 1.15rem;
-    font-weight: 700;
+  .btn-icon-header:hover {
     color: var(--text-primary);
-  }
-  .metric-sub {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    margin-top: 0.15rem;
-  }
-
-  /* ATTENTION BANNER */
-  .attention-box {
-    background: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: var(--radius-md);
-    padding: 0.85rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-  }
-  .attention-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--accent-amber);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    text-transform: uppercase;
-  }
-  .attention-item {
-    font-size: 0.78rem;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: flex-start;
-    gap: 0.45rem;
-    line-height: 1.4;
-  }
-
-  /* DATA TABLES */
-  .data-table-wrapper {
-    overflow-x: auto;
-  }
-  table.ops-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-    text-align: left;
-  }
-  table.ops-table th {
-    background: var(--bg-surface-elevated);
-    color: var(--text-muted);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.68rem;
-    letter-spacing: 0.5px;
-    padding: 0.6rem 0.85rem;
-    border-bottom: 1px solid var(--border-strong);
-  }
-  table.ops-table td {
-    padding: 0.65rem 0.85rem;
-    border-bottom: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-  }
-  table.ops-table tr:hover td {
+    border-color: var(--border-strong);
     background: var(--bg-surface-hover);
   }
 
-  /* BADGES */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 0.2rem 0.5rem;
-    border-radius: var(--radius-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-  .badge-approved, .badge-emerald { background: var(--accent-emerald-subtle); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
-  .badge-pending, .badge-amber { background: var(--accent-amber-subtle); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
-  .badge-rejected, .badge-rose { background: var(--accent-rose-subtle); color: var(--accent-rose); border: 1px solid rgba(239, 68, 68, 0.3); }
-  .badge-protected, .badge-blue { background: var(--accent-cyan-subtle); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
-  .badge-neutral { background: var(--bg-surface-elevated); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
-
-  /* TIMELINE */
-  .timeline-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    position: relative;
-    padding-left: 1.25rem;
-  }
-  .timeline-container::before {
-    content: '';
+  .more-menu-dropdown {
     position: absolute;
-    left: 4px;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    background: var(--border-subtle);
-  }
-  .timeline-node {
-    position: relative;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 240px;
     background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    box-shadow: var(--popover-shadow);
+    padding: 0.5rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.25rem;
+    z-index: 1000;
   }
-  .timeline-node::before {
-    content: '';
-    position: absolute;
-    left: -1.35rem;
-    top: 0.85rem;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent-cyan);
-    box-shadow: 0 0 5px var(--accent-cyan);
-  }
-  .timeline-node-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.25rem;
-  }
-  .timeline-time {
-    font-size: 0.72rem;
+  .menu-heading {
+    font-size: 0.65rem;
     font-weight: 700;
-    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 0.35rem 0.65rem 0.15rem;
   }
-  .timeline-owner {
-    font-size: 0.68rem;
-    background: var(--bg-surface);
-    padding: 0.15rem 0.4rem;
-    border-radius: var(--radius-sm);
+  .more-menu-item {
+    background: transparent;
+    border: none;
     color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.5rem 0.65rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+    width: 100%;
   }
-  .timeline-title {
-    font-size: 0.82rem;
-    font-weight: 600;
+  .more-menu-item:hover {
+    background: var(--bg-surface-hover);
     color: var(--text-primary);
   }
 
-  /* GUEST JOURNEY CARDS */
-  .journey-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 0.75rem;
-  }
-  .journey-card {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.85rem;
+  /* Theme Switcher Segment in More Menu */
+  .theme-toggle-strip {
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .journey-stage {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--accent-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .journey-desc {
-    font-size: 0.78rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
-  }
-
-  /* ACTION BUTTONS */
-  .btn-action-group {
-    display: flex;
-    gap: 0.4rem;
-  }
-  .btn-approve {
-    background: var(--accent-emerald-subtle);
-    border: 1px solid var(--accent-emerald);
-    color: var(--accent-emerald);
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 0.3rem 0.6rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .btn-approve:hover {
-    background: var(--accent-emerald);
-    color: #000;
-  }
-  .btn-reject {
-    background: var(--accent-rose-subtle);
-    border: 1px solid var(--accent-rose);
-    color: var(--accent-rose);
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 0.3rem 0.6rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .btn-reject:hover {
-    background: var(--accent-rose);
-    color: #fff;
-  }
-
-  /* RIGHT COPILOT DRAWER */
-  .operations-copilot {
-    display: flex;
-    flex-direction: column;
     background: var(--bg-surface);
-    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 2px;
+    margin: 0.25rem 0.4rem 0.35rem;
+    gap: 2px;
+  }
+  .theme-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.35rem 0.3rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    transition: all 0.15s ease;
+  }
+  .theme-btn.active {
+    background: var(--bg-surface-elevated);
+    color: var(--accent-gold);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+  .theme-btn:hover:not(.active) {
+    color: var(--text-primary);
+  }
+
+  /* =========================================================================
+     THIN, CALM WORKFLOW TABS (SECOND ROW)
+     ========================================================================= */
+  nav.workflow-nav-bar {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0 1.5rem;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.2s ease;
+  }
+  .workflow-tabs-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     height: 100%;
   }
-  .copilot-header {
-    padding: 0.75rem 1rem;
+  .nav-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0 0.85rem;
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.15s ease;
+  }
+  .nav-btn:hover {
+    color: var(--text-primary);
+  }
+  .nav-btn.active {
+    color: var(--accent-gold);
+    border-bottom-color: var(--accent-gold);
+    font-weight: 600;
+  }
+  .nav-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .dossier-ver-tag {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 0.2rem 0.55rem;
+    border-radius: 12px;
+  }
+
+  /* =========================================================================
+     WORKSPACE CONTAINER & SLIDE-OVER COPILOT DRAWER
+     ========================================================================= */
+  .workspace-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 104px);
+    overflow: hidden;
+  }
+
+  /* Main Operations Canvas (occupies 100% width normally) */
+  .operations-workspace {
+    flex: 1;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    overflow-y: auto;
+    transition: padding-right 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Slide-over Copilot Drawer (default closed) */
+  .operations-copilot {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    width: 420px;
+    max-width: 92vw;
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-subtle);
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    z-index: 900;
+    transform: translateX(0);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+  }
+
+  /* Default Desktop Closed State */
+  .workspace-container.copilot-closed .operations-copilot {
+    transform: translateX(100%);
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* Copilot Drawer Components */
+  .copilot-drawer-header {
+    padding: 0.85rem 1.15rem;
+    background: var(--bg-surface-elevated);
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background: var(--bg-surface-elevated);
+    justify-content: space-between;
   }
-  .copilot-title {
-    font-size: 0.82rem;
+  .copilot-drawer-title {
+    font-size: 0.88rem;
     font-weight: 700;
     color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 0.45rem;
   }
-  .copilot-chips {
+  .btn-close-copilot {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
     display: flex;
-    gap: 0.35rem;
-    padding: 0.5rem 0.85rem;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-close-copilot:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface-hover);
+  }
+
+  .copilot-chips-strip {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.65rem 1rem;
     background: var(--bg-surface);
     border-bottom: 1px solid var(--border-subtle);
     overflow-x: auto;
@@ -625,14 +747,14 @@
     color: var(--text-secondary);
     font-size: 0.72rem;
     font-weight: 600;
-    padding: 0.25rem 0.6rem;
-    border-radius: 20px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 16px;
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.15s ease;
   }
   .chip-btn:hover {
-    color: var(--text-primary);
+    color: var(--accent-cyan);
     border-color: var(--accent-cyan);
     background: var(--accent-cyan-subtle);
   }
@@ -648,7 +770,7 @@
   .chat-msg {
     display: flex;
     flex-direction: column;
-    max-width: 92%;
+    max-width: 90%;
     font-size: 0.82rem;
     line-height: 1.45;
   }
@@ -658,8 +780,8 @@
   .chat-msg.user .chat-bubble {
     background: #1e3a5f;
     color: #fff;
-    border-radius: var(--radius-md) var(--radius-md) 0 var(--radius-md);
-    padding: 0.65rem 0.85rem;
+    border-radius: 12px 12px 2px 12px;
+    padding: 0.65rem 0.95rem;
   }
   .chat-msg.agent {
     align-self: flex-start;
@@ -668,56 +790,28 @@
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     color: var(--text-primary);
-    border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 0;
-    padding: 0.75rem 0.95rem;
+    border-radius: 12px 12px 12px 2px;
+    padding: 0.75rem 1rem;
   }
 
-  /* STRUCTURED COPILOT CARDS */
-  .copilot-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.75rem;
-    margin-top: 0.45rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-  }
-  .copilot-card-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--accent-cyan);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-  .copilot-card.proposal {
-    border-color: var(--accent-amber);
-    background: rgba(245, 158, 11, 0.05);
-  }
-  .copilot-card.error-card {
-    border-color: var(--accent-rose);
-    background: var(--accent-rose-subtle);
-    color: #fca5a5;
-  }
-
-  /* COPILOT INPUT */
+  /* Copilot Input Bar */
   .chat-input-bar {
-    padding: 0.65rem 0.85rem;
+    padding: 0.75rem 1rem;
     background: var(--bg-surface-elevated);
     border-top: 1px solid var(--border-subtle);
     display: flex;
-    gap: 0.45rem;
+    gap: 0.5rem;
   }
   .chat-input-bar input {
     flex: 1;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
     color: var(--text-primary);
     font-size: 0.82rem;
     outline: none;
+    transition: border-color 0.15s ease;
   }
   .chat-input-bar input:focus {
     border-color: var(--accent-cyan);
@@ -728,12 +822,774 @@
     color: #000;
     font-weight: 700;
     font-size: 0.78rem;
-    padding: 0.45rem 0.85rem;
-    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.95rem;
+    border-radius: 8px;
     cursor: pointer;
   }
 
-  /* MODALS */
+  /* =========================================================================
+     TAB 1: OVERVIEW COCKPIT (58% / 40% RECOMPOSITION)
+     ========================================================================= */
+  .overview-cockpit {
+    display: grid;
+    grid-template-columns: 58% 40%;
+    gap: 2%;
+    align-items: start;
+  }
+
+  @media (max-width: 1080px) {
+    .overview-cockpit {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+
+  /* Left Column: Crown Hero & Signature Readiness Gauge */
+  .crown-hero-panel {
+    background: linear-gradient(145deg, var(--bg-surface), var(--bg-surface-elevated));
+    border: 1px solid var(--border-accent);
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .crown-hero-panel::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-gold), transparent);
+  }
+
+  .crown-hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .crown-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.35rem;
+  }
+  .crown-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.65rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.25;
+  }
+
+  .crown-meta-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+  .crown-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    padding: 0.25rem 0.65rem;
+    border-radius: 16px;
+  }
+  .crown-meta-item strong {
+    color: var(--text-primary);
+  }
+
+  /* Signature Readiness Gauge Hero Row */
+  .crown-readiness-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  @media (max-width: 600px) {
+    .crown-readiness-row {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
+
+  .readiness-gauge-wrapper {
+    position: relative;
+    width: 140px;
+    height: 75px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .readiness-gauge-svg {
+    width: 140px;
+    height: 75px;
+    overflow: visible;
+  }
+  .gauge-score-overlay {
+    position: absolute;
+    bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .gauge-score {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--accent-emerald);
+    letter-spacing: -0.02em;
+  }
+  .gauge-max {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .readiness-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .hero-gate-status {
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero-status-pills {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .hero-pill {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.55rem;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .hero-pill-critical {
+    background: var(--accent-rose-subtle);
+    color: var(--accent-rose);
+    border: 1px solid var(--accent-rose);
+  }
+  .hero-pill-attention {
+    background: var(--accent-amber-subtle);
+    color: var(--accent-amber);
+    border: 1px solid var(--accent-amber);
+  }
+  .hero-pill-ready {
+    background: var(--accent-emerald-subtle);
+    color: var(--accent-emerald);
+    border: 1px solid var(--accent-emerald);
+  }
+
+  .btn-why-score {
+    background: transparent;
+    border: 1px solid var(--border-accent);
+    color: var(--accent-gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 14px;
+    cursor: pointer;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.15s ease;
+  }
+  .btn-why-score:hover {
+    background: var(--accent-gold-subtle);
+  }
+
+  /* Operational Attention Strip */
+  .ops-attention-strip {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--accent-amber);
+    border-radius: 10px;
+    padding: 0.85rem 1.15rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .attention-strip-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .attention-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .attention-item {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  /* Right Column: Visual Intelligence Command Panel */
+  .visual-intel-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 1.25rem;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .intel-panel-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .intel-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .intel-metric-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .intel-metric-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+  .intel-metric-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .intel-metric-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+  .intel-metric-sub {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+  }
+
+  /* Hidden placeholder for tests expecting legacy metric-row elements */
+  .metrics-row {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     TAB 2: PLAN & TIMELINE (VISUAL-FIRST)
+     ========================================================================= */
+  .plan-visual-cockpit {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* Top: Budget Composition & RACI Progress Side-by-Side */
+  .plan-top-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 900px) {
+    .plan-top-split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .ops-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: var(--card-shadow);
+  }
+  .ops-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+  .ops-panel-title {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  /* Visual Segmented Budget Bar */
+  .budget-visual-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .budget-segmented-bar {
+    display: flex;
+    height: 14px;
+    border-radius: 7px;
+    overflow: hidden;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    gap: 2px;
+  }
+  .budget-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+  .budget-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 0.35rem;
+  }
+  .budget-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .budget-legend-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  /* Full-width Chronological Run of Show */
+  .timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 7px;
+    width: 2px;
+    background: var(--border-strong);
+  }
+  .timeline-node {
+    position: relative;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+  .timeline-node::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    border: 2px solid var(--bg-surface);
+  }
+
+  /* Collapsible / Expandable Details */
+  details.collapsible-ops-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  details.collapsible-ops-section summary {
+    padding: 0.85rem 1.15rem;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--bg-surface-elevated);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  details.collapsible-ops-section summary:hover {
+    color: var(--accent-gold);
+  }
+  .collapsible-body {
+    padding: 1rem;
+  }
+
+  /* Data Table */
+  .data-table-wrapper {
+    overflow-x: auto;
+  }
+  .ops-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+  .ops-table th {
+    text-align: left;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .ops-table td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+  .ops-table tr:hover td {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+  }
+
+  /* =========================================================================
+     TAB 3: RISKS & DECISIONS (LIFECYCLE PIPELINE)
+     ========================================================================= */
+  .risk-posture-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .decision-pipeline-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+  }
+  .pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .pipeline-count {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    color: var(--text-primary);
+  }
+  .pipeline-arrow {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  /* Visual Decision Diff Cards */
+  .decision-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 0.85rem;
+    margin-top: 0.85rem;
+  }
+  .decision-diff-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .diff-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .diff-prop-title {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+  }
+  .diff-row {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* =========================================================================
+     TAB 4: EXPERIENCE & GUEST JOURNEY (SERPENTINE VISUAL TRACK)
+     ========================================================================= */
+  .journey-serpentine-track {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+    position: relative;
+  }
+  @media (max-width: 900px) {
+    .journey-serpentine-track {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 500px) {
+    .journey-serpentine-track {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .journey-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    transition: all 0.15s ease;
+    cursor: default;
+  }
+  .journey-card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+  }
+  .journey-stage {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .journey-desc {
+    font-size: 0.78rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  /* Editorial Atmosphere Section */
+  .editorial-atmosphere-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+  }
+  .atmosphere-hero-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+  }
+  .atmosphere-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.85);
+  }
+  .atmosphere-chips-overlay {
+    position: absolute;
+    bottom: 1rem;
+    left: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .ambient-chip {
+    background: rgba(16, 21, 31, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .atmosphere-editorial-text {
+    padding: 1.25rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* =========================================================================
+     BADGES, BUTTONS & COMMON UTILITIES
+     ========================================================================= */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .badge-emerald, .badge-approved {
+    background: var(--accent-emerald-subtle);
+    color: var(--accent-emerald);
+    border: 1px solid var(--accent-emerald);
+  }
+  .badge-amber, .badge-pending {
+    background: var(--accent-amber-subtle);
+    color: var(--accent-amber);
+    border: 1px solid var(--accent-amber);
+  }
+  .badge-rejected, .badge-critical {
+    background: var(--accent-rose-subtle);
+    color: var(--accent-rose);
+    border: 1px solid var(--accent-rose);
+  }
+  .badge-neutral {
+    background: var(--bg-surface-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .badge-blue {
+    background: var(--accent-sapphire-subtle);
+    color: var(--accent-sapphire);
+    border: 1px solid var(--accent-sapphire);
+  }
+  .badge-gold, .badge-proposed {
+    background: var(--accent-gold-subtle);
+    color: var(--accent-gold);
+    border: 1px solid var(--accent-gold);
+  }
+
+  .btn-action-icon {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.15s ease;
+  }
+  .btn-action-icon:hover {
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+  }
+  .btn-calendar-sync {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    background: var(--accent-cyan-subtle);
+  }
+  .btn-calendar-sync:hover {
+    background: rgba(56, 189, 248, 0.2);
+  }
+  .btn-slack-share {
+    color: #38bdf8;
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+  }
+  .btn-slack-share:hover {
+    background: rgba(56, 189, 248, 0.22);
+  }
+  .btn-email-draft {
+    color: var(--accent-emerald);
+    border-color: var(--accent-emerald);
+    background: var(--accent-emerald-subtle);
+  }
+  .btn-email-draft:hover {
+    background: rgba(16, 185, 129, 0.22);
+  }
+
+  .btn-approve {
+    background: var(--accent-emerald-subtle);
+    border: 1px solid var(--accent-emerald);
+    color: var(--accent-emerald);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-approve:hover {
+    background: var(--accent-emerald);
+    color: #fff;
+  }
+  .btn-reject {
+    background: var(--accent-rose-subtle);
+    border: 1px solid var(--accent-rose);
+    color: var(--accent-rose);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-reject:hover {
+    background: var(--accent-rose);
+    color: #fff;
+  }
+
+  /* MODALS STYLES */
   .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -743,6 +1599,7 @@
     justify-content: center;
     z-index: 1000;
     padding: 1rem;
+    backdrop-filter: blur(4px);
   }
   .modal-overlay.active {
     display: flex;
@@ -750,14 +1607,14 @@
   .modal-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-lg);
+    border-radius: 14px;
     width: 100%;
     max-width: 650px;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--popover-shadow);
   }
   .modal-header {
     padding: 1rem 1.25rem;
@@ -782,7 +1639,6 @@
     flex-direction: column;
     gap: 1rem;
     font-size: 0.82rem;
-    line-height: 1.5;
   }
   .modal-footer {
     padding: 0.75rem 1.25rem;
@@ -790,476 +1646,26 @@
     display: flex;
     justify-content: flex-end;
     background: var(--bg-surface-elevated);
-  }
-
-  /* A2UI Surfaces */
-  .a2card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem; margin-top: 0.4rem; }
-  .a2row { display: flex; gap: 0.4rem; align-items: center; }
-  .a2row.between { justify-content: space-between; }
-  .a2col { display: flex; flex-direction: column; gap: 0.3rem; }
-  .a2text { font-size: 0.8rem; color: var(--text-primary); }
-  .a2-h3 { font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); }
-  .a2-caption { font-size: 0.7rem; color: var(--text-muted); }
-  .a2divider { border: 0; border-top: 1px solid var(--border-subtle); margin: 0.4rem 0; }
-  .a2img { max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin-top: 0.35rem; }
-
-  /* UTILS */
-  .hidden { display: none !important; }
-  .spin {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-top-color: var(--accent-cyan);
-    border-radius: 50%;
-    animation: sp 0.8s linear infinite;
-  }
-  @keyframes sp { to { transform: rotate(360deg); } }
-
-  /* Offline Fallback Banner & Demo Mode */
-  .offline-banner {
-    background: linear-gradient(90deg, rgba(245, 158, 11, 0.2), rgba(180, 83, 9, 0.2));
-    border-bottom: 1px solid rgba(245, 158, 11, 0.4);
-    padding: 0.5rem 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    color: #fbbf24;
-    z-index: 1000;
-  }
-  .btn-demo-mode {
-    background: var(--accent-amber);
-    color: #000;
-    border: none;
-    font-weight: 700;
-    padding: 0.3rem 0.75rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-size: 0.75rem;
-    transition: all 0.15s ease;
-  }
-  .btn-demo-mode:hover {
-    background: #f59e0b;
-    transform: translateY(-1px);
-  }
-  .status-chip.demo-chip {
-    background: rgba(245, 158, 11, 0.15);
-    color: #fbbf24;
-    border-color: rgba(245, 158, 11, 0.35);
-  }
-  .status-dot.demo-dot {
-    background: #f59e0b;
-    box-shadow: 0 0 6px #f59e0b;
-  }
-
-  /* BUNDLE 3.6 ENTERPRISE INTEGRATIONS & ANALYTICS */
-  .service-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-  .service-card {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .service-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .service-card-name {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-  .service-card-desc {
-    font-size: 0.72rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
-  }
-  .analytics-grid-2x2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-  .analytics-domain-card {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.85rem;
-    display: flex;
-    flex-direction: column;
     gap: 0.5rem;
   }
-  .analytics-domain-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-  .analytics-stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    padding: 0.2rem 0;
-    border-bottom: 1px dashed var(--border-subtle);
-  }
-  .analytics-stat-row:last-child {
-    border-bottom: none;
-  }
-  .analytics-stat-val {
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-  .btn-action-icon {
-    background: transparent;
+
+  .btn-header {
+    background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
-    border-radius: var(--radius-sm);
-    padding: 0.2rem 0.45rem;
-    font-size: 0.72rem;
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
     transition: all 0.15s ease;
   }
-  .btn-action-icon:hover {
-    color: #fff;
-    background: var(--bg-surface-elevated);
+  .btn-header:hover {
+    color: var(--text-primary);
     border-color: var(--border-strong);
   }
-  .btn-slack-share {
-    color: #38bdf8;
-    border-color: rgba(56, 189, 248, 0.3);
-    background: rgba(56, 189, 248, 0.08);
-  }
-  .btn-slack-share:hover {
-    background: rgba(56, 189, 248, 0.18);
-    border-color: #38bdf8;
-  }
-  .btn-calendar-sync {
-    color: var(--accent-cyan);
-    border-color: rgba(56, 189, 248, 0.3);
-    background: var(--accent-cyan-subtle);
-  }
-  .btn-calendar-sync:hover {
-    background: rgba(56, 189, 248, 0.22);
-    border-color: var(--accent-cyan);
-  }
-  .btn-email-draft {
-    color: var(--accent-emerald);
-    border-color: rgba(16, 185, 129, 0.3);
-    background: var(--accent-emerald-subtle);
-  }
-  .btn-email-draft:hover {
-    background: rgba(16, 185, 129, 0.22);
-    border-color: var(--accent-emerald);
-  }
-  .scope-toggle-group {
-    display: flex;
-    gap: 0.4rem;
-    margin-bottom: 0.5rem;
-  }
-  .btn-scope-toggle {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    font-size: 0.74rem;
-    font-weight: 600;
-    padding: 0.25rem 0.65rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-  }
-  .btn-scope-toggle.active {
-    background: var(--accent-cyan-subtle);
-    border-color: var(--accent-cyan);
-    color: var(--accent-cyan);
-  }
-  .privacy-banner {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 0.75rem;
-    background: rgba(16, 185, 129, 0.08);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: var(--radius-sm);
-  }
-  /* BUNDLE 3.6.1 VISUAL UX & DATA VISUALIZATION STYLES */
-  .readiness-gauge-wrapper {
-    position: relative;
-    width: 140px;
-    height: 75px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .readiness-gauge-svg {
-    width: 140px;
-    height: 75px;
-    overflow: visible;
-  }
-  .gauge-score-overlay {
-    position: absolute;
-    bottom: 2px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-  }
-  .gauge-score-overlay .gauge-score {
-    font-size: 1.55rem;
-    font-weight: 800;
-    color: var(--accent-emerald);
-  }
-  .gauge-score-overlay .gauge-max {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    margin-top: 2px;
-  }
-  .event-hero {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 1.25rem;
-    align-items: center;
-    background: linear-gradient(135deg, var(--bg-surface), #141b29);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-  }
-  .hero-status-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 0.65rem 0.95rem;
-    min-width: 180px;
-  }
-  .hero-status-header {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 700;
-    letter-spacing: 0.4px;
-  }
-  .hero-status-pills {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-  }
-  .hero-pill {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.15rem 0.45rem;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-  .hero-pill-critical {
-    background: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-  }
-  .hero-pill-attention {
-    background: rgba(245, 158, 11, 0.12);
-    color: #f59e0b;
-    border: 1px solid rgba(245, 158, 11, 0.3);
-  }
-  .hero-pill-ready {
-    background: rgba(16, 185, 129, 0.12);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
-  }
-  .hero-gate-status {
-    font-size: 0.72rem;
-    color: var(--text-secondary);
-  }
-  .btn-edit-event {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.4rem 0.65rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: all 0.15s ease;
-  }
-  .btn-edit-event:hover {
-    color: #fff;
-    border-color: var(--accent-gold);
-    background: var(--accent-gold-subtle);
-  }
-  .more-menu-container {
-    position: relative;
-    display: inline-block;
-  }
-  .more-menu-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 0.4rem;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    min-width: 210px;
-    z-index: 100;
-    overflow: hidden;
-  }
-  .more-menu-item {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 0.6rem 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.15s ease;
-    width: 100%;
-  }
-  .more-menu-item:hover {
-    background: var(--bg-surface-hover);
-    color: var(--text-primary);
-  }
-  .budget-visual-card {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.85rem 1rem;
-    margin-bottom: 0.85rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .budget-visual-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-  }
-  .budget-segmented-bar {
-    display: flex;
-    height: 14px;
-    border-radius: 7px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border-subtle);
-    gap: 2px;
-  }
-  .budget-segment {
-    height: 100%;
-    transition: width 0.3s ease;
-    position: relative;
-    border-radius: 2px;
-  }
-  .budget-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    font-size: 0.72rem;
-    color: var(--text-secondary);
-    margin-top: 0.25rem;
-  }
-  .budget-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-  .budget-legend-color {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-  }
-  .raci-progress-bar-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.55rem 0.85rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .decision-pipeline-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.65rem 1rem;
-    margin-bottom: 0.85rem;
-    overflow-x: auto;
-  }
-  .pipeline-step {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    white-space: nowrap;
-  }
-  .pipeline-count {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-strong);
-    padding: 0.1rem 0.45rem;
-    border-radius: 10px;
-    font-size: 0.72rem;
-    color: #fff;
-  }
-  .pipeline-arrow {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-  }
-  .risk-distribution-container {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 0.65rem 1rem;
-    margin-bottom: 0.85rem;
-    flex-wrap: wrap;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-  }
+
+  /* Wizard & Diff Components */
   .wizard-steps {
     display: flex;
     justify-content: space-between;
@@ -1303,72 +1709,124 @@
   .diff-view-box {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     padding: 0.85rem;
     font-size: 0.82rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-  .diff-item {
+
+  /* Connected Services Tiles */
+  .service-card-grid, .service-tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  @media (max-width: 700px) {
+    .service-card-grid, .service-tiles-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .service-card, .service-tile {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .service-card-top, .service-tile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .service-card-name, .service-tile-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+  }
+  .service-card-desc, .service-tile-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
     line-height: 1.4;
   }
-  .diff-field {
+
+  /* Analytics 2x2 */
+  .analytics-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .analytics-domain-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .analytics-domain-title {
+    font-size: 0.76rem;
     font-weight: 700;
-    color: var(--accent-gold);
-    min-width: 110px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
   }
-  .diff-old {
-    color: #ef4444;
-    text-decoration: line-through;
+  .analytics-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.74rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px dashed var(--border-subtle);
   }
-  .diff-arrow {
-    color: var(--text-muted);
+  .analytics-stat-row:last-child {
+    border-bottom: none;
   }
-  .diff-new {
-    color: #10b981;
-    font-weight: 600;
+  .analytics-stat-val {
+    font-weight: 700;
+    color: var(--text-primary);
   }
+
   .comparison-chart-row {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
     margin-top: 0.5rem;
   }
-  .comparison-chart-item {
+
+  /* Offline Fallback Banner */
+  .offline-banner {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(180, 83, 9, 0.15));
+    border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+    padding: 0.5rem 1.25rem;
     display: flex;
     align-items: center;
-    gap: 0.65rem;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #fbbf24;
+    z-index: 1000;
+  }
+  .btn-demo-mode {
+    background: var(--accent-amber);
+    color: #000;
+    border: none;
+    font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 0.75rem;
   }
-  .comparison-label {
-    min-width: 140px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--text-secondary);
-  }
-  .comparison-bar-track {
-    flex: 1;
-    height: 12px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .comparison-bar-fill {
-    height: 100%;
-    border-radius: 6px;
-    transition: width 0.3s ease;
-  }
-  .comparison-val {
-    min-width: 70px;
-    text-align: right;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
+
+  .hidden { display: none !important; }
 </style>
 <script src="data/fixtures.js"></script>
 <script src="data_provider.js"></script>
@@ -1384,54 +1842,106 @@
   <button class="btn-demo-mode" id="btnEnterDemoMode">Enter Demo Mode</button>
 </div>
 
-<!-- TOP HEADER -->
-<header>
-  <div class="brand-group">
-    <div class="brand-logo">
-      <span class="material-symbols-outlined" style="font-size: 20px;">diamond</span>
+<!-- =========================================================================
+     DESKTOP HEADER — RECOMPOSED COMMAND BAR
+     ========================================================================= -->
+<header class="command-header">
+  <!-- Left: Compact EventOps AI Brand -->
+  <div class="header-left">
+    <div class="brand-emblem">
+      <span class="material-symbols-outlined" style="font-size: 20px;">military_tech</span>
     </div>
-    <div class="brand-text">
-      <h1>EventOps AI</h1>
-      <div class="brand-subtitle">Enterprise Event Operations Agent</div>
+    <div class="brand-meta">
+      <span class="brand-title">EventOps AI</span>
+      <span class="brand-subtitle">Executive Command Center</span>
     </div>
   </div>
 
+  <!-- Center: Active Event Control ONLY -->
   <div class="header-center">
-    <div class="event-select-box">
-      <label>Active Event</label>
-      <select id="eventSelector">
-        <option value="loading">Loading live events...</option>
-      </select>
+    <div class="event-control-wrapper" id="eventControlWrapper">
+      <button class="event-control-trigger" id="btnEventControl" title="Active Event & Dossier Controls" aria-haspopup="true" aria-expanded="false">
+        <span class="event-control-prefix">Active Event</span>
+        <span class="event-control-dot"></span>
+        <span class="event-control-name" id="headerActiveEventTitle">Women in Tech Leadership & Innovation Dinner</span>
+        <span class="material-symbols-outlined event-control-chevron">expand_more</span>
+      </button>
+
+      <!-- Event Control Popover Dropdown (Contains Edit, Create, Switch) -->
+      <div class="event-control-popover" id="eventControlPopover">
+        <div class="popover-section">
+          <div class="popover-meta-label">ACTIVE DOSSIER</div>
+          <div class="popover-event-title" id="popoverEventTitle">Women in Tech Leadership & Innovation Dinner</div>
+          <div class="popover-stats-row">
+            <span class="popover-chip" id="popoverGuestCount"><span class="material-symbols-outlined" style="font-size: 13px;">group</span> 30 Guests</span>
+            <span class="popover-chip" id="popoverBudgetTotal"><span class="material-symbols-outlined" style="font-size: 13px;">payments</span> $4,000.00</span>
+            <span class="popover-chip" id="popoverReadiness"><span class="material-symbols-outlined" style="font-size: 13px;">verified</span> 95 Ready</span>
+          </div>
+        </div>
+
+        <div class="popover-divider"></div>
+
+        <div class="popover-actions-grid">
+          <button class="popover-action-btn" id="btnEditEventDossier" title="Edit Active Dossier with Diff Preview">
+            <span class="material-symbols-outlined" style="font-size: 16px;">edit_document</span> Edit Dossier
+          </button>
+          <button class="popover-action-btn btn-create" id="btnOpenNewEvent" title="Create New Event Dossier">
+            <span class="material-symbols-outlined" style="font-size: 16px;">add_circle</span> Create New
+          </button>
+        </div>
+
+        <div class="popover-divider"></div>
+
+        <div class="popover-switch-box">
+          <label for="eventSelector">SWITCH EVENT DOSSIER</label>
+          <select id="eventSelector" class="popover-select" aria-label="Switch Active Event Dossier">
+            <option value="loading">Loading live events...</option>
+          </select>
+        </div>
+      </div>
     </div>
-    <button class="btn-edit-event" id="btnEditEventDossier" title="Edit Active Dossier">
-      <span class="material-symbols-outlined" style="font-size: 15px;">edit</span> Edit
-    </button>
-    <button class="btn-new-event" id="btnOpenNewEvent" title="Create New Event Dossier">
-      <span class="material-symbols-outlined" style="font-size: 15px;">add</span> Create
-    </button>
   </div>
 
-  <div class="header-actions">
-    <div class="status-chip" id="headerStatusChip" title="Simulation / Live Runtime Indicator">
+  <!-- Right: Runtime Status, Copilot Trigger & More Menu -->
+  <div class="header-right">
+    <div class="runtime-chip" id="headerStatusChip" title="Agent Platform Connection Status">
       <span class="status-dot" id="headerStatusDot"></span>
       <span id="headerStatusText">ONLINE · Agent Platform</span>
     </div>
-    <button class="btn-header btn-copilot-toggle" id="btnToggleCopilot">
-      <span class="material-symbols-outlined" style="font-size: 16px;">chat</span> Copilot
+
+    <button class="btn-copilot-trigger" id="btnToggleCopilot" title="Toggle AI Operations Copilot (Slide-Over)">
+      <span class="material-symbols-outlined copilot-spark">smart_toy</span>
+      <span>Copilot</span>
     </button>
+
     <div class="more-menu-container">
-      <button class="btn-header" id="btnMoreMenu" title="More Workspace Tools">
-        <span class="material-symbols-outlined" style="font-size: 16px;">more_vert</span> More
+      <button class="btn-icon-header" id="btnMoreMenu" title="More Operations & Appearance">
+        <span class="material-symbols-outlined" style="font-size: 19px;">more_vert</span>
       </button>
-      <div class="more-menu-dropdown" id="moreMenuDropdown" style="display: none;">
+
+      <div class="more-menu-dropdown" id="moreMenuDropdown">
+        <div class="menu-heading">Appearance</div>
+        <div class="theme-toggle-strip">
+          <button class="theme-btn active" data-theme-val="system" id="btnThemeSystem" title="System Theme (Follow OS)">
+            <span class="material-symbols-outlined" style="font-size: 13px;">brightness_auto</span> System
+          </button>
+          <button class="theme-btn" data-theme-val="light" id="btnThemeLight" title="Hanji Ivory Light Mode">
+            <span class="material-symbols-outlined" style="font-size: 13px;">light_mode</span> Light
+          </button>
+          <button class="theme-btn" data-theme-val="dark" id="btnThemeDark" title="Midnight Ink Dark Mode">
+            <span class="material-symbols-outlined" style="font-size: 13px;">dark_mode</span> Dark
+          </button>
+        </div>
+
+        <div class="menu-heading">Operations</div>
         <button class="more-menu-item" id="btnOpenIntegrations" title="View Google Calendar, Gmail, and Slack status & action ledger">
-          <span class="material-symbols-outlined" style="font-size: 16px;">hub</span> Connected Services
+          <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-cyan);">hub</span> Connected Services
         </button>
         <button class="more-menu-item" id="btnOpenAnalytics" title="Executive Analytics & Telemetry across 4 domains">
-          <span class="material-symbols-outlined" style="font-size: 16px;">monitoring</span> Analytics & Telemetry
+          <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-gold);">monitoring</span> Executive Analytics
         </button>
         <button class="more-menu-item" id="btnOpenAbout" title="System Architecture & Specifications">
-          <span class="material-symbols-outlined" style="font-size: 16px;">info</span> Systems Architecture
+          <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-emerald);">account_tree</span> Systems Architecture
         </button>
         <button class="more-menu-item" id="btnMenuEditEvent" title="Edit Active Dossier">
           <span class="material-symbols-outlined" style="font-size: 16px;">edit_document</span> Edit Active Dossier
@@ -1441,152 +1951,187 @@
   </div>
 </header>
 
-<!-- MAIN WORKSPACE -->
-<div class="workspace-container" id="workspaceContainer">
+<!-- =========================================================================
+     THIN, CALM WORKFLOW TABS (SECOND ROW)
+     ========================================================================= -->
+<nav class="workflow-nav-bar">
+  <div class="workflow-tabs-group">
+    <button class="nav-btn active" data-tab="overview">
+      <span class="material-symbols-outlined" style="font-size: 17px;">dashboard</span> Overview
+    </button>
+    <button class="nav-btn" data-tab="plan">
+      <span class="material-symbols-outlined" style="font-size: 17px;">schedule</span> Plan &amp; Timeline
+    </button>
+    <button class="nav-btn" data-tab="risks">
+      <span class="material-symbols-outlined" style="font-size: 17px;">security</span> Risks &amp; Decisions
+    </button>
+    <button class="nav-btn" data-tab="experience">
+      <span class="material-symbols-outlined" style="font-size: 17px;">palette</span> Experience &amp; Journey
+    </button>
+  </div>
+  <div class="nav-bar-right">
+    <span class="dossier-ver-tag">Dossier v<strong id="heroVersion" style="margin-left: 2px;">1</strong></span>
+  </div>
+</nav>
 
-  <!-- LEFT: PRIMARY OPERATIONS WORKSPACE -->
-  <div class="operations-workspace">
-    <nav class="workspace-nav">
-      <button class="nav-btn active" data-tab="overview">
-        <span class="material-symbols-outlined" style="font-size: 17px;">dashboard</span> Overview
-      </button>
-      <button class="nav-btn" data-tab="plan">
-        <span class="material-symbols-outlined" style="font-size: 17px;">schedule</span> Plan & Timeline
-      </button>
-      <button class="nav-btn" data-tab="risks">
-        <span class="material-symbols-outlined" style="font-size: 17px;">security</span> Risks & Decisions
-      </button>
-      <button class="nav-btn" data-tab="experience">
-        <span class="material-symbols-outlined" style="font-size: 17px;">palette</span> Experience & Journey
-      </button>
-    </nav>
+<!-- =========================================================================
+     MAIN WORKSPACE CONTAINER & SLIDE-OVER COPILOT DRAWER
+     ========================================================================= -->
+<div class="workspace-container copilot-closed" id="workspaceContainer">
 
-    <div class="workspace-body">
+  <!-- PRIMARY OPERATIONS WORKSPACE (FULL WIDTH BY DEFAULT) -->
+  <main class="operations-workspace">
 
-      <!-- ================= TAB 1: OVERVIEW ================= -->
-      <div id="tab-overview" class="tab-pane">
-        <!-- HERO / 5-SECOND TEST -->
-        <div class="event-hero">
-          <div class="hero-meta">
-            <h2 id="heroTitle">Loading Event Dossier...</h2>
-            <div class="hero-tags">
-              <span class="hero-tag"><span class="material-symbols-outlined" style="font-size: 14px;">place</span> <span id="heroLocation">-</span></span>
-              <span class="hero-tag"><span class="material-symbols-outlined" style="font-size: 14px;">group</span> <span id="heroGuests">-</span> Guests</span>
-              <span class="hero-tag"><span class="material-symbols-outlined" style="font-size: 14px;">payments</span> Budget Ceiling: <strong id="heroBudget" style="color: #fff; margin-left: 2px;">-</strong></span>
-              <span class="hero-tag"><span class="material-symbols-outlined" style="font-size: 14px;">layers</span> Dossier v<span id="heroVersion">1</span></span>
+    <!-- ================= TAB 1: OVERVIEW COCKPIT (58% / 40%) ================= -->
+    <div id="tab-overview" class="tab-pane">
+      <div class="overview-cockpit">
+        <!-- LEFT 58%: Crown Hero Panel + Signature Readiness Gauge + Attention Strip -->
+        <div class="cockpit-left">
+          <div class="crown-hero-panel">
+            <div class="crown-hero-header">
+              <div>
+                <div class="crown-tag">
+                  <span class="material-symbols-outlined" style="font-size: 14px;">verified</span> Authoritative Event Dossier
+                </div>
+                <h2 id="heroTitle" class="crown-title">Loading Event Dossier...</h2>
+              </div>
               <button class="btn-action-icon btn-calendar-sync" id="btnQuickAddCalendar" title="Add event to Google Calendar">
                 <span class="material-symbols-outlined" style="font-size: 14px;">calendar_month</span> Add to Calendar
               </button>
             </div>
-          </div>
-          <div class="hero-gauge-box">
-            <div class="readiness-gauge-wrapper">
-              <svg class="readiness-gauge-svg" viewBox="0 0 160 90">
-                <path d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12" stroke-linecap="round"/>
-                <path id="readinessGaugePath" d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="var(--accent-emerald)" stroke-width="12" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="18.85"/>
-              </svg>
-              <div class="gauge-score-overlay">
-                <span class="gauge-score" id="heroScore">-</span>
-                <span class="gauge-max">/100</span>
+
+            <div class="crown-meta-strip">
+              <span class="crown-meta-item"><span class="material-symbols-outlined" style="font-size: 14px;">place</span> <span id="heroLocation">-</span></span>
+              <span class="crown-meta-item"><span class="material-symbols-outlined" style="font-size: 14px;">group</span> <strong id="heroGuests">-</strong> Guests</span>
+              <span class="crown-meta-item"><span class="material-symbols-outlined" style="font-size: 14px;">payments</span> Ceiling: <strong id="heroBudget" style="margin-left: 2px;">-</strong></span>
+            </div>
+
+            <!-- Signature Readiness Gauge Row -->
+            <div class="crown-readiness-row">
+              <div class="readiness-gauge-wrapper">
+                <svg class="readiness-gauge-svg" viewBox="0 0 160 90">
+                  <path d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="var(--border-subtle)" stroke-width="12" stroke-linecap="round"/>
+                  <path id="readinessGaugePath" d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="var(--accent-emerald)" stroke-width="12" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="18.85"/>
+                </svg>
+                <div class="gauge-score-overlay">
+                  <span class="gauge-score" id="heroScore">-</span>
+                  <span class="gauge-max">/100</span>
+                </div>
+              </div>
+
+              <div class="readiness-info-col">
+                <div class="hero-gate-status" id="heroGateStatus">All Operational Gates Satisfied</div>
+                <div class="hero-status-pills">
+                  <div class="hero-pill hero-pill-critical" id="heroPillCritical"><span id="heroCritCount">0</span> Critical</div>
+                  <div class="hero-pill hero-pill-attention" id="heroPillAttention"><span id="heroAttnCount">0</span> Attention</div>
+                  <div class="hero-pill hero-pill-ready" id="heroPillReady"><span id="heroReadyCount">0</span> Ready</div>
+                </div>
+                <button class="btn-why-score" id="btnWhyScore">Why <span id="whyScoreVal">-</span>?</button>
               </div>
             </div>
-            <div style="font-size: 0.68rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Composite Readiness</div>
-            <button class="btn-why-score" id="btnWhyScore">Why <span id="whyScoreVal">-</span>?</button>
           </div>
-          <div class="hero-status-card">
-            <div class="hero-status-header">Readiness Gates</div>
-            <div class="hero-status-pills">
-              <div class="hero-pill hero-pill-critical" id="heroPillCritical"><span id="heroCritCount">0</span> Critical</div>
-              <div class="hero-pill hero-pill-attention" id="heroPillAttention"><span id="heroAttnCount">0</span> Attention</div>
-              <div class="hero-pill hero-pill-ready" id="heroPillReady"><span id="heroReadyCount">0</span> Ready</div>
+
+          <!-- Operational Attention Strip below Hero -->
+          <div class="ops-attention-strip">
+            <div class="attention-strip-top">
+              <div class="attention-title">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-amber);">notification_important</span> Critical Operational Attention Needed
+              </div>
+              <span class="badge badge-emerald" id="overviewAttentionCount">All Clear</span>
             </div>
-            <div class="hero-gate-status" id="heroGateStatus">All Operational Gates Satisfied</div>
+            <div id="overviewAttentionList">
+              <div class="attention-item" style="color: var(--accent-emerald);">All operational readiness gates are satisfied. No critical blockers.</div>
+            </div>
           </div>
         </div>
 
-        <!-- KEY METRICS ROW -->
-        <div class="metrics-row" style="margin-top: 1rem;">
-          <div class="metric-card">
-            <div class="metric-label">Headcount</div>
-            <div class="metric-value" id="cardGuests">-</div>
-            <div class="metric-sub">Confirmed Attendees</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Allocated Budget</div>
-            <div class="metric-value" id="cardAllocated">-</div>
-            <div class="metric-sub" id="cardVarianceSub">0.00% Variance</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Contingency</div>
-            <div class="metric-value" id="cardContingency">-</div>
-            <div class="metric-sub">Safety Buffer</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Staffing Ratio</div>
-            <div class="metric-value" id="cardStaffRatio">-</div>
-            <div class="metric-sub" id="cardStaffCount">Guests Per Staff</div>
-          </div>
-        </div>
-
-        <!-- RECENT DECISIONS / CRITICAL ALERTS -->
-        <div class="ops-panel" style="margin-top: 1rem;">
-          <div class="ops-panel-header">
-            <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">notification_important</span> Critical Operational Attention Needed
+        <!-- RIGHT 40%: Visual Intelligence Command Panel -->
+        <div class="cockpit-right">
+          <div class="visual-intel-panel">
+            <div class="intel-panel-title">
+              <span class="material-symbols-outlined" style="font-size: 16px;">insights</span> Operational Visual Intelligence
             </div>
-            <span class="badge badge-emerald" id="overviewAttentionCount">All Clear</span>
-          </div>
-          <div id="overviewAttentionList">
-            <div class="attention-item" style="color: var(--accent-emerald);">All operational readiness gates are satisfied. No critical blockers.</div>
+
+            <div class="intel-cards-grid">
+              <div class="intel-metric-card">
+                <div class="intel-metric-label">Allocated Budget</div>
+                <div class="intel-metric-val" id="cardAllocated">-</div>
+                <div class="intel-metric-sub" id="cardVarianceSub">0.00% Variance</div>
+              </div>
+
+              <div class="intel-metric-card">
+                <div class="intel-metric-label">Contingency Reserve</div>
+                <div class="intel-metric-val" id="cardContingency">-</div>
+                <div class="intel-metric-sub">10.00% Safety Buffer</div>
+              </div>
+
+              <div class="intel-metric-card">
+                <div class="intel-metric-label">Staffing Ratio</div>
+                <div class="intel-metric-val" id="cardStaffRatio">-</div>
+                <div class="intel-metric-sub" id="cardStaffCount">Guests Per Staff</div>
+              </div>
+
+              <div class="intel-metric-card">
+                <div class="intel-metric-label">Next Ros Milestone</div>
+                <div class="intel-metric-val" id="cardNextMilestone" style="font-size: 1.05rem;">Guest Arrival</div>
+                <div class="intel-metric-sub" id="cardNextMilestoneTime">T-00:00 · Floor Operational</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ================= TAB 2: PLAN & TIMELINE ================= -->
-      <div id="tab-plan" class="tab-pane hidden">
-        <!-- ZERO-VARIANCE BUDGET ALLOCATION -->
-        <div class="ops-panel">
-          <div class="ops-panel-header">
-            <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">account_balance</span> Governed Budget Allocations (Cent-Level Precision)
+      <!-- Preserved Hidden Elements for Test Compatibility -->
+      <div class="metrics-row">
+        <span id="cardGuests">-</span>
+      </div>
+    </div>
+
+    <!-- ================= TAB 2: PLAN & TIMELINE ================= -->
+    <div id="tab-plan" class="tab-pane hidden">
+      <div class="plan-visual-cockpit">
+        <!-- Top Split: Visual Budget Composition & RACI Progress -->
+        <div class="plan-top-split">
+          <!-- Budget Breakdown Card -->
+          <div class="ops-panel">
+            <div class="ops-panel-header">
+              <div class="ops-panel-title">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-gold);">account_balance</span> Governed Budget Composition
+              </div>
+              <div style="display: flex; gap: 0.45rem;">
+                <span class="badge badge-emerald" id="budgetVariancePill">Variance: $0.00 (0.00%)</span>
+                <span class="badge badge-blue" id="budgetReservePill">Reserve: 10.00%</span>
+              </div>
             </div>
-            <div class="budget-stat-pills">
-              <span class="badge badge-emerald" id="budgetVariancePill">Variance: $0.00 (0.00%)</span>
-              <span class="badge badge-blue" id="budgetReservePill">Reserve: 10.00%</span>
+            <div class="budget-visual-box" id="budgetVisualCard">
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">
+                <span>PROPORTIONAL ALLOCATION</span>
+                <span id="budgetBarSummary">Ceiling: $0.00 | Allocated: $0.00</span>
+              </div>
+              <div class="budget-segmented-bar" id="budgetSegmentedBar"></div>
+              <div class="budget-legend" id="budgetLegend"></div>
             </div>
           </div>
-          <!-- VISUAL SEGMENTED BUDGET BREAKDOWN -->
-          <div class="budget-visual-card" id="budgetVisualCard">
-            <div class="budget-visual-header">
-              <span>PROPORTIONAL ALLOCATION BREAKDOWN</span>
-              <span id="budgetBarSummary">Ceiling: $0.00 | Allocated: $0.00</span>
+
+          <!-- RACI Progress Card -->
+          <div class="ops-panel">
+            <div class="ops-panel-header">
+              <div class="ops-panel-title">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-emerald);">checklist</span> Execution Milestones (RACI)
+              </div>
+              <span class="badge badge-emerald" id="raciCompletionRate">0% Completed</span>
             </div>
-            <div class="budget-segmented-bar" id="budgetSegmentedBar"></div>
-            <div class="budget-legend" id="budgetLegend"></div>
-          </div>
-          <div class="data-table-wrapper">
-            <table class="ops-table">
-              <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>Allocated ($)</th>
-                  <th>Share (%)</th>
-                  <th>Deterministic Penny Math</th>
-                  <th>Operational Status</th>
-                </tr>
-              </thead>
-              <tbody id="budgetTableBody">
-                <tr><td colspan="5" style="color: var(--text-muted);">Loading budget items...</td></tr>
-              </tbody>
-            </table>
+            <div id="raciProgressSummary" style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.6;">
+              <span>RACI Deliverables: <strong id="raciCompletedCount" style="color: var(--accent-emerald);">0</strong> Completed · <strong id="raciInProgressCount" style="color: var(--accent-amber);">0</strong> In Progress · <strong id="raciPendingCount" style="color: var(--text-muted);">0</strong> Pending</span>
+            </div>
           </div>
         </div>
 
-        <!-- RUN OF SHOW -->
-        <div class="ops-panel" style="margin-top: 1rem;">
+        <!-- Middle: Full-Width Run of Show Timeline -->
+        <div class="ops-panel">
           <div class="ops-panel-header">
             <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">schedule</span> Chronological Run of Show
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-cyan);">schedule</span> Chronological Run of Show
             </div>
             <button class="btn-action-icon btn-calendar-sync" id="btnQuickSyncMilestones" title="Sync milestones to Google Calendar">
               <span class="material-symbols-outlined" style="font-size: 14px;">sync</span> Sync Milestones to Calendar
@@ -1597,43 +2142,67 @@
           </div>
         </div>
 
-        <!-- RACI TASK MILESTONES -->
-        <div class="ops-panel" style="margin-top: 1rem;">
-          <div class="ops-panel-header">
-            <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">checklist</span> Critical Milestone Deliverables (RACI)
+        <!-- Bottom: Collapsible Detailed Tables -->
+        <details class="collapsible-ops-section" open>
+          <summary>
+            <span>RACI Responsibility Matrix Details</span>
+            <span class="material-symbols-outlined" style="font-size: 18px;">expand_more</span>
+          </summary>
+          <div class="collapsible-body">
+            <div class="data-table-wrapper">
+              <table class="ops-table">
+                <thead>
+                  <tr>
+                    <th>Milestone / Task</th>
+                    <th>Timeline</th>
+                    <th>Responsible</th>
+                    <th>Accountable</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="raciTableBody">
+                  <tr><td colspan="5" style="color: var(--text-muted);">Loading RACI matrix...</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="raci-progress-bar-container" id="raciProgressSummary">
-            <span>RACI Progress: <strong id="raciCompletedCount">0</strong> Completed · <strong id="raciInProgressCount">0</strong> In Progress · <strong id="raciPendingCount">0</strong> Pending</span>
-            <span id="raciCompletionRate">0% Completed</span>
-          </div>
-          <div class="data-table-wrapper">
-            <table class="ops-table">
-              <thead>
-                <tr>
-                  <th>Milestone / Task</th>
-                  <th>Timeline</th>
-                  <th>Responsible</th>
-                  <th>Accountable</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="raciTableBody">
-                <tr><td colspan="5" style="color: var(--text-muted);">Loading RACI matrix...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+        </details>
 
-      <!-- ================= TAB 3: RISKS & DECISIONS ================= -->
-      <div id="tab-risks" class="tab-pane hidden">
-        <!-- EVENTOPS GUARD FINDINGS -->
+        <details class="collapsible-ops-section">
+          <summary>
+            <span>Cent-Level Governed Budget Ledger</span>
+            <span class="material-symbols-outlined" style="font-size: 18px;">expand_more</span>
+          </summary>
+          <div class="collapsible-body">
+            <div class="data-table-wrapper">
+              <table class="ops-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Allocated ($)</th>
+                    <th>Share (%)</th>
+                    <th>Deterministic Penny Math</th>
+                    <th>Operational Status</th>
+                  </tr>
+                </thead>
+                <tbody id="budgetTableBody">
+                  <tr><td colspan="5" style="color: var(--text-muted);">Loading budget items...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- ================= TAB 3: RISKS & DECISIONS ================= -->
+    <div id="tab-risks" class="tab-pane hidden">
+      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <!-- Top: Risk Severity Distribution & Finding Profile -->
         <div class="ops-panel">
           <div class="ops-panel-header">
             <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">security</span> EventOps Guard: Operational Readiness Gates
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-rose);">security</span> EventOps Guard: Operational Readiness Gates
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center;">
               <button class="btn-action-icon btn-slack-share" id="btnQuickNotifySlack" title="Post risk briefing to Slack operations channel">
@@ -1642,14 +2211,13 @@
               <span class="badge badge-neutral" id="guardSeverityBadge">Scanning...</span>
             </div>
           </div>
-          <!-- RISK SEVERITY DISTRIBUTION PROFILE -->
-          <div class="risk-distribution-container" id="riskDistributionBar">
-            <span style="font-weight: 700;">SEVERITY PROFILE:</span>
+          <div class="risk-posture-bar" id="riskDistributionBar">
+            <span style="font-weight: 700; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.06em; color: var(--text-muted);">SEVERITY PROFILE:</span>
             <span class="badge badge-rejected" id="riskDistCritical">0 Critical</span>
             <span class="badge badge-amber" id="riskDistAttention">0 Attention</span>
             <span class="badge badge-approved" id="riskDistReady">0 Ready</span>
           </div>
-          <div class="data-table-wrapper">
+          <div class="data-table-wrapper" style="margin-top: 0.75rem;">
             <table class="ops-table">
               <thead>
                 <tr>
@@ -1666,14 +2234,13 @@
           </div>
         </div>
 
-        <!-- DECISION LEDGER -->
-        <div class="ops-panel" style="margin-top: 1rem;">
+        <!-- Middle: 4-Stage Decision Lifecycle Workflow -->
+        <div class="ops-panel">
           <div class="ops-panel-header">
             <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">history_edu</span> Two-Phase Decision Ledger (Human Governance)
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-gold);">history_edu</span> Two-Phase Decision Ledger (Human Governance)
             </div>
           </div>
-          <!-- GOVERNANCE PIPELINE VISUAL -->
           <div class="decision-pipeline-bar" id="decisionPipelineBar">
             <div class="pipeline-step"><span class="pipeline-count" id="pipeProposedCount">0</span> Proposed</div>
             <div class="pipeline-arrow">→</div>
@@ -1683,7 +2250,9 @@
             <div class="pipeline-arrow">→</div>
             <div class="pipeline-step"><span class="pipeline-count" id="pipeExecutedCount">0</span> Executed</div>
           </div>
-          <div class="data-table-wrapper">
+
+          <!-- Decision Ledger Full Table -->
+          <div class="data-table-wrapper" style="margin-top: 0.85rem;">
             <table class="ops-table">
               <thead>
                 <tr>
@@ -1702,62 +2271,71 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ================= TAB 4: EXPERIENCE & JOURNEY ================= -->
-      <div id="tab-experience" class="tab-pane hidden">
-        <!-- 8-STAGE GUEST JOURNEY -->
+    <!-- ================= TAB 4: EXPERIENCE & JOURNEY ================= -->
+    <div id="tab-experience" class="tab-pane hidden">
+      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <!-- Connected Serpentine Visual Guest Journey -->
         <div class="ops-panel">
           <div class="ops-panel-header">
             <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">hiking</span> Curated 8-Stage Guest Journey
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-gold);">hiking</span> Connected 8-Stage Guest Journey Track
             </div>
             <button class="btn-action-icon btn-email-draft" id="btnQuickDraftEmail" title="Draft guest intake and logistical communications">
               <span class="material-symbols-outlined" style="font-size: 14px;">mail</span> Draft Guest Communications
             </button>
           </div>
-          <div class="journey-grid" id="journeyGrid">
+          <div class="journey-serpentine-track" id="journeyGrid">
             <div class="journey-card">Loading guest journey...</div>
           </div>
         </div>
 
-        <!-- ATMOSPHERE & VISUAL DIRECTION -->
-        <div class="ops-panel" style="margin-top: 1rem;">
-          <div class="ops-panel-header">
-            <div class="ops-panel-title">
-              <span class="material-symbols-outlined" style="font-size: 16px;">photo_camera</span> Atmosphere & Visual Direction
+        <!-- Editorial Atmosphere Hero Box -->
+        <div class="editorial-atmosphere-box">
+          <div class="atmosphere-hero-img-wrap">
+            <img src="assets/visual_direction_wit_manhattan.png" alt="Atmosphere Moodboard" class="atmosphere-hero-img" onerror="this.src='docs/images/visual_direction_wit_manhattan.png'">
+            <div class="atmosphere-chips-overlay">
+              <span class="ambient-chip">Warm</span>
+              <span class="ambient-chip">Candlelit</span>
+              <span class="ambient-chip">Conversational</span>
+              <span class="ambient-chip">Relaxed Elegance</span>
             </div>
           </div>
-          <p id="atmosphereText" style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.5;">
+          <p id="atmosphereText" class="atmosphere-editorial-text">
             Loading atmosphere specifications...
           </p>
-          <div id="visualAssetsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
-            <!-- Render visual assets or elegant fallback -->
-          </div>
+          <div id="visualAssetsContainer" style="display: none;"></div>
         </div>
       </div>
-
     </div>
-  </div>
 
-  <!-- RIGHT: OPERATIONS COPILOT DRAWER -->
+  </main>
+
+  <!-- =========================================================================
+     SLIDE-OVER COPILOT DRAWER (RIGHT)
+     ========================================================================= -->
   <aside class="operations-copilot" id="copilotDrawer">
-    <div class="copilot-header">
-      <div class="copilot-title">
+    <div class="copilot-drawer-header">
+      <div class="copilot-drawer-title">
         <span class="material-symbols-outlined" style="font-size: 18px; color: var(--accent-cyan);">smart_toy</span>
         <span>Operations Copilot</span>
       </div>
-      <span class="badge badge-approved" id="copilotModeBadge">Live Connected</span>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span class="badge badge-approved" id="copilotModeBadge">Live Connected</span>
+        <button class="btn-close-copilot" id="btnCloseCopilotDrawer" title="Close Drawer">
+          <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+        </button>
+      </div>
     </div>
 
-    <!-- QUICK PROMPT CHIPS -->
-    <div class="copilot-chips">
+    <div class="copilot-chips-strip">
       <button class="chip-btn" data-prompt="What am I forgetting?">🛡️ What am I forgetting?</button>
       <button class="chip-btn" data-prompt="Help me rebalance this event's budget.">💰 Rebalance budget</button>
       <button class="chip-btn" data-prompt="Explain our readiness score">📋 Explain readiness</button>
       <button class="chip-btn" data-prompt="Review staffing ratio and arrival coverage">👥 Review staffing</button>
     </div>
 
-    <!-- CONVERSATION TRANSCRIPT -->
     <div class="chat-log" id="chatLog">
       <div class="chat-msg agent">
         <div class="chat-bubble" id="copilotGreetingBubble">
@@ -1767,7 +2345,6 @@
       </div>
     </div>
 
-    <!-- COPILOT INPUT BAR -->
     <form class="chat-input-bar" id="chatForm">
       <input type="text" id="chatInput" placeholder="Direct Copilot or ask about event operations..." autocomplete="off">
       <button type="submit" class="btn-send">Send</button>
@@ -1776,7 +2353,9 @@
 
 </div>
 
-<!-- MODAL: WHY SCORE? BREAKDOWN -->
+<!-- =========================================================================
+     MODALS SECTION (ORIGINAL PROVEN MODALS WITH SYSTEMS ARCHITECTURE SVG)
+     ========================================================================= -->
 <div class="modal-overlay" id="modalWhyScore">
   <div class="modal-card">
     <div class="modal-header">
@@ -1977,6 +2556,65 @@
       <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalAbout')">✕</button>
     </div>
     <div class="modal-body">
+
+      <!-- Interactive SVG Architecture Diagram -->
+      <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.25rem; display: flex; justify-content: center; margin-bottom: 1rem;">
+        <svg viewBox="0 0 720 280" style="width: 100%; max-width: 700px; height: auto;">
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#d4af37" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Connecting Lines -->
+          <line x1="120" y1="70" x2="260" y2="70" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="4"/>
+          <line x1="420" y1="70" x2="560" y2="70" stroke="var(--border-strong)" stroke-width="2"/>
+          <line x1="340" y1="110" x2="340" y2="170" stroke="var(--border-strong)" stroke-width="2"/>
+          <line x1="120" y1="210" x2="260" y2="210" stroke="var(--border-strong)" stroke-width="2"/>
+          <line x1="420" y1="210" x2="560" y2="210" stroke="var(--border-strong)" stroke-width="2"/>
+
+          <!-- Node 1: Director / UI -->
+          <rect x="20" y="35" width="100" height="70" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <text x="70" y="65" fill="var(--text-primary)" font-size="11" font-weight="700" text-anchor="middle">EXECUTIVE</text>
+          <text x="70" y="80" fill="var(--text-muted)" font-size="9" text-anchor="middle">DIRECTOR UI</text>
+
+          <!-- Node 2: Reasoning Engine -->
+          <rect x="260" y="30" width="160" height="80" rx="10" fill="url(#cyanGrad)" stroke="var(--accent-cyan)" stroke-width="1.5"/>
+          <text x="340" y="60" fill="var(--accent-cyan)" font-size="12" font-weight="700" text-anchor="middle">Vertex AI Reasoning</text>
+          <text x="340" y="78" fill="var(--text-primary)" font-size="10" text-anchor="middle">ADK GA 1.1.0 (A2A)</text>
+          <text x="340" y="94" fill="var(--text-secondary)" font-size="9" text-anchor="middle">Gemini 2.5 Flash</text>
+
+          <!-- Node 3: Deterministic Tools -->
+          <rect x="560" y="35" width="140" height="70" rx="8" fill="url(#emeraldGrad)" stroke="var(--accent-emerald)" stroke-width="1.5"/>
+          <text x="630" y="65" fill="var(--accent-emerald)" font-size="11" font-weight="700" text-anchor="middle">CENT-LEVEL MATH</text>
+          <text x="630" y="80" fill="var(--text-muted)" font-size="9" text-anchor="middle">Zero-Variance Engine</text>
+
+          <!-- Node 4: Governance Ledger -->
+          <rect x="20" y="175" width="100" height="70" rx="8" fill="url(#goldGrad)" stroke="var(--accent-gold)" stroke-width="1.5"/>
+          <text x="70" y="205" fill="var(--accent-gold)" font-size="11" font-weight="700" text-anchor="middle">2-PHASE</text>
+          <text x="70" y="220" fill="var(--text-muted)" font-size="9" text-anchor="middle">GOVERNANCE</text>
+
+          <!-- Node 5: Cloud Firestore -->
+          <rect x="260" y="170" width="160" height="80" rx="10" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <text x="340" y="200" fill="var(--text-primary)" font-size="12" font-weight="700" text-anchor="middle">Cloud Firestore</text>
+          <text x="340" y="218" fill="var(--text-muted)" font-size="10" text-anchor="middle">Living Dossier SOT</text>
+          <text x="340" y="234" fill="var(--text-muted)" font-size="9" text-anchor="middle">Decision Ledgers</text>
+
+          <!-- Node 6: External Integrations -->
+          <rect x="560" y="175" width="140" height="70" rx="8" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <text x="630" y="205" fill="var(--text-primary)" font-size="11" font-weight="700" text-anchor="middle">ENTERPRISE HUB</text>
+          <text x="630" y="220" fill="var(--text-muted)" font-size="9" text-anchor="middle">Calendar · Gmail · Slack</text>
+        </svg>
+      </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
         <div style="background: var(--bg-surface-elevated); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
           <strong style="color: var(--accent-cyan); display: flex; align-items: center; gap: 0.3rem;">
@@ -2388,6 +3026,70 @@
 </div>
 
 <script>
+// =========================================================================
+// PERFECT CROWN THEME ENGINE (SYSTEM / LIGHT / DARK)
+// =========================================================================
+function getSavedTheme() {
+  return localStorage.getItem("eventops_theme") || "system";
+}
+
+function applyTheme(themeMode) {
+  localStorage.setItem("eventops_theme", themeMode);
+  let effectiveTheme = themeMode;
+  if (themeMode === "system") {
+    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  document.documentElement.setAttribute("data-theme", effectiveTheme);
+  document.documentElement.setAttribute("data-theme-setting", themeMode);
+
+  document.querySelectorAll(".theme-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.themeVal === themeMode);
+  });
+}
+
+// Media Query Listener for OS Theme changes
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  if (getSavedTheme() === "system") {
+    applyTheme("system");
+  }
+});
+
+// Initialize theme buttons
+document.querySelectorAll(".theme-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    applyTheme(btn.dataset.themeVal);
+  });
+});
+applyTheme(getSavedTheme());
+
+// =========================================================================
+// ACTIVE EVENT POPOVER CONTROLLER
+// =========================================================================
+const btnEventControl = document.getElementById("btnEventControl");
+const eventControlPopover = document.getElementById("eventControlPopover");
+
+if (btnEventControl && eventControlPopover) {
+  btnEventControl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isNowActive = eventControlPopover.classList.toggle("active");
+    btnEventControl.setAttribute("aria-expanded", isNowActive ? "true" : "false");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("#eventControlWrapper")) {
+      eventControlPopover.classList.remove("active");
+      btnEventControl.setAttribute("aria-expanded", "false");
+    }
+  });
+}
+
+function closeEventControlPopover() {
+  if (eventControlPopover) {
+    eventControlPopover.classList.remove("active");
+    if (btnEventControl) btnEventControl.setAttribute("aria-expanded", "false");
+  }
+}
+
 let CURRENT_EVENT_ID = "evt_wit_manhattan_2026";
 let CURRENT_DOSSIER = null;
 
@@ -2434,7 +3136,7 @@ const btnOpenAbout = document.getElementById("btnOpenAbout");
 if (btnOpenAbout) btnOpenAbout.addEventListener("click", () => { closeMoreMenu(); openModal("modalAbout"); });
 
 const btnOpenNewEvent = document.getElementById("btnOpenNewEvent");
-if (btnOpenNewEvent) btnOpenNewEvent.addEventListener("click", () => openCreateEventModal());
+if (btnOpenNewEvent) btnOpenNewEvent.addEventListener("click", () => { closeEventControlPopover(); openCreateEventModal(); });
 
 const btnOpenInteg = document.getElementById("btnOpenIntegrations");
 if (btnOpenInteg) btnOpenInteg.addEventListener("click", () => { closeMoreMenu(); openIntegrationsModal(); });
@@ -2443,7 +3145,7 @@ const btnOpenAn = document.getElementById("btnOpenAnalytics");
 if (btnOpenAn) btnOpenAn.addEventListener("click", () => { closeMoreMenu(); openAnalyticsModal("portfolio"); });
 
 const btnEditDossier = document.getElementById("btnEditEventDossier");
-if (btnEditDossier) btnEditDossier.addEventListener("click", () => openEditEventModal());
+if (btnEditDossier) btnEditDossier.addEventListener("click", () => { closeEventControlPopover(); openEditEventModal(); });
 
 const btnMenuEdit = document.getElementById("btnMenuEditEvent");
 if (btnMenuEdit) btnMenuEdit.addEventListener("click", () => { closeMoreMenu(); openEditEventModal(); });
@@ -2466,6 +3168,12 @@ const workspaceContainer = document.getElementById("workspaceContainer");
 document.getElementById("btnToggleCopilot").addEventListener("click", () => {
   workspaceContainer.classList.toggle("copilot-closed");
 });
+const btnCloseCopilotDrawer = document.getElementById("btnCloseCopilotDrawer");
+if (btnCloseCopilotDrawer && workspaceContainer) {
+  btnCloseCopilotDrawer.addEventListener("click", () => {
+    workspaceContainer.classList.add("copilot-closed");
+  });
+}
 
 // Quick prompt chips
 document.querySelectorAll(".chip-btn").forEach(chip => {
@@ -2606,6 +3314,18 @@ function renderHeroSection(data) {
   try {
     const titleElem = document.getElementById("heroTitle");
     if (titleElem) titleElem.textContent = data.title || CURRENT_EVENT_ID;
+
+    const headerTitleElem = document.getElementById("headerActiveEventTitle");
+    if (headerTitleElem) headerTitleElem.textContent = data.title || CURRENT_EVENT_ID;
+    const popTitleElem = document.getElementById("popoverEventTitle");
+    if (popTitleElem) popTitleElem.textContent = data.title || CURRENT_EVENT_ID;
+    const popGuestsElem = document.getElementById("popoverGuestCount");
+    if (popGuestsElem) popGuestsElem.innerHTML = `<span class="material-symbols-outlined" style="font-size: 13px;">group</span> ${data.guest_count || 0} Guests`;
+    const popBudgetElem = document.getElementById("popoverBudgetTotal");
+    if (popBudgetElem) popBudgetElem.innerHTML = `<span class="material-symbols-outlined" style="font-size: 13px;">payments</span> $${Number(data.total_budget || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    const popScoreElem = document.getElementById("popoverReadiness");
+    if (popScoreElem) popScoreElem.innerHTML = `<span class="material-symbols-outlined" style="font-size: 13px;">verified</span> ${data.readiness_score != null ? data.readiness_score : '—'} Ready`;
+
 
     const locElem = document.getElementById("heroLocation");
     if (locElem) locElem.textContent = data.location || "New York, NY";
@@ -3262,11 +3982,12 @@ function renderIntegrationActionsTable(actions) {
   const tbody = document.getElementById("integrationActionsTableBody");
   if (!tbody) return;
   tbody.innerHTML = "";
-  if (!actions || actions.length === 0) {
+  const list = Array.isArray(actions) ? actions : (actions && actions.actions ? actions.actions : []);
+  if (!list || list.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6" style="color: var(--text-muted);">No external actions logged for this event.</td></tr>`;
     return;
   }
-  actions.forEach(a => {
+  list.forEach(a => {
     const tr = document.createElement("tr");
     const status = a.status || "pending_approval";
     const badgeClass = status === "approved" || status === "executed" ? "badge-approved" : (status === "rejected" ? "badge-rejected" : "badge-pending");

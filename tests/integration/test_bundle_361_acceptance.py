@@ -46,7 +46,10 @@ def _verify_bundle_361_features(page, url: str):
     )
     time.sleep(0.5)
 
-    # 1. Header Structure
+    # 1. Header Structure (Active Event Popover)
+    if not page.is_visible("#eventSelector") and page.is_visible("#btnEventControl"):
+        page.click("#btnEventControl")
+        time.sleep(0.2)
     assert page.is_visible("#eventSelector"), "Event selector must be visible"
     assert page.is_visible("#btnEditEventDossier"), "Edit Dossier button must be visible in header"
     assert page.is_visible("#btnOpenNewEvent"), "Create Event button must be visible in header"
@@ -83,6 +86,9 @@ def _verify_bundle_361_features(page, url: str):
     assert page.is_visible("#decisionPipelineBar"), "Decision governance pipeline bar must be visible"
 
     # 5. Create Event Wizard & Title Validation
+    if not page.is_visible("#btnOpenNewEvent") and page.is_visible("#btnEventControl"):
+        page.click("#btnEventControl")
+        time.sleep(0.2)
     page.click("#btnOpenNewEvent")
     time.sleep(0.3)
     assert page.is_visible("#modalNewEvent"), "Create modal must open"
@@ -117,6 +123,9 @@ def _verify_bundle_361_features(page, url: str):
     assert not page.is_visible("#modalNewEvent")
 
     # 6. Edit Event Dossier & Diff Flow
+    if not page.is_visible("#btnEditEventDossier") and page.is_visible("#btnEventControl"):
+        page.click("#btnEventControl")
+        time.sleep(0.2)
     page.click("#btnEditEventDossier")
     time.sleep(0.3)
     assert page.is_visible("#modalEditEvent"), "Edit Dossier modal must open"
