@@ -204,6 +204,19 @@ class CloudEventOpsProvider extends EventOpsDataProvider {
     if (!res.ok) throw new Error(`Live API error: HTTP ${res.status}`);
     return await res.json();
   }
+
+  async updateEvent(eventId, updates) {
+    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    return await res.json();
+  }
 }
 
 class DemoEventOpsProvider extends EventOpsDataProvider {
@@ -272,41 +285,123 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
   }
 
   async createEvent(payload) {
+    const title = (payload.title || "").trim();
+    const invalidTitles = ["untitled event", "untitled executive salon", "new event", "untitled"];
+    if (!title || invalidTitles.includes(title.toLowerCase())) {
+      throw new Error("A meaningful, non-placeholder event title is required.");
+    }
+    const guestCount = parseInt(payload.guest_count, 10);
+    if (isNaN(guestCount) || guestCount <= 0) {
+      throw new Error("Guest count must be a positive integer.");
+    }
+    const totalBudget = parseFloat(payload.total_budget);
+    if (isNaN(totalBudget) || totalBudget < 0) {
+      throw new Error("Total budget must be a non-negative number.");
+    }
+    const location = (payload.location || "").trim();
+    if (!location) {
+      throw new Error("Location cannot be empty.");
+    }
+
     const newId = `evt_${Date.now().toString(36)}`;
-    const totalBudget = Number(payload.total_budget) || 5000.0;
+    const f_b = Math.round(totalBudget * 0.55 * 100) / 100;
+    const contingency = Math.round(totalBudget * 0.10 * 100) / 100;
+    const staffing = Math.round(totalBudget * 0.15 * 100) / 100;
+    const materials = Math.round(totalBudget * 0.10 * 100) / 100;
+    const venue = Math.round((totalBudget - (f_b + contingency + staffing + materials)) * 100) / 100;
+
     const newEvt = {
       event_id: newId,
-      title: payload.title || "Untitled Executive Salon",
-      guest_count: Number(payload.guest_count) || 30,
+      title: title,
+      guest_count: guestCount,
       total_budget: totalBudget,
-      location: payload.location || "New York, NY",
+      location: location,
+      event_type: payload.event_type || "networking_dinner",
+      objective: payload.objective || "Executive networking and strategic alignment",
+      protected_priorities: payload.protected_priorities || ["Food & Beverage Quality", "Zero-Variance Budget"],
       status: "planning",
       version: 1,
       readiness_score: 85,
       budget_allocations: [
-        { category: "Venue Rental & Staff", allocated_amount: totalBudget * 0.35 },
-        { category: "Catering & Beverage Program", allocated_amount: totalBudget * 0.40 },
-        { category: "AV & Acoustic Production", allocated_amount: totalBudget * 0.15 },
-        { category: "Contingency Reserve (10%)", allocated_amount: totalBudget * 0.10 }
+        { category: "Food & Beverage", allocated_amount: f_b, is_protected: true, notes: "Catering and beverage package" },
+        { category: "Venue & Facilities", allocated_amount: venue, is_protected: false, notes: "Space rental or room fee" },
+        { category: "Staffing & Hospitality", allocated_amount: staffing, is_protected: false, notes: "Event host and greeters" },
+        { category: "Signage & Atmosphere", allocated_amount: materials, is_protected: false, notes: "Print materials and table décor" },
+        { category: "Contingency Reserve", allocated_amount: contingency, is_protected: true, notes: "10% unforeseen buffer" }
       ],
       run_of_show: [
-        { time: "18:00 - 18:45", activity: "Guest Arrival & Decompression", zone: "Foyer", notes: "Acoustics < 65 dBA" },
-        { time: "18:45 - 20:30", activity: "Curated Seated Dinner & Salon", zone: "Dining Room", notes: "Dietary protocols enforced" },
-        { time: "20:30 - 21:30", activity: "Dessert & Strategic Networking", zone: "Lounge", notes: "Zero-proof bar available" }
+        { time: "18:00 - 18:30", activity: "Guest Arrival & Welcome Refreshments", zone: "Foyer", owner: "Event Host", notes: "Acoustics < 65 dBA" },
+        { time: "18:30 - 20:00", activity: "Main Program & Curated Discussions", zone: "Dining Room", owner: "Program Director", notes: "Dietary protocols enforced" },
+        { time: "20:00 - 21:00", activity: "Dessert, Networking & Closing", zone: "Lounge", owner: "Lead Host", notes: "Zero-proof bar available" }
       ],
-      readiness_breakdown: {
-        score: 85,
-        explanation: "Initial dossier drafted. Dietary restrictions and venue sound checks required.",
-        items: [
-          { category: "Budget Governance", impact: "+25", rationale: "Exact zero-variance budget allocated.", points: 25 },
-          { category: "Staffing Ratio", impact: "+20", rationale: "Standard 1:8 guest-to-staff ratio planned.", points: 20 },
-          { category: "Dietary Inclusion", impact: "-10", rationale: "Dietary intake survey not yet finalized.", points: -10, action_needed: "Finalize dietary intake" },
-          { category: "Acoustic Noise Floor", impact: "-5", rationale: "Pre-dinner acoustic verification pending.", points: -5, action_needed: "Confirm venue noise rating" }
-        ]
-      }
+      staffing: [
+        { role: "Lead Event Director", count: 1, responsibility: "Overall coordination" },
+        { role: "Guest Greeting & Coat Check Attendant", count: 1, responsibility: "Arrival management" }
+      ],
+      risks: [
+        { category: "Operations", severity: "Low", details: "Last-minute guest dietary requests", mitigation: "Hold 2 reserve allergen-free plates", status: "open" }
+      ],
+      guest_journey: [
+        { stage: "Arrival", experience: "Warm personal greeting and seamless check-in" },
+        { stage: "Main Program", experience: "Engaging, unhurried conversation" },
+        { stage: "Departure", experience: "Thoughtful parting takeaway" }
+      ],
+      atmosphere: {
+        statement: "Intimate, warm, and highly conversational environment.",
+        attributes: ["Warm", "Curated", "Acoustic Clarity"]
+      },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
+    newEvt.budget_breakdown = newEvt.budget_allocations;
     this.events.unshift(newEvt);
-    return { status: "created", event_id: newId };
+    return { status: "created", event_id: newId, event: newEvt };
+  }
+
+  async updateEvent(eventId, updates) {
+    const evt = this.events.find(e => e.event_id === eventId);
+    if (!evt) throw new Error(`Event ${eventId} not found.`);
+
+    if (updates.title !== undefined) {
+      const t = (updates.title || "").trim();
+      const invalid = ["untitled event", "untitled executive salon", "new event", "untitled"];
+      if (!t || invalid.includes(t.toLowerCase())) {
+        throw new Error("A meaningful, non-placeholder event title is required.");
+      }
+      evt.title = t;
+    }
+    if (updates.guest_count !== undefined) {
+      const gc = parseInt(updates.guest_count, 10);
+      if (isNaN(gc) || gc <= 0) throw new Error("Guest count must be greater than 0.");
+      evt.guest_count = gc;
+    }
+    if (updates.total_budget !== undefined) {
+      const tb = parseFloat(updates.total_budget);
+      if (isNaN(tb) || tb < 0) throw new Error("Total budget must be non-negative.");
+      evt.total_budget = tb;
+    }
+    if (updates.location !== undefined) {
+      const loc = (updates.location || "").trim();
+      if (!loc) throw new Error("Location cannot be empty.");
+      evt.location = loc;
+    }
+    if (updates.event_type !== undefined) evt.event_type = updates.event_type;
+    if (updates.objective !== undefined) evt.objective = updates.objective;
+    if (updates.protected_priorities !== undefined) evt.protected_priorities = updates.protected_priorities;
+    if (updates.budget_allocations !== undefined) {
+      evt.budget_allocations = updates.budget_allocations;
+      evt.budget_breakdown = updates.budget_allocations;
+    }
+    if (updates.staffing !== undefined) evt.staffing = updates.staffing;
+    if (updates.tasks !== undefined) evt.tasks = updates.tasks;
+    if (updates.risks !== undefined) evt.risks = updates.risks;
+    if (updates.run_of_show !== undefined) evt.run_of_show = updates.run_of_show;
+    if (updates.guest_journey !== undefined) evt.guest_journey = updates.guest_journey;
+    if (updates.atmosphere !== undefined) evt.atmosphere = updates.atmosphere;
+
+    evt.version = (evt.version || 1) + 1;
+    evt.updated_at = new Date().toISOString();
+    return { status: "updated", event_id: eventId, version: evt.version, event: evt };
   }
 
   async getIntegrationsStatus() {
@@ -520,72 +615,128 @@ class DemoEventOpsProvider extends EventOpsDataProvider {
   async getEventAnalytics(eventId) {
     const evt = await this.getEvent(eventId);
     const approvedDec = this.decisions.filter(d => d.event_id === eventId && d.approval_status === "approved").length;
-    const totalDec = this.decisions.filter(d => d.event_id === eventId).length;
+    const rejectedDec = this.decisions.filter(d => d.event_id === eventId && d.approval_status === "rejected").length;
+    const pendingDec = this.decisions.filter(d => d.event_id === eventId && ["pending", "proposed", "pending_approval"].includes(d.approval_status)).length;
+    const totalReviewed = approvedDec + rejectedDec;
+    const approvalRate = totalReviewed > 0 ? Math.round((approvedDec / totalReviewed) * 100) : 100.0;
+
     const completedAct = this.integrationActions.filter(a => a.event_id === eventId && a.status === "completed").length;
-    const totalAct = this.integrationActions.filter(a => a.event_id === eventId).length;
+    const pendingAct = this.integrationActions.filter(a => a.event_id === eventId && a.status === "pending_approval").length;
+    const failedAct = this.integrationActions.filter(a => a.event_id === eventId && a.status === "failed").length;
+
+    const allocations = evt.budget_allocations || evt.budget_breakdown || [];
+    const totalAllocated = allocations.reduce((s, b) => s + (Number(b.allocated_amount) || 0), 0);
+    const totalBudget = Number(evt.total_budget) || 0;
+    const variance = Math.round((totalAllocated - totalBudget) * 100) / 100;
+    const contingencyItem = allocations.find(b => (b.category || "").toLowerCase().includes("contingency"));
+    const contingencyAmount = contingencyItem ? Number(contingencyItem.allocated_amount) || 0 : 0;
+    const contingencyPct = totalBudget > 0 ? Math.round((contingencyAmount / totalBudget) * 1000) / 10 : 0.0;
+
+    const risks = evt.risks || [];
+    const criticalRisks = risks.filter(r => (r.severity || "").toLowerCase() === "critical").length;
+    const attentionItems = risks.filter(r => ["high", "attention", "medium"].includes((r.severity || "").toLowerCase())).length;
+    const resolvedRisks = risks.filter(r => ["resolved", "mitigated"].includes((r.status || "").toLowerCase())).length;
 
     return {
       status: "ok",
       analytics: {
+        scope: "event",
         event_id: eventId,
-        title: evt.title,
-        domains: {
-          event_health: {
-            readiness_score: evt.readiness_score || 95,
-            readiness_trend: "improving",
-            unresolved_risks_count: (evt.risks || []).filter(r => r.status === "open").length,
-            timeline_milestones_count: (evt.run_of_show || []).length,
-            days_to_event: 22
-          },
-          financial: {
-            total_budget: evt.total_budget || 4000.0,
-            allocated_budget: (evt.budget_allocations || []).reduce((s, b) => s + (b.allocated_amount || 0), 0),
-            contingency_reserve_amount: 400.0,
-            contingency_reserve_pct: 10.0,
-            variance_amount: 0.0,
-            variance_pct: 0.0
-          },
-          governance: {
-            total_decisions_proposed: totalDec,
-            decisions_approved: approvedDec,
-            decisions_rejected: this.decisions.filter(d => d.event_id === eventId && d.approval_status === "rejected").length,
-            human_approval_rate_pct: totalDec > 0 ? Math.round((approvedDec / totalDec) * 100) : 100.0,
-            integration_actions_proposed: totalAct,
-            integration_actions_completed: completedAct,
-            governance_compliance_pct: 100.0
-          },
-          system_reliability: {
-            system_uptime_pct: 100.0,
-            average_agent_latency_ms: 320,
-            error_rate_pct: 0.0,
-            total_governed_operations: totalDec + totalAct
-          }
+        title: evt.title || "Event Dossier",
+        health: {
+          readiness_score: evt.readiness_score || 95,
+          readiness_trend: (evt.readiness_score || 95) >= 90 ? "Stable" : "Attention Required",
+          critical_risks: criticalRisks,
+          attention_items: attentionItems,
+          resolved_risks: resolvedRisks,
+          open_assumptions: (evt.assumptions || []).length,
+          guest_count: evt.guest_count || 0,
+          timeline_milestones_count: (evt.run_of_show || []).length
         },
-        privacy_guarantee: "100% PII-free operational telemetry. No recipient emails, tokens, or raw bodies stored.",
-        is_demo: true
+        financial: {
+          total_budget: totalBudget,
+          allocated_budget: totalAllocated,
+          variance: variance,
+          is_zero_variance: variance === 0.0,
+          contingency_amount: contingencyAmount,
+          contingency_pct: contingencyPct,
+          line_items_count: allocations.length,
+          allocations: allocations
+        },
+        governance: {
+          pending_decisions: pendingDec,
+          approved_decisions: approvedDec,
+          rejected_decisions: rejectedDec,
+          approval_rate_pct: approvalRate,
+          pending_external_actions: pendingAct,
+          completed_external_actions: completedAct,
+          failed_external_actions: failedAct
+        },
+        system: {
+          telemetry_events_recorded: 0,
+          success_rate_pct: null,
+          median_latency_ms: null,
+          telemetry_status: "DEMO / NOT MEASURED",
+          recent_operations: []
+        },
+        privacy_compliance: {
+          pii_filtered: true,
+          guest_details_retained: "None (Counters Only)",
+          credential_storage: "Excluded from Analytics"
+        }
       }
     };
   }
 
   async getPortfolioAnalytics() {
-    const totalBudget = this.events.reduce((s, e) => s + (e.total_budget || 0), 0);
-    const avgScore = this.events.length > 0 ? Math.round(this.events.reduce((s, e) => s + (e.readiness_score || 90), 0) / this.events.length) : 95;
+    const totalBudget = this.events.reduce((s, e) => s + (Number(e.total_budget) || 0), 0);
+    const totalGuests = this.events.reduce((s, e) => s + (Number(e.guest_count) || 0), 0);
+    const scores = this.events.map(e => e.readiness_score || 90);
+    const avgScore = scores.length > 0 ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 : 0.0;
+
+    const approvedDec = this.decisions.filter(d => d.approval_status === "approved").length;
+    const rejectedDec = this.decisions.filter(d => d.approval_status === "rejected").length;
+    const pendingDec = this.decisions.filter(d => ["pending", "proposed", "pending_approval"].includes(d.approval_status)).length;
+    const totalReviewed = approvedDec + rejectedDec;
+    const govRate = totalReviewed > 0 ? Math.round((approvedDec / totalReviewed) * 1000) / 10 : 100.0;
+
+    let totalRisks = 0;
+    this.events.forEach(e => {
+      totalRisks += (e.risks || []).filter(r => (r.status || "open") === "open").length;
+    });
+
     return {
       status: "ok",
       portfolio: {
-        portfolio_summary: {
-          total_events_managed: this.events.length,
-          average_readiness_score: avgScore,
-          total_budget_governed: totalBudget,
-          active_operational_risks: 1
+        scope: "portfolio",
+        summary: {
+          events_managed: this.events.length,
+          avg_readiness_score: avgScore,
+          total_portfolio_budget: Math.round(totalBudget * 100) / 100,
+          total_guests_managed: totalGuests,
+          total_risks_count: totalRisks
         },
-        governance_aggregate: {
-          total_decisions_evaluated: this.decisions.length,
-          approval_rate_pct: 100.0,
-          governed_external_actions: this.integrationActions.length
+        governance: {
+          pending_decisions: pendingDec,
+          approved_decisions: approvedDec,
+          rejected_decisions: rejectedDec,
+          portfolio_approval_rate_pct: govRate,
+          total_external_actions: this.integrationActions.length
         },
-        privacy_compliance: "Deterministic aggregation with strict PII filtering.",
-        is_demo: true
+        events_breakdown: this.events.map(e => ({
+          event_id: e.event_id,
+          title: e.title,
+          readiness_score: e.readiness_score || 90,
+          total_budget: Number(e.total_budget) || 0,
+          guest_count: Number(e.guest_count) || 0
+        })),
+        system_reliability: {
+          total_operations: 0,
+          system_success_rate_pct: null,
+          median_latency_ms: null,
+          telemetry_status: "DEMO / NOT MEASURED"
+        },
+        generated_at: new Date().toISOString()
       }
     };
   }

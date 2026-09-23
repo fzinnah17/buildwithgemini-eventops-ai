@@ -30,6 +30,7 @@ if REPO_ROOT not in sys.path:
 
 from schemas import AgentResponse
 from engine import compute_event_readiness, rebalance_budget_allocations
+from app.event_store import get_event_store
 from app.integrations import (
     analytics_service,
     get_calendar_provider,
@@ -133,13 +134,36 @@ async def health_check():
     }
 
 
+MUTABLE_EVENT_FIELDS = {
+    "title",
+    "guest_count",
+    "total_budget",
+    "location",
+    "event_type",
+    "objective",
+    "protected_priorities",
+    "budget_allocations",
+    "budget_breakdown",
+    "staffing",
+    "tasks",
+    "risks",
+    "run_of_show",
+    "guest_journey",
+    "venue_requirements",
+    "food_beverage",
+    "atmosphere",
+}
+
+INVALID_TITLES = {"untitled event", "untitled executive salon", "new event", "untitled"}
+
+
 @app.get("/api/events")
 async def list_events_api():
-    """List all available event dossiers from Cloud Firestore."""
+    """List all available event dossiers from Cloud Firestore or store fallback."""
+    events = []
     try:
         db = _get_firestore()
         docs = db.collection("events").limit(30).stream()
-        events = []
         for d in docs:
             data = d.to_dict()
             events.append({
@@ -151,26 +175,65 @@ async def list_events_api():
                 "status": data.get("status", "planning"),
                 "readiness_score": data.get("readiness_score", 0),
             })
-        return JSONResponse(events)
     except Exception as e:
-        logger.error("Error listing events from Firestore: %s", e, exc_info=True)
-        return JSONResponse(status_code=500, content={"error": "Unable to list events."})
+        logger.info("Firestore list_events note: %s; falling back to event store.", e)
+
+    if not events:
+        try:
+            store = get_event_store()
+            for ev in store.list_events():
+                events.append({
+                    "event_id": ev.get("event_id"),
+                    "title": ev.get("title"),
+                    "guest_count": ev.get("guest_count", 0),
+                    "total_budget": ev.get("total_budget", 0.0),
+                    "location": ev.get("location", ""),
+                    "status": ev.get("status", "planning"),
+                    "readiness_score": ev.get("readiness_score", 0),
+                })
+        except Exception as e:
+            logger.error("Error retrieving events from store: %s", e)
+
+    return JSONResponse(events)
 
 
 @app.post("/api/events")
 async def create_event_api(req: Request):
-    """Create a new event dossier dynamically."""
+    """Create a new event dossier dynamically with strict validation."""
     try:
         body = await req.json()
-        title = body.get("title") or "New Event"
-        event_id = body.get("event_id") or f"evt_{uuid.uuid4().hex[:8]}"
-        guest_count = int(body.get("guest_count", 30))
-        total_budget = float(body.get("total_budget", 5000.0))
-        location = body.get("location", "New York, NY")
+        if not isinstance(body, dict):
+            return JSONResponse(status_code=400, content={"error": "Request body must be a JSON object."})
 
-        db = _get_firestore()
+        title = body.get("title")
+        if not isinstance(title, str) or not title.strip() or title.strip().lower() in INVALID_TITLES:
+            return JSONResponse(status_code=400, content={"error": "A meaningful, non-placeholder event title is required."})
+        title = title.strip()
+
+        guest_count_raw = body.get("guest_count")
+        try:
+            guest_count = int(guest_count_raw) if guest_count_raw is not None else 0
+            if guest_count <= 0:
+                return JSONResponse(status_code=400, content={"error": "guest_count must be a positive integer."})
+        except (ValueError, TypeError):
+            return JSONResponse(status_code=400, content={"error": "guest_count must be an integer."})
+
+        total_budget_raw = body.get("total_budget")
+        try:
+            total_budget = float(total_budget_raw) if total_budget_raw is not None else -1.0
+            if total_budget < 0:
+                return JSONResponse(status_code=400, content={"error": "total_budget must be a non-negative number."})
+        except (ValueError, TypeError):
+            return JSONResponse(status_code=400, content={"error": "total_budget must be a numeric value."})
+
+        location = body.get("location")
+        if not isinstance(location, str) or not location.strip():
+            return JSONResponse(status_code=400, content={"error": "location must be a non-empty string."})
+        location = location.strip()
+
+        event_id = body.get("event_id") or f"evt_{uuid.uuid4().hex[:8]}"
         now_iso = datetime.now(timezone.utc).isoformat()
-        
+
         # Initial standard budget allocation
         f_b = round(total_budget * 0.55, 2)
         contingency = round(total_budget * 0.10, 2)
@@ -233,11 +296,114 @@ async def create_event_api(req: Request):
         score, _, _ = compute_event_readiness(event_data)
         event_data["readiness_score"] = score
 
-        db.collection("events").document(event_id).set(event_data)
+        try:
+            db = _get_firestore()
+            db.collection("events").document(event_id).set(event_data)
+        except Exception as e:
+            logger.info("Firestore set failed (%s); storing in-memory.", e)
+
+        store = get_event_store()
+        store.update_event_fields(event_id, event_data)
+
         return JSONResponse({"status": "created", "event_id": event_id, "event": event_data})
     except Exception as e:
         logger.error("Error creating event: %s", e, exc_info=True)
-        return JSONResponse(status_code=500, content={"error": "Failed to create event."})
+        return JSONResponse(status_code=500, content={"error": f"Failed to create event: {str(e)}"})
+
+
+@app.patch("/api/events/{event_id}")
+async def update_event_api(event_id: str, req: Request):
+    """Safely update an existing event dossier with whitelisted fields and version increment."""
+    try:
+        body = await req.json()
+        if not isinstance(body, dict):
+            return JSONResponse(status_code=400, content={"error": "Invalid request body; must be a JSON object."})
+
+        updates: dict[str, Any] = {}
+        for k, v in body.items():
+            if k in MUTABLE_EVENT_FIELDS:
+                updates[k] = v
+
+        if not updates:
+            return JSONResponse(status_code=400, content={"error": "No valid mutable fields provided in update."})
+
+        # Validate title
+        if "title" in updates:
+            t = updates["title"]
+            if not isinstance(t, str) or not t.strip() or t.strip().lower() in INVALID_TITLES:
+                return JSONResponse(status_code=400, content={"error": "A meaningful, non-placeholder event title is required."})
+            updates["title"] = t.strip()
+
+        # Validate guest_count
+        if "guest_count" in updates:
+            try:
+                gc = int(updates["guest_count"])
+                if gc <= 0:
+                    return JSONResponse(status_code=400, content={"error": "guest_count must be a positive integer."})
+                updates["guest_count"] = gc
+            except (ValueError, TypeError):
+                return JSONResponse(status_code=400, content={"error": "guest_count must be an integer."})
+
+        # Validate total_budget
+        if "total_budget" in updates:
+            try:
+                tb = float(updates["total_budget"])
+                if tb < 0:
+                    return JSONResponse(status_code=400, content={"error": "total_budget must be a non-negative number."})
+                updates["total_budget"] = tb
+            except (ValueError, TypeError):
+                return JSONResponse(status_code=400, content={"error": "total_budget must be a numeric value."})
+
+        # Validate location
+        if "location" in updates:
+            loc = updates["location"]
+            if not isinstance(loc, str) or not loc.strip():
+                return JSONResponse(status_code=400, content={"error": "location must be a non-empty string."})
+            updates["location"] = loc.strip()
+
+        # Retrieve existing event data
+        event_data = await _get_event_data_dict(event_id)
+        if not event_data:
+            return JSONResponse(status_code=404, content={"error": f"Event '{event_id}' not found."})
+
+        # Apply updates
+        event_data.update(updates)
+
+        # Harmonize budget fields
+        if "budget_allocations" in updates:
+            event_data["budget_breakdown"] = updates["budget_allocations"]
+        elif "budget_breakdown" in updates:
+            event_data["budget_allocations"] = updates["budget_breakdown"]
+
+        # Increment version and update timestamp
+        event_data["version"] = int(event_data.get("version", 1)) + 1
+        now_iso = datetime.now(timezone.utc).isoformat()
+        event_data["updated_at"] = now_iso
+
+        # Recompute readiness score dynamically
+        score, _, _ = compute_event_readiness(event_data)
+        event_data["readiness_score"] = score
+
+        # Persist to Firestore
+        try:
+            db = _get_firestore()
+            db.collection("events").document(event_id).set(event_data)
+        except Exception as e:
+            logger.info("Firestore update failed (%s); updating in-memory store.", e)
+
+        # Also persist to in-memory store
+        store = get_event_store()
+        store.update_event_fields(event_id, event_data)
+
+        return JSONResponse({
+            "status": "updated",
+            "event_id": event_id,
+            "version": event_data["version"],
+            "event": event_data,
+        })
+    except Exception as e:
+        logger.error("Error updating event %s: %s", event_id, e, exc_info=True)
+        return JSONResponse(status_code=500, content={"error": f"Failed to update event: {str(e)}"})
 
 
 @app.get("/api/event/{event_id}")
@@ -737,6 +903,13 @@ async def _get_event_data_dict(event_id: str) -> dict[str, Any] | None:
         doc = db.collection("events").document(event_id).get()
         if doc.exists:
             return doc.to_dict()
+    except Exception:
+        pass
+    try:
+        store = get_event_store()
+        ev = store.get_event(event_id)
+        if ev:
+            return ev.model_dump() if hasattr(ev, "model_dump") else dict(ev)
     except Exception:
         pass
     if event_id == "evt_wit_manhattan_2026":
@@ -1241,11 +1414,31 @@ async def get_portfolio_analytics_api():
         pass
 
     if not all_events:
+        try:
+            store = get_event_store()
+            for ev_sum in store.list_events():
+                ev = store.get_event(ev_sum["event_id"])
+                if ev:
+                    all_events.append(ev.model_dump() if hasattr(ev, "model_dump") else dict(ev))
+        except Exception:
+            pass
+
+    if not all_events:
         default_ev = await _get_event_data_dict("evt_wit_manhattan_2026")
         if default_ev:
             all_events.append(default_ev)
 
     portfolio = analytics_service.get_portfolio_analytics(all_events, all_decisions, all_actions)
+    portfolio["events_breakdown"] = [
+        {
+            "event_id": e.get("event_id"),
+            "title": e.get("title"),
+            "readiness_score": e.get("readiness_score", 90),
+            "total_budget": float(e.get("total_budget", 0.0)),
+            "guest_count": int(e.get("guest_count", 0)),
+        }
+        for e in all_events
+    ]
     return JSONResponse({"status": "ok", "portfolio": portfolio})
 
 

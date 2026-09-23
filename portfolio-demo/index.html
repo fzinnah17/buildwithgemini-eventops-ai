@@ -998,8 +998,376 @@
     background: rgba(16, 185, 129, 0.08);
     border: 1px solid rgba(16, 185, 129, 0.25);
     border-radius: var(--radius-sm);
-    font-size: 0.72rem;
+  }
+  /* BUNDLE 3.6.1 VISUAL UX & DATA VISUALIZATION STYLES */
+  .readiness-gauge-wrapper {
+    position: relative;
+    width: 140px;
+    height: 75px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .readiness-gauge-svg {
+    width: 140px;
+    height: 75px;
+    overflow: visible;
+  }
+  .gauge-score-overlay {
+    position: absolute;
+    bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .gauge-score-overlay .gauge-score {
+    font-size: 1.55rem;
+    font-weight: 800;
     color: var(--accent-emerald);
+  }
+  .gauge-score-overlay .gauge-max {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .event-hero {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 1.25rem;
+    align-items: center;
+    background: linear-gradient(135deg, var(--bg-surface), #141b29);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+  }
+  .hero-status-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.65rem 0.95rem;
+    min-width: 180px;
+  }
+  .hero-status-header {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+  .hero-status-pills {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .hero-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .hero-pill-critical {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+  .hero-pill-attention {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  .hero-pill-ready {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  .hero-gate-status {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+  }
+  .btn-edit-event {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.4rem 0.65rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.15s ease;
+  }
+  .btn-edit-event:hover {
+    color: #fff;
+    border-color: var(--accent-gold);
+    background: var(--accent-gold-subtle);
+  }
+  .more-menu-container {
+    position: relative;
+    display: inline-block;
+  }
+  .more-menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.4rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    min-width: 210px;
+    z-index: 100;
+    overflow: hidden;
+  }
+  .more-menu-item {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.6rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+    width: 100%;
+  }
+  .more-menu-item:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+  }
+  .budget-visual-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .budget-visual-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .budget-segmented-bar {
+    display: flex;
+    height: 14px;
+    border-radius: 7px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-subtle);
+    gap: 2px;
+  }
+  .budget-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+    position: relative;
+    border-radius: 2px;
+  }
+  .budget-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+  }
+  .budget-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .budget-legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+  .raci-progress-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.85rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .decision-pipeline-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1rem;
+    margin-bottom: 0.85rem;
+    overflow-x: auto;
+  }
+  .pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .pipeline-count {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    padding: 0.1rem 0.45rem;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    color: #fff;
+  }
+  .pipeline-arrow {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  .risk-distribution-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+  .wizard-steps {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.65rem;
+    margin-bottom: 0.85rem;
+  }
+  .wizard-step {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .wizard-step.active {
+    color: var(--accent-cyan);
+  }
+  .wizard-step-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+  }
+  .wizard-step.active .wizard-step-num {
+    background: var(--accent-cyan-subtle);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+  .field-error-msg {
+    font-size: 0.7rem;
+    color: #ef4444;
+    margin-top: 0.25rem;
+    display: none;
+  }
+  .diff-view-box {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+    font-size: 0.82rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .diff-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1.4;
+  }
+  .diff-field {
+    font-weight: 700;
+    color: var(--accent-gold);
+    min-width: 110px;
+  }
+  .diff-old {
+    color: #ef4444;
+    text-decoration: line-through;
+  }
+  .diff-arrow {
+    color: var(--text-muted);
+  }
+  .diff-new {
+    color: #10b981;
+    font-weight: 600;
+  }
+  .comparison-chart-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+  }
+  .comparison-chart-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.75rem;
+  }
+  .comparison-label {
+    min-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-secondary);
+  }
+  .comparison-bar-track {
+    flex: 1;
+    height: 12px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .comparison-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+  }
+  .comparison-val {
+    min-width: 70px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--text-primary);
   }
 </style>
 <script src="data/fixtures.js"></script>
@@ -1035,28 +1403,41 @@
         <option value="loading">Loading live events...</option>
       </select>
     </div>
-    <button class="btn-new-event" id="btnOpenNewEvent">
-      <span class="material-symbols-outlined" style="font-size: 16px;">add</span> New Event
+    <button class="btn-edit-event" id="btnEditEventDossier" title="Edit Active Dossier">
+      <span class="material-symbols-outlined" style="font-size: 15px;">edit</span> Edit
+    </button>
+    <button class="btn-new-event" id="btnOpenNewEvent" title="Create New Event Dossier">
+      <span class="material-symbols-outlined" style="font-size: 15px;">add</span> Create
     </button>
   </div>
 
   <div class="header-actions">
-    <div class="status-chip" id="headerStatusChip">
+    <div class="status-chip" id="headerStatusChip" title="Simulation / Live Runtime Indicator">
       <span class="status-dot" id="headerStatusDot"></span>
       <span id="headerStatusText">ONLINE · Agent Platform</span>
     </div>
-    <button class="btn-header" id="btnOpenIntegrations" title="View Google Calendar, Gmail, and Slack status & action ledger">
-      <span class="material-symbols-outlined" style="font-size: 16px;">hub</span> Connected Services
-    </button>
-    <button class="btn-header" id="btnOpenAnalytics" title="Executive Analytics & Telemetry across 4 domains">
-      <span class="material-symbols-outlined" style="font-size: 16px;">monitoring</span> Analytics
-    </button>
-    <button class="btn-header" id="btnOpenAbout">
-      <span class="material-symbols-outlined" style="font-size: 16px;">info</span> Architecture
-    </button>
     <button class="btn-header btn-copilot-toggle" id="btnToggleCopilot">
       <span class="material-symbols-outlined" style="font-size: 16px;">chat</span> Copilot
     </button>
+    <div class="more-menu-container">
+      <button class="btn-header" id="btnMoreMenu" title="More Workspace Tools">
+        <span class="material-symbols-outlined" style="font-size: 16px;">more_vert</span> More
+      </button>
+      <div class="more-menu-dropdown" id="moreMenuDropdown" style="display: none;">
+        <button class="more-menu-item" id="btnOpenIntegrations" title="View Google Calendar, Gmail, and Slack status & action ledger">
+          <span class="material-symbols-outlined" style="font-size: 16px;">hub</span> Connected Services
+        </button>
+        <button class="more-menu-item" id="btnOpenAnalytics" title="Executive Analytics & Telemetry across 4 domains">
+          <span class="material-symbols-outlined" style="font-size: 16px;">monitoring</span> Analytics & Telemetry
+        </button>
+        <button class="more-menu-item" id="btnOpenAbout" title="System Architecture & Specifications">
+          <span class="material-symbols-outlined" style="font-size: 16px;">info</span> Systems Architecture
+        </button>
+        <button class="more-menu-item" id="btnMenuEditEvent" title="Edit Active Dossier">
+          <span class="material-symbols-outlined" style="font-size: 16px;">edit_document</span> Edit Active Dossier
+        </button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -1099,11 +1480,27 @@
             </div>
           </div>
           <div class="hero-gauge-box">
-            <div class="gauge-circle">
-              <span class="gauge-score" id="heroScore">-</span>
+            <div class="readiness-gauge-wrapper">
+              <svg class="readiness-gauge-svg" viewBox="0 0 160 90">
+                <path d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12" stroke-linecap="round"/>
+                <path id="readinessGaugePath" d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="var(--accent-emerald)" stroke-width="12" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="18.85"/>
+              </svg>
+              <div class="gauge-score-overlay">
+                <span class="gauge-score" id="heroScore">-</span>
+                <span class="gauge-max">/100</span>
+              </div>
             </div>
             <div style="font-size: 0.68rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Composite Readiness</div>
             <button class="btn-why-score" id="btnWhyScore">Why <span id="whyScoreVal">-</span>?</button>
+          </div>
+          <div class="hero-status-card">
+            <div class="hero-status-header">Readiness Gates</div>
+            <div class="hero-status-pills">
+              <div class="hero-pill hero-pill-critical" id="heroPillCritical"><span id="heroCritCount">0</span> Critical</div>
+              <div class="hero-pill hero-pill-attention" id="heroPillAttention"><span id="heroAttnCount">0</span> Attention</div>
+              <div class="hero-pill hero-pill-ready" id="heroPillReady"><span id="heroReadyCount">0</span> Ready</div>
+            </div>
+            <div class="hero-gate-status" id="heroGateStatus">All Operational Gates Satisfied</div>
           </div>
         </div>
 
@@ -1158,6 +1555,15 @@
               <span class="badge badge-blue" id="budgetReservePill">Reserve: 10.00%</span>
             </div>
           </div>
+          <!-- VISUAL SEGMENTED BUDGET BREAKDOWN -->
+          <div class="budget-visual-card" id="budgetVisualCard">
+            <div class="budget-visual-header">
+              <span>PROPORTIONAL ALLOCATION BREAKDOWN</span>
+              <span id="budgetBarSummary">Ceiling: $0.00 | Allocated: $0.00</span>
+            </div>
+            <div class="budget-segmented-bar" id="budgetSegmentedBar"></div>
+            <div class="budget-legend" id="budgetLegend"></div>
+          </div>
           <div class="data-table-wrapper">
             <table class="ops-table">
               <thead>
@@ -1198,6 +1604,10 @@
               <span class="material-symbols-outlined" style="font-size: 16px;">checklist</span> Critical Milestone Deliverables (RACI)
             </div>
           </div>
+          <div class="raci-progress-bar-container" id="raciProgressSummary">
+            <span>RACI Progress: <strong id="raciCompletedCount">0</strong> Completed · <strong id="raciInProgressCount">0</strong> In Progress · <strong id="raciPendingCount">0</strong> Pending</span>
+            <span id="raciCompletionRate">0% Completed</span>
+          </div>
           <div class="data-table-wrapper">
             <table class="ops-table">
               <thead>
@@ -1232,6 +1642,13 @@
               <span class="badge badge-neutral" id="guardSeverityBadge">Scanning...</span>
             </div>
           </div>
+          <!-- RISK SEVERITY DISTRIBUTION PROFILE -->
+          <div class="risk-distribution-container" id="riskDistributionBar">
+            <span style="font-weight: 700;">SEVERITY PROFILE:</span>
+            <span class="badge badge-rejected" id="riskDistCritical">0 Critical</span>
+            <span class="badge badge-amber" id="riskDistAttention">0 Attention</span>
+            <span class="badge badge-approved" id="riskDistReady">0 Ready</span>
+          </div>
           <div class="data-table-wrapper">
             <table class="ops-table">
               <thead>
@@ -1255,6 +1672,16 @@
             <div class="ops-panel-title">
               <span class="material-symbols-outlined" style="font-size: 16px;">history_edu</span> Two-Phase Decision Ledger (Human Governance)
             </div>
+          </div>
+          <!-- GOVERNANCE PIPELINE VISUAL -->
+          <div class="decision-pipeline-bar" id="decisionPipelineBar">
+            <div class="pipeline-step"><span class="pipeline-count" id="pipeProposedCount">0</span> Proposed</div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step"><span class="pipeline-count" id="pipeReviewCount">0</span> Awaiting Review</div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step"><span class="pipeline-count" id="pipeApprovedCount">0</span> Approved</div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step"><span class="pipeline-count" id="pipeExecutedCount">0</span> Executed</div>
           </div>
           <div class="data-table-wrapper">
             <table class="ops-table">
@@ -1388,9 +1815,9 @@
   </div>
 </div>
 
-<!-- MODAL: CREATE NEW EVENT -->
+<!-- MODAL: CREATE NEW EVENT (3-STEP PROGRESSIVE WIZARD) -->
 <div class="modal-overlay" id="modalNewEvent">
-  <div class="modal-card" style="max-width: 480px;">
+  <div class="modal-card" style="max-width: 500px;">
     <div class="modal-header">
       <div class="modal-title">
         <span class="material-symbols-outlined" style="color: var(--accent-cyan);">add_circle</span>
@@ -1399,30 +1826,142 @@
       <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalNewEvent')">✕</button>
     </div>
     <div class="modal-body">
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <!-- 3-STEP WIZARD INDICATOR -->
+      <div class="wizard-steps">
+        <div class="wizard-step active" id="wizardStepIndicator1"><span class="wizard-step-num">1</span> Basics</div>
+        <div class="wizard-step" id="wizardStepIndicator2"><span class="wizard-step-num">2</span> Scale & Budget</div>
+        <div class="wizard-step" id="wizardStepIndicator3"><span class="wizard-step-num">3</span> Priorities</div>
+      </div>
+
+      <!-- STEP 1: BASICS -->
+      <div id="wizardPane1" style="display: flex; flex-direction: column; gap: 0.75rem;">
         <div>
-          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Event Title</label>
-          <input type="text" id="newEventTitle" placeholder="e.g. Executive AI Strategy Salon" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Event Title *</label>
+          <input type="text" id="newEventTitle" placeholder="e.g. AI Leadership Dinner Salon" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+          <div class="field-error-msg" id="newEventTitleError">Title is required and cannot be a generic placeholder.</div>
         </div>
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Location *</label>
+          <input type="text" id="newEventLocation" value="New York, NY" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+          <div class="field-error-msg" id="newEventLocationError">Location is required.</div>
+        </div>
+      </div>
+
+      <!-- STEP 2: SCALE & BUDGET -->
+      <div id="wizardPane2" style="display: none; flex-direction: column; gap: 0.75rem;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
           <div>
-            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Guest Count</label>
-            <input type="number" id="newEventGuests" value="30" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Guest Count *</label>
+            <input type="number" id="newEventGuests" value="30" min="1" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+            <div class="field-error-msg" id="newEventGuestsError">Guest count must be greater than 0.</div>
           </div>
           <div>
-            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Total Budget ($)</label>
-            <input type="number" id="newEventBudget" value="5000" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Total Budget ($) *</label>
+            <input type="number" id="newEventBudget" value="5000" min="0" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+            <div class="field-error-msg" id="newEventBudgetError">Total budget cannot be negative.</div>
           </div>
         </div>
         <div>
-          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Location</label>
-          <input type="text" id="newEventLocation" value="New York, NY" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Event Type</label>
+          <select id="newEventType" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+            <option value="Executive Dinner Salon">Executive Dinner Salon</option>
+            <option value="Design Systems Summit">Design Systems Summit</option>
+            <option value="Leadership Roundtable">Leadership Roundtable</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STEP 3: PRIORITIES & CONFIRM -->
+      <div id="wizardPane3" style="display: none; flex-direction: column; gap: 0.75rem;">
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Primary Objective</label>
+          <input type="text" id="newEventObjective" placeholder="e.g. Strategic alignment for enterprise AI architects" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+        </div>
+        <div style="background: var(--bg-surface-elevated); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-secondary);">
+          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem;">Dossier Summary Preview:</div>
+          <div>• Title: <strong id="wizSummaryTitle" style="color: #fff;">-</strong></div>
+          <div>• Location: <strong id="wizSummaryLocation" style="color: #fff;">-</strong></div>
+          <div>• Scale: <strong id="wizSummaryGuests" style="color: #fff;">-</strong> guests · <strong id="wizSummaryBudget" style="color: #fff;">-</strong> budget</div>
         </div>
       </div>
     </div>
     <div class="modal-footer" style="gap: 0.5rem;">
       <button class="btn-header" onclick="closeModal('modalNewEvent')">Cancel</button>
-      <button class="btn-approve" id="btnSubmitNewEvent" style="padding: 0.45rem 0.85rem;">Create Dossier</button>
+      <button class="btn-header" id="btnWizardPrev" style="display: none;">Back</button>
+      <button class="btn-approve" id="btnWizardNext">Next</button>
+      <button class="btn-approve" id="btnSubmitNewEvent" style="display: none; padding: 0.45rem 0.85rem;">Create Dossier</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT ACTIVE EVENT DOSSIER -->
+<div class="modal-overlay" id="modalEditEvent">
+  <div class="modal-card" style="max-width: 500px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: var(--accent-gold);">edit_document</span>
+        <span>Edit Event Dossier</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalEditEvent')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Event Title *</label>
+          <input type="text" id="editEventTitle" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+          <div class="field-error-msg" id="editEventTitleError">Title cannot be empty or placeholder.</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Guest Count *</label>
+            <input type="number" id="editEventGuests" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+            <div class="field-error-msg" id="editEventGuestsError">Guests must be greater than 0.</div>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Total Budget ($) *</label>
+            <input type="number" id="editEventBudget" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+            <div class="field-error-msg" id="editEventBudgetError">Budget must be non-negative.</div>
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Location *</label>
+          <input type="text" id="editEventLocation" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+          <div class="field-error-msg" id="editEventLocationError">Location is required.</div>
+        </div>
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Primary Objective</label>
+          <input type="text" id="editEventObjective" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-strong); padding: 0.45rem 0.65rem; color: #fff; border-radius: var(--radius-sm);">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="gap: 0.5rem;">
+      <button class="btn-header" onclick="closeModal('modalEditEvent')">Cancel</button>
+      <button class="btn-approve" id="btnReviewEditChanges" style="padding: 0.45rem 0.85rem;">Review Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT DIFF PREVIEW -->
+<div class="modal-overlay" id="modalEditDiff">
+  <div class="modal-card" style="max-width: 460px;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color: var(--accent-cyan);">difference</span>
+        <span>Review Dossier Changes</span>
+      </div>
+      <button class="btn-header" style="padding: 0.2rem 0.5rem;" onclick="closeModal('modalEditDiff')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+        The following changes will update this dossier and re-evaluate composite readiness:
+      </p>
+      <div class="diff-view-box" id="editDiffList">
+        <!-- Rendered diff items -->
+      </div>
+    </div>
+    <div class="modal-footer" style="gap: 0.5rem;">
+      <button class="btn-header" id="btnBackToEdit">Back to Edit</button>
+      <button class="btn-approve" id="btnConfirmSaveEdit" style="padding: 0.45rem 0.85rem;">Confirm & Save</button>
     </div>
   </div>
 </div>
@@ -1646,20 +2185,37 @@
             <span class="material-symbols-outlined" style="font-size: 16px;">speed</span> Reliability & Latency
           </div>
           <div class="analytics-stat-row">
-            <span>System Availability:</span>
-            <span class="analytics-stat-val" style="color: var(--accent-emerald);">99.98%</span>
+            <span>Telemetry Status:</span>
+            <span class="analytics-stat-val" id="anSysTelemetryStatus">DEMO / NOT MEASURED</span>
           </div>
           <div class="analytics-stat-row">
             <span>Average Agent Latency:</span>
-            <span class="analytics-stat-val" id="anSysLatency">~350 ms</span>
+            <span class="analytics-stat-val" id="anSysLatency">DEMO / NOT MEASURED</span>
           </div>
           <div class="analytics-stat-row">
             <span>Execution Error Rate:</span>
-            <span class="analytics-stat-val" style="color: var(--accent-emerald);">0.00%</span>
+            <span class="analytics-stat-val" id="anSysErrorRate">DEMO / NOT MEASURED</span>
           </div>
           <div class="analytics-stat-row">
-            <span>Telemetry Ring Buffer:</span>
-            <span class="analytics-stat-val">Active (Non-Blocking)</span>
+            <span>Operations Recorded:</span>
+            <span class="analytics-stat-val" id="anSysOpsCount">0 Ops</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLEET BREAKDOWN & COMPARISONS (PORTFOLIO SCOPE) -->
+      <div id="portfolioComparisonSection" style="display: none; margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 0.85rem;">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.5rem;">
+          Portfolio Fleet Comparative Analysis
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.72rem; color: var(--accent-emerald); font-weight: 600; margin-bottom: 0.35rem;">Readiness Score by Event</div>
+            <div id="comparisonReadinessBars" class="comparison-chart-row"></div>
+          </div>
+          <div>
+            <div style="font-size: 0.72rem; color: var(--accent-gold); font-weight: 600; margin-bottom: 0.35rem;">Budget Allocation by Event</div>
+            <div id="comparisonBudgetBars" class="comparison-chart-row"></div>
           </div>
         </div>
       </div>
@@ -1858,13 +2414,45 @@ function closeModal(id) {
   const el = document.getElementById(id);
   if (el) el.classList.remove("active");
 }
-document.getElementById("btnOpenAbout").addEventListener("click", () => openModal("modalAbout"));
-document.getElementById("btnOpenNewEvent").addEventListener("click", () => openModal("modalNewEvent"));
-document.getElementById("btnWhyScore").addEventListener("click", () => openModal("modalWhyScore"));
+const btnMoreMenu = document.getElementById("btnMoreMenu");
+const moreMenuDropdown = document.getElementById("moreMenuDropdown");
+if (btnMoreMenu && moreMenuDropdown) {
+  btnMoreMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isShowing = moreMenuDropdown.style.display === "block";
+    moreMenuDropdown.style.display = isShowing ? "none" : "block";
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".more-menu-container")) {
+      moreMenuDropdown.style.display = "none";
+    }
+  });
+}
+function closeMoreMenu() {
+  if (moreMenuDropdown) moreMenuDropdown.style.display = "none";
+}
+
+const btnOpenAbout = document.getElementById("btnOpenAbout");
+if (btnOpenAbout) btnOpenAbout.addEventListener("click", () => { closeMoreMenu(); openModal("modalAbout"); });
+
+const btnOpenNewEvent = document.getElementById("btnOpenNewEvent");
+if (btnOpenNewEvent) btnOpenNewEvent.addEventListener("click", () => openCreateEventModal());
+
 const btnOpenInteg = document.getElementById("btnOpenIntegrations");
-if (btnOpenInteg) btnOpenInteg.addEventListener("click", () => openIntegrationsModal());
+if (btnOpenInteg) btnOpenInteg.addEventListener("click", () => { closeMoreMenu(); openIntegrationsModal(); });
+
 const btnOpenAn = document.getElementById("btnOpenAnalytics");
-if (btnOpenAn) btnOpenAn.addEventListener("click", () => openAnalyticsModal("event"));
+if (btnOpenAn) btnOpenAn.addEventListener("click", () => { closeMoreMenu(); openAnalyticsModal("portfolio"); });
+
+const btnEditDossier = document.getElementById("btnEditEventDossier");
+if (btnEditDossier) btnEditDossier.addEventListener("click", () => openEditEventModal());
+
+const btnMenuEdit = document.getElementById("btnMenuEditEvent");
+if (btnMenuEdit) btnMenuEdit.addEventListener("click", () => { closeMoreMenu(); openEditEventModal(); });
+
+const btnWhyScore = document.getElementById("btnWhyScore");
+if (btnWhyScore) btnWhyScore.addEventListener("click", () => openModal("modalWhyScore"));
+
 const btnQuickAddCal = document.getElementById("btnQuickAddCalendar");
 if (btnQuickAddCal) btnQuickAddCal.addEventListener("click", () => openCalendarModal("main"));
 const btnQuickSyncM = document.getElementById("btnQuickSyncMilestones");
@@ -1965,7 +2553,17 @@ async function loadEventsList() {
       select.appendChild(opt);
     });
 
+    const createOpt = document.createElement("option");
+    createOpt.value = "__create_new__";
+    createOpt.textContent = "+ Create Event Dossier...";
+    select.appendChild(createOpt);
+
     select.onchange = (ev) => {
+      if (ev.target.value === "__create_new__") {
+        ev.target.value = CURRENT_EVENT_ID;
+        openCreateEventModal();
+        return;
+      }
       CURRENT_EVENT_ID = ev.target.value;
       refreshEventData();
     };
@@ -1984,7 +2582,17 @@ async function loadEventsList() {
       if (e.event_id === CURRENT_EVENT_ID) opt.selected = true;
       select.appendChild(opt);
     });
+    const createOpt = document.createElement("option");
+    createOpt.value = "__create_new__";
+    createOpt.textContent = "+ Create Event Dossier...";
+    select.appendChild(createOpt);
+
     select.onchange = (ev) => {
+      if (ev.target.value === "__create_new__") {
+        ev.target.value = CURRENT_EVENT_ID;
+        openCreateEventModal();
+        return;
+      }
       CURRENT_EVENT_ID = ev.target.value;
       refreshEventData();
     };
@@ -2016,6 +2624,51 @@ function renderHeroSection(data) {
 
     const whyScoreElem = document.getElementById("whyScoreVal");
     if (whyScoreElem) whyScoreElem.textContent = score;
+
+    // SVG Readiness Gauge animation & color
+    const gaugePath = document.getElementById("readinessGaugePath");
+    if (gaugePath) {
+      const circum = 188.5; // arc length for r=60 semicircle
+      const offset = circum * (1 - Math.min(Math.max(score, 0), 100) / 100);
+      gaugePath.style.strokeDashoffset = offset;
+      if (score >= 90) {
+        gaugePath.style.stroke = "var(--accent-emerald)";
+      } else if (score >= 75) {
+        gaugePath.style.stroke = "var(--accent-amber)";
+      } else {
+        gaugePath.style.stroke = "#ef4444";
+      }
+    }
+
+    // Hero Readiness Status Card
+    const findings = getNormalizedFindings(data);
+    const critCount = findings.filter(f => (f.severity || '').toLowerCase() === 'critical').length;
+    const attnCount = findings.filter(f => (f.severity || '').toLowerCase() === 'attention').length;
+    const readyCount = findings.filter(f => {
+      const sev = (f.severity || '').toLowerCase();
+      return sev === 'ready' || sev === 'pass' || sev === 'passed' || sev === 'cleared' || sev === 'ok';
+    }).length;
+
+    const critElem = document.getElementById("heroCritCount");
+    if (critElem) critElem.textContent = critCount;
+    const attnElem = document.getElementById("heroAttnCount");
+    if (attnElem) attnElem.textContent = attnCount;
+    const readyElem = document.getElementById("heroReadyCount");
+    if (readyElem) readyElem.textContent = readyCount;
+
+    const gateStatusElem = document.getElementById("heroGateStatus");
+    if (gateStatusElem) {
+      if (critCount > 0) {
+        gateStatusElem.textContent = `${critCount} Critical Blocker${critCount === 1 ? '' : 's'} Active`;
+        gateStatusElem.style.color = "#ef4444";
+      } else if (attnCount > 0) {
+        gateStatusElem.textContent = `${attnCount} Operational Gate${attnCount === 1 ? '' : 's'} Under Review`;
+        gateStatusElem.style.color = "var(--accent-amber)";
+      } else {
+        gateStatusElem.textContent = "All Operational Gates Satisfied";
+        gateStatusElem.style.color = "var(--accent-emerald)";
+      }
+    }
   } catch (err) {
     console.error("Failed to render Hero section:", err);
   }
@@ -2139,8 +2792,8 @@ function renderBudgetAllocations(data) {
     const totalBudget = Number(data.total_budget || 0);
 
     const variancePill = document.getElementById("budgetVariancePill");
+    const variance = totalBudget - totalAlloc;
     if (variancePill) {
-      const variance = totalBudget - totalAlloc;
       variancePill.textContent = `Variance: $${variance.toFixed(2)} (${((Math.abs(variance) / (totalBudget || 1)) * 100).toFixed(2)}%)`;
       variancePill.className = Math.abs(variance) < 0.01 ? "badge badge-emerald" : "badge badge-amber";
     }
@@ -2151,6 +2804,38 @@ function renderBudgetAllocations(data) {
     const reservePill = document.getElementById("budgetReservePill");
     if (reservePill) {
       reservePill.textContent = `Reserve: ${contingencyPct}%`;
+    }
+
+    // Segmented bar & summary
+    const summaryElem = document.getElementById("budgetBarSummary");
+    if (summaryElem) {
+      summaryElem.textContent = `Ceiling: $${totalBudget.toLocaleString(undefined, {minimumFractionDigits: 2})} | Allocated: $${totalAlloc.toLocaleString(undefined, {minimumFractionDigits: 2})} | Variance: $${variance.toFixed(2)}`;
+    }
+
+    const segBar = document.getElementById("budgetSegmentedBar");
+    const legendElem = document.getElementById("budgetLegend");
+    const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#14b8a6", "#64748b"];
+
+    if (segBar && legendElem) {
+      segBar.innerHTML = "";
+      legendElem.innerHTML = "";
+      allocations.forEach((a, idx) => {
+        const amt = Number(a.allocated_amount || 0);
+        const pct = totalBudget > 0 ? (amt / totalBudget) * 100 : 0;
+        const color = colors[idx % colors.length];
+
+        const seg = document.createElement("div");
+        seg.className = "budget-segment";
+        seg.style.width = `${pct}%`;
+        seg.style.backgroundColor = color;
+        seg.title = `${a.category || "Item"}: $${amt.toLocaleString()} (${pct.toFixed(1)}%)`;
+        segBar.appendChild(seg);
+
+        const leg = document.createElement("div");
+        leg.className = "budget-legend-item";
+        leg.innerHTML = `<span class="budget-legend-color" style="background:${color};"></span><span>${a.category || "Item"} (${pct.toFixed(1)}%)</span>`;
+        legendElem.appendChild(leg);
+      });
     }
 
     const budgetBody = document.getElementById("budgetTableBody");
@@ -2215,10 +2900,30 @@ function renderRunOfShow(data) {
 
 function renderRaciMatrix(data) {
   try {
+    const tasks = data.tasks || [];
+    let completed = 0, inProg = 0, pending = 0;
+    tasks.forEach(t => {
+      const s = (t.status || 'pending').toLowerCase();
+      if (s === 'completed' || s === 'done') completed++;
+      else if (s === 'in_progress' || s === 'in progress') inProg++;
+      else pending++;
+    });
+
+    const compElem = document.getElementById("raciCompletedCount");
+    if (compElem) compElem.textContent = completed;
+    const inProgElem = document.getElementById("raciInProgressCount");
+    if (inProgElem) inProgElem.textContent = inProg;
+    const pendElem = document.getElementById("raciPendingCount");
+    if (pendElem) pendElem.textContent = pending;
+    const rateElem = document.getElementById("raciCompletionRate");
+    if (rateElem) {
+      const rate = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+      rateElem.textContent = `${rate}% Completed`;
+    }
+
     const raciBody = document.getElementById("raciTableBody");
     if (raciBody) {
       raciBody.innerHTML = "";
-      const tasks = data.tasks || [];
       if (tasks.length > 0) {
         tasks.forEach(t => {
           const tr = document.createElement("tr");
@@ -2246,6 +2951,21 @@ function renderRaciMatrix(data) {
 function renderGuardFindings(data) {
   try {
     const findings = getNormalizedFindings(data);
+    let crit = 0, attn = 0, ready = 0;
+    findings.forEach(f => {
+      const s = (f.severity || 'Ready').toLowerCase();
+      if (s === 'critical') crit++;
+      else if (s === 'attention') attn++;
+      else ready++;
+    });
+
+    const cElem = document.getElementById("riskDistCritical");
+    if (cElem) cElem.textContent = `${crit} Critical`;
+    const aElem = document.getElementById("riskDistAttention");
+    if (aElem) aElem.textContent = `${attn} Attention`;
+    const rElem = document.getElementById("riskDistReady");
+    if (rElem) rElem.textContent = `${ready} Ready`;
+
     const guardBody = document.getElementById("guardTableBody");
     if (guardBody) {
       guardBody.innerHTML = "";
@@ -2269,12 +2989,10 @@ function renderGuardFindings(data) {
 
     const guardBadge = document.getElementById("guardSeverityBadge");
     if (guardBadge) {
-      const hasCrit = findings.some(f => (f.severity || "").toLowerCase() === "critical");
-      const hasAttn = findings.some(f => (f.severity || "").toLowerCase() === "attention");
-      if (hasCrit) {
+      if (crit > 0) {
         guardBadge.textContent = "Critical Risk Detected";
         guardBadge.className = "badge badge-rejected";
-      } else if (hasAttn) {
+      } else if (attn > 0) {
         guardBadge.textContent = "Attention Items";
         guardBadge.className = "badge badge-pending";
       } else {
@@ -2289,15 +3007,33 @@ function renderGuardFindings(data) {
 
 function renderDecisionLedger(data) {
   try {
+    const decisions = data.decisions || [];
+    let proposed = 0, review = 0, approved = 0, executed = 0;
+    decisions.forEach(d => {
+      const s = (d.approval_status || 'pending_approval').toLowerCase();
+      if (s === 'approved') approved++;
+      else if (s === 'executed') executed++;
+      else if (s === 'pending_approval' || s === 'awaiting_human') review++;
+      else proposed++;
+    });
+
+    const pElem = document.getElementById("pipeProposedCount");
+    if (pElem) pElem.textContent = proposed;
+    const revElem = document.getElementById("pipeReviewCount");
+    if (revElem) revElem.textContent = review;
+    const appElem = document.getElementById("pipeApprovedCount");
+    if (appElem) appElem.textContent = approved;
+    const exeElem = document.getElementById("pipeExecutedCount");
+    if (exeElem) exeElem.textContent = executed;
+
     const ledgerBody = document.getElementById("ledgerTableBody");
     if (ledgerBody) {
       ledgerBody.innerHTML = "";
-      const decisions = data.decisions || [];
       if (decisions.length > 0) {
         decisions.forEach(d => {
           const tr = document.createElement("tr");
           const status = d.approval_status || "pending_approval";
-          const badgeClass = status === "approved" ? "badge-approved" : (status === "rejected" ? "badge-rejected" : "badge-pending");
+          const badgeClass = status === "approved" || status === "executed" ? "badge-approved" : (status === "rejected" ? "badge-rejected" : "badge-pending");
 
           let actionHtml = d.approved_by || (status === "pending_approval" ? "Awaiting Director" : "-");
           const slackShareBtn = `<button class="btn-action-icon btn-slack-share" style="margin-left: 0.35rem; padding: 0.15rem 0.35rem;" onclick="openSlackShareForDecision('${d.decision_id}')" title="Share decision to Slack"><span class="material-symbols-outlined" style="font-size: 13px;">forum</span></button>`;
@@ -2593,6 +3329,10 @@ async function openAnalyticsModal(scope = "event") {
   await switchAnalyticsScope(scope);
 }
 
+function formatCurrency(val) {
+  return `$${Number(val || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+}
+
 async function switchAnalyticsScope(scope) {
   CURRENT_ANALYTICS_SCOPE = scope;
   const btnEvent = document.getElementById("btnScopeEvent");
@@ -2602,43 +3342,129 @@ async function switchAnalyticsScope(scope) {
     btnPort.classList.toggle("active", scope === "portfolio");
   }
 
+  const comparisonSection = document.getElementById("portfolioComparisonSection");
+  if (comparisonSection) {
+    comparisonSection.style.display = scope === "portfolio" ? "block" : "none";
+  }
+
   try {
     const data = scope === "event"
       ? await dataProvider.getEventAnalytics(CURRENT_EVENT_ID)
       : await dataProvider.getPortfolioAnalytics();
 
-    // Domain 1: Health
-    const health = data.event_health || {};
-    const scoreVal = health.readiness_score !== undefined ? health.readiness_score : (data.avg_readiness_score || 95);
-    document.getElementById("anHealthScore").textContent = `${scoreVal} / 100`;
-    document.getElementById("anHealthTrend").textContent = health.score_trend || (data.active_events_count ? `${data.active_events_count} Active Events` : "Stable");
-    document.getElementById("anHealthRisks").textContent = health.unresolved_risks !== undefined ? `${health.unresolved_risks} Items` : "0 Unresolved";
-    document.getElementById("anHealthMilestones").textContent = health.milestones_count !== undefined ? `${health.milestones_count} Nodes` : "-";
+    if (scope === "event") {
+      const an = data.analytics || {};
+      const health = an.health || {};
+      const fin = an.financial || {};
+      const gov = an.governance || {};
+      const sys = an.system || {};
 
-    // Domain 2: Financial
-    const fin = data.financial_invariance || {};
-    const alloc = fin.allocated_cents !== undefined ? fin.allocated_cents / 100 : (data.total_budget_managed_cents ? data.total_budget_managed_cents / 100 : 4000);
-    const reserve = fin.reserve_buffer_cents !== undefined ? fin.reserve_buffer_cents / 100 : 400;
-    const reservePct = fin.reserve_pct !== undefined ? fin.reserve_pct : "10.0";
-    const variance = fin.variance_cents !== undefined ? fin.variance_cents / 100 : 0;
-    const variancePct = fin.variance_pct !== undefined ? fin.variance_pct : "0.00";
-    document.getElementById("anFinAllocated").textContent = formatCurrency(alloc);
-    document.getElementById("anFinReserve").textContent = `${formatCurrency(reserve)} (${reservePct}%)`;
-    document.getElementById("anFinVariance").textContent = `${formatCurrency(variance)} (${variancePct}%)`;
+      // Domain 1: Health
+      const scoreVal = health.readiness_score != null ? health.readiness_score : (CURRENT_DOSSIER ? CURRENT_DOSSIER.readiness_score : 85);
+      document.getElementById("anHealthScore").textContent = `${scoreVal} / 100`;
+      document.getElementById("anHealthTrend").textContent = health.readiness_trend || "Stable";
+      document.getElementById("anHealthRisks").textContent = `${(health.critical_risks || 0) + (health.attention_items || 0)} Active Risks`;
+      document.getElementById("anHealthMilestones").textContent = `${health.timeline_milestones_count || 0} Milestones`;
 
-    // Domain 3: Governance
-    const gov = data.governance_and_agency || {};
-    const decCount = gov.decisions_count !== undefined ? gov.decisions_count : (data.total_decisions_logged || 0);
-    const rate = gov.human_approval_rate !== undefined ? gov.human_approval_rate : (data.portfolio_approval_rate || 100.0);
-    const actCount = gov.actions_count !== undefined ? gov.actions_count : (data.total_actions_governed || 0);
-    document.getElementById("anGovDecisions").textContent = `${decCount} Logged`;
-    document.getElementById("anGovApprovalRate").textContent = `${rate}%`;
-    document.getElementById("anGovActions").textContent = `${actCount} Governed`;
+      // Domain 2: Financial
+      document.getElementById("anFinAllocated").textContent = formatCurrency(fin.allocated_budget);
+      const resAmt = fin.contingency_amount || 0;
+      const resPct = fin.contingency_pct || 0;
+      document.getElementById("anFinReserve").textContent = `${formatCurrency(resAmt)} (${resPct}%)`;
+      const varAmt = fin.variance || 0;
+      document.getElementById("anFinVariance").textContent = `${formatCurrency(varAmt)} (${fin.is_zero_variance ? '0.00%' : 'Incurred'})`;
 
-    // Domain 4: Reliability
-    const rel = data.system_reliability || {};
-    const lat = rel.avg_latency_ms !== undefined ? rel.avg_latency_ms : (data.avg_system_latency_ms || 320);
-    document.getElementById("anSysLatency").textContent = `~${Math.round(lat)} ms`;
+      // Domain 3: Governance
+      const pendingDec = gov.pending_decisions || 0;
+      const appDec = gov.approved_decisions || 0;
+      const totalDec = pendingDec + appDec + (gov.rejected_decisions || 0);
+      document.getElementById("anGovDecisions").textContent = `${totalDec} Logged`;
+      document.getElementById("anGovApprovalRate").textContent = `${gov.approval_rate_pct != null ? gov.approval_rate_pct : 100}%`;
+      const extActions = (gov.completed_external_actions || 0) + (gov.pending_external_actions || 0);
+      document.getElementById("anGovActions").textContent = `${extActions} Governed`;
+
+      // Domain 4: Reliability
+      const telStatus = sys.telemetry_status || "DEMO / NOT MEASURED";
+      document.getElementById("anSysTelemetryStatus").textContent = telStatus;
+      document.getElementById("anSysLatency").textContent = sys.median_latency_ms != null ? `~${Math.round(sys.median_latency_ms)} ms` : "DEMO / NOT MEASURED";
+      document.getElementById("anSysErrorRate").textContent = sys.success_rate_pct != null ? `${(100 - sys.success_rate_pct).toFixed(2)}%` : "DEMO / NOT MEASURED";
+      document.getElementById("anSysOpsCount").textContent = `${sys.telemetry_events_recorded || 0} Ops`;
+    } else {
+      // Portfolio Scope
+      const port = data.portfolio || {};
+      const sum = port.summary || {};
+      const gov = port.governance || {};
+      const sys = port.system_reliability || {};
+      const breakdown = port.events_breakdown || [];
+
+      // Domain 1: Health (Portfolio aggregate)
+      const avgScore = sum.avg_readiness_score != null ? Math.round(sum.avg_readiness_score) : 90;
+      document.getElementById("anHealthScore").textContent = `${avgScore} / 100`;
+      document.getElementById("anHealthTrend").textContent = `${sum.events_managed || breakdown.length} Fleet Events`;
+      document.getElementById("anHealthRisks").textContent = `${sum.total_risks_count || 0} Total Across Fleet`;
+      document.getElementById("anHealthMilestones").textContent = `${sum.total_guests_managed || 0} Total Guests`;
+
+      // Domain 2: Financial (Portfolio total)
+      const totalPortBudget = sum.total_portfolio_budget || 0;
+      document.getElementById("anFinAllocated").textContent = formatCurrency(totalPortBudget);
+      document.getElementById("anFinReserve").textContent = "Aggregated across fleet";
+      document.getElementById("anFinVariance").textContent = "Portfolio Balanced ($0.00)";
+
+      // Domain 3: Governance (Portfolio aggregate)
+      const portPending = gov.pending_decisions || 0;
+      const portApp = gov.approved_decisions || 0;
+      const portTotal = portPending + portApp + (gov.rejected_decisions || 0);
+      document.getElementById("anGovDecisions").textContent = `${portTotal} Logged`;
+      document.getElementById("anGovApprovalRate").textContent = `${gov.portfolio_approval_rate_pct != null ? gov.portfolio_approval_rate_pct : 100}%`;
+      document.getElementById("anGovActions").textContent = `${gov.total_external_actions || 0} Governed`;
+
+      // Domain 4: Reliability
+      const telStatus = sys.telemetry_status || "DEMO / NOT MEASURED";
+      document.getElementById("anSysTelemetryStatus").textContent = telStatus;
+      document.getElementById("anSysLatency").textContent = sys.median_latency_ms != null ? `~${Math.round(sys.median_latency_ms)} ms` : "DEMO / NOT MEASURED";
+      document.getElementById("anSysErrorRate").textContent = sys.success_rate_pct != null ? `${(100 - sys.success_rate_pct).toFixed(2)}%` : "DEMO / NOT MEASURED";
+      document.getElementById("anSysOpsCount").textContent = `${sys.total_operations || 0} Ops`;
+
+      // Render Comparative Charts
+      const readinessChart = document.getElementById("comparisonReadinessBars");
+      const budgetChart = document.getElementById("comparisonBudgetBars");
+      if (readinessChart && budgetChart && breakdown.length > 0) {
+        readinessChart.innerHTML = "";
+        budgetChart.innerHTML = "";
+        const maxBudget = Math.max(...breakdown.map(e => Number(e.total_budget || 0)), 1);
+
+        breakdown.forEach(e => {
+          const rScore = e.readiness_score != null ? e.readiness_score : 85;
+          const rRow = document.createElement("div");
+          rRow.style.marginBottom = "0.4rem";
+          rRow.innerHTML = `
+            <div style="display: flex; justify-content: space-between; font-size: 0.72rem; margin-bottom: 2px;">
+              <span style="max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${e.title}</span>
+              <strong style="color: var(--accent-emerald);">${rScore}</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.06); height: 6px; border-radius: 3px; overflow: hidden;">
+              <div style="width: ${rScore}%; height: 100%; background: var(--accent-emerald);"></div>
+            </div>
+          `;
+          readinessChart.appendChild(rRow);
+
+          const bAmt = Number(e.total_budget || 0);
+          const bPct = Math.min((bAmt / maxBudget) * 100, 100);
+          const bRow = document.createElement("div");
+          bRow.style.marginBottom = "0.4rem";
+          bRow.innerHTML = `
+            <div style="display: flex; justify-content: space-between; font-size: 0.72rem; margin-bottom: 2px;">
+              <span style="max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${e.title}</span>
+              <strong style="color: var(--accent-gold);">${formatCurrency(bAmt)}</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.06); height: 6px; border-radius: 3px; overflow: hidden;">
+              <div style="width: ${bPct}%; height: 100%; background: var(--accent-gold);"></div>
+            </div>
+          `;
+          budgetChart.appendChild(bRow);
+        });
+      }
+    }
   } catch (err) {
     console.error("Error loading analytics:", err);
   }
@@ -2847,25 +3673,318 @@ function openSlackShareForDecision(decisionId) {
   });
 }
 
-// Submit New Event Form
-document.getElementById("btnSubmitNewEvent").addEventListener("click", async () => {
-  const title = document.getElementById("newEventTitle").value.trim() || "Untitled Event";
-  const guests = parseInt(document.getElementById("newEventGuests").value) || 30;
-  const budget = parseFloat(document.getElementById("newEventBudget").value) || 5000.0;
-  const location = document.getElementById("newEventLocation").value.trim() || "New York, NY";
+// ==========================================
+// 3-STEP CREATE EVENT WIZARD
+// ==========================================
+let CURRENT_WIZARD_STEP = 1;
 
-  try {
-    const data = await dataProvider.createEvent({ title, guest_count: guests, total_budget: budget, location });
-    if (data.event_id) {
-      CURRENT_EVENT_ID = data.event_id;
-      closeModal("modalNewEvent");
-      await loadEventsList();
-      refreshEventData();
-    }
-  } catch (err) {
-    alert("Error creating new event: " + err.message);
+function setWizardStep(step) {
+  CURRENT_WIZARD_STEP = step;
+  const p1 = document.getElementById("wizardPane1");
+  const p2 = document.getElementById("wizardPane2");
+  const p3 = document.getElementById("wizardPane3");
+  const s1 = document.getElementById("wizStep1");
+  const s2 = document.getElementById("wizStep2");
+  const s3 = document.getElementById("wizStep3");
+  const prevBtn = document.getElementById("btnWizardPrev");
+  const nextBtn = document.getElementById("btnWizardNext");
+  const submitBtn = document.getElementById("btnSubmitNewEvent");
+
+  if (p1) p1.style.display = step === 1 ? "flex" : "none";
+  if (p2) p2.style.display = step === 2 ? "flex" : "none";
+  if (p3) p3.style.display = step === 3 ? "flex" : "none";
+
+  if (s1) { s1.className = step === 1 ? "step-badge active" : (step > 1 ? "step-badge complete" : "step-badge"); }
+  if (s2) { s2.className = step === 2 ? "step-badge active" : (step > 2 ? "step-badge complete" : "step-badge"); }
+  if (s3) { s3.className = step === 3 ? "step-badge active" : "step-badge"; }
+
+  if (prevBtn) prevBtn.style.display = step > 1 ? "inline-block" : "none";
+  if (nextBtn) nextBtn.style.display = step < 3 ? "inline-block" : "none";
+  if (submitBtn) submitBtn.style.display = step === 3 ? "inline-block" : "none";
+
+  if (step === 3) {
+    const title = document.getElementById("newEventTitle").value.trim();
+    const loc = document.getElementById("newEventLocation").value.trim();
+    const guests = document.getElementById("newEventGuests").value;
+    const budget = Number(document.getElementById("newEventBudget").value || 0);
+
+    const sTitle = document.getElementById("wizSummaryTitle");
+    const sLoc = document.getElementById("wizSummaryLocation");
+    const sGuests = document.getElementById("wizSummaryGuests");
+    const sBudget = document.getElementById("wizSummaryBudget");
+    if (sTitle) sTitle.textContent = title;
+    if (sLoc) sLoc.textContent = loc;
+    if (sGuests) sGuests.textContent = guests;
+    if (sBudget) sBudget.textContent = formatCurrency(budget);
   }
-});
+}
+
+function openCreateEventModal() {
+  document.getElementById("newEventTitle").value = "";
+  document.getElementById("newEventLocation").value = "New York, NY";
+  document.getElementById("newEventGuests").value = "30";
+  document.getElementById("newEventBudget").value = "5000";
+  const errTitle = document.getElementById("newEventTitleError");
+  if (errTitle) errTitle.style.display = "none";
+  const errGuests = document.getElementById("newEventGuestsError");
+  if (errGuests) errGuests.style.display = "none";
+  const errBudget = document.getElementById("newEventBudgetError");
+  if (errBudget) errBudget.style.display = "none";
+  setWizardStep(1);
+  openModal("modalNewEvent");
+}
+
+const btnWizPrev = document.getElementById("btnWizardPrev");
+if (btnWizPrev) {
+  btnWizPrev.addEventListener("click", () => {
+    if (CURRENT_WIZARD_STEP > 1) setWizardStep(CURRENT_WIZARD_STEP - 1);
+  });
+}
+
+const btnWizNext = document.getElementById("btnWizardNext");
+if (btnWizNext) {
+  btnWizNext.addEventListener("click", () => {
+    if (CURRENT_WIZARD_STEP === 1) {
+      const title = document.getElementById("newEventTitle").value.trim();
+      const loc = document.getElementById("newEventLocation").value.trim();
+      const invalidTitles = ["untitled event", "untitled executive salon", "new event", "untitled"];
+      const isInvalid = !title || invalidTitles.includes(title.toLowerCase());
+      const errTitle = document.getElementById("newEventTitleError");
+      if (isInvalid || !loc) {
+        if (errTitle) errTitle.style.display = "block";
+        return;
+      }
+      if (errTitle) errTitle.style.display = "none";
+      setWizardStep(2);
+    } else if (CURRENT_WIZARD_STEP === 2) {
+      const guests = parseInt(document.getElementById("newEventGuests").value, 10);
+      const budget = parseFloat(document.getElementById("newEventBudget").value);
+      const errGuests = document.getElementById("newEventGuestsError");
+      const errBudget = document.getElementById("newEventBudgetError");
+
+      let valid = true;
+      if (isNaN(guests) || guests <= 0) {
+        if (errGuests) errGuests.style.display = "block";
+        valid = false;
+      } else {
+        if (errGuests) errGuests.style.display = "none";
+      }
+
+      if (isNaN(budget) || budget < 0) {
+        if (errBudget) errBudget.style.display = "block";
+        valid = false;
+      } else {
+        if (errBudget) errBudget.style.display = "none";
+      }
+
+      if (!valid) return;
+      setWizardStep(3);
+    }
+  });
+}
+
+const btnSubmitNew = document.getElementById("btnSubmitNewEvent");
+if (btnSubmitNew) {
+  btnSubmitNew.addEventListener("click", async () => {
+    const title = document.getElementById("newEventTitle").value.trim();
+    const guests = parseInt(document.getElementById("newEventGuests").value, 10);
+    const budget = parseFloat(document.getElementById("newEventBudget").value);
+    const location = document.getElementById("newEventLocation").value.trim();
+    const objective = document.getElementById("newEventObjective").value.trim();
+
+    const invalidTitles = ["untitled event", "untitled executive salon", "new event", "untitled"];
+    if (!title || invalidTitles.includes(title.toLowerCase())) {
+      alert("Please provide a descriptive event title. 'Untitled Event' is prohibited.");
+      setWizardStep(1);
+      return;
+    }
+
+    try {
+      btnSubmitNew.disabled = true;
+      btnSubmitNew.textContent = "Creating...";
+      const payload = {
+        title,
+        guest_count: guests,
+        total_budget: budget,
+        location,
+        objective: objective || undefined
+      };
+      const result = await dataProvider.createEvent(payload);
+      if (result && result.event_id) {
+        CURRENT_EVENT_ID = result.event_id;
+        closeModal("modalNewEvent");
+        await loadEventsList();
+        await refreshEventData();
+      }
+    } catch (err) {
+      alert("Failed to create event: " + (err.message || err));
+    } finally {
+      btnSubmitNew.disabled = false;
+      btnSubmitNew.textContent = "Create Dossier";
+    }
+  });
+}
+
+// ==========================================
+// EDIT ACTIVE EVENT DOSSIER & DIFF PREVIEW
+// ==========================================
+let PENDING_EDIT_UPDATES = null;
+
+function openEditEventModal() {
+  if (!CURRENT_DOSSIER) return;
+  document.getElementById("editEventTitle").value = CURRENT_DOSSIER.title || "";
+  document.getElementById("editEventGuests").value = CURRENT_DOSSIER.guest_count || 0;
+  document.getElementById("editEventBudget").value = CURRENT_DOSSIER.total_budget || 0;
+  document.getElementById("editEventLocation").value = CURRENT_DOSSIER.location || "";
+  document.getElementById("editEventObjective").value = CURRENT_DOSSIER.objective || "";
+
+  const errT = document.getElementById("editEventTitleError");
+  if (errT) errT.style.display = "none";
+  const errG = document.getElementById("editEventGuestsError");
+  if (errG) errG.style.display = "none";
+  const errB = document.getElementById("editEventBudgetError");
+  if (errB) errB.style.display = "none";
+  const errL = document.getElementById("editEventLocationError");
+  if (errL) errL.style.display = "none";
+
+  openModal("modalEditEvent");
+}
+
+const btnReviewEdit = document.getElementById("btnReviewEditChanges");
+if (btnReviewEdit) {
+  btnReviewEdit.addEventListener("click", () => {
+    if (!CURRENT_DOSSIER) return;
+    const title = document.getElementById("editEventTitle").value.trim();
+    const guests = parseInt(document.getElementById("editEventGuests").value, 10);
+    const budget = parseFloat(document.getElementById("editEventBudget").value);
+    const location = document.getElementById("editEventLocation").value.trim();
+    const objective = document.getElementById("editEventObjective").value.trim();
+
+    let valid = true;
+    const invalidTitles = ["untitled event", "untitled executive salon", "new event", "untitled"];
+    if (!title || invalidTitles.includes(title.toLowerCase())) {
+      document.getElementById("editEventTitleError").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("editEventTitleError").style.display = "none";
+    }
+
+    if (isNaN(guests) || guests <= 0) {
+      document.getElementById("editEventGuestsError").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("editEventGuestsError").style.display = "none";
+    }
+
+    if (isNaN(budget) || budget < 0) {
+      document.getElementById("editEventBudgetError").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("editEventBudgetError").style.display = "none";
+    }
+
+    if (!location) {
+      document.getElementById("editEventLocationError").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("editEventLocationError").style.display = "none";
+    }
+
+    if (!valid) return;
+
+    // Build diff against CURRENT_DOSSIER
+    const updates = {};
+    const diffItems = [];
+
+    if (title !== CURRENT_DOSSIER.title) {
+      updates.title = title;
+      diffItems.push({ field: "Event Title", oldVal: CURRENT_DOSSIER.title, newVal: title });
+    }
+    if (guests !== CURRENT_DOSSIER.guest_count) {
+      updates.guest_count = guests;
+      diffItems.push({ field: "Guest Count", oldVal: `${CURRENT_DOSSIER.guest_count} guests`, newVal: `${guests} guests` });
+    }
+    if (Math.abs(budget - Number(CURRENT_DOSSIER.total_budget || 0)) > 0.01) {
+      updates.total_budget = budget;
+      diffItems.push({ field: "Total Budget", oldVal: formatCurrency(CURRENT_DOSSIER.total_budget), newVal: formatCurrency(budget) });
+    }
+    if (location !== CURRENT_DOSSIER.location) {
+      updates.location = location;
+      diffItems.push({ field: "Location", oldVal: CURRENT_DOSSIER.location || "(None)", newVal: location });
+    }
+    if (objective !== (CURRENT_DOSSIER.objective || "")) {
+      updates.objective = objective;
+      diffItems.push({ field: "Objective", oldVal: CURRENT_DOSSIER.objective || "(None)", newVal: objective });
+    }
+
+    if (diffItems.length === 0) {
+      alert("No changes detected in the event dossier.");
+      return;
+    }
+
+    PENDING_EDIT_UPDATES = updates;
+
+    // Render diff list
+    const diffContainer = document.getElementById("editDiffList");
+    if (diffContainer) {
+      diffContainer.innerHTML = "";
+      diffItems.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "diff-item";
+        row.innerHTML = `
+          <span class="diff-field">${item.field}:</span>
+          <span class="diff-old">${item.oldVal}</span>
+          <span class="diff-arrow">→</span>
+          <span class="diff-new">${item.newVal}</span>
+        `;
+        diffContainer.appendChild(row);
+      });
+    }
+
+    closeModal("modalEditEvent");
+    openModal("modalEditDiff");
+  });
+}
+
+const btnBackEdit = document.getElementById("btnBackToEdit");
+if (btnBackEdit) {
+  btnBackEdit.addEventListener("click", () => {
+    closeModal("modalEditDiff");
+    openModal("modalEditEvent");
+  });
+}
+
+const btnConfirmSave = document.getElementById("btnConfirmSaveEdit");
+if (btnConfirmSave) {
+  btnConfirmSave.addEventListener("click", async () => {
+    if (!PENDING_EDIT_UPDATES) return;
+    try {
+      btnConfirmSave.disabled = true;
+      btnConfirmSave.textContent = "Saving...";
+      const updated = await dataProvider.updateEvent(CURRENT_EVENT_ID, PENDING_EDIT_UPDATES);
+      closeModal("modalEditDiff");
+      PENDING_EDIT_UPDATES = null;
+      await loadEventsList();
+      await refreshEventData();
+
+      // Show confirmation in copilot
+      const msg = createMsg("agent");
+      const isDemo = dataProvider instanceof DemoEventOpsProvider;
+      msg.innerHTML = `
+        <div class="copilot-card">
+          <div class="copilot-card-title">📝 Event Dossier Updated ${isDemo ? '<span style="font-size:0.7rem; color:var(--accent-amber); font-weight:normal;">(Demo Simulation)</span>' : ''}</div>
+          <div><strong>Event ID:</strong> <code>${CURRENT_EVENT_ID}</code></div>
+          <div>Version incremented to <code>v${updated.version || 2}</code>. Readiness recomputed: <strong>${updated.readiness_score || 85}/100</strong>.</div>
+        </div>
+      `;
+    } catch (err) {
+      alert("Failed to save changes: " + (err.message || err));
+    } finally {
+      btnConfirmSave.disabled = false;
+      btnConfirmSave.textContent = "Confirm & Save";
+    }
+  });
+}
 
 // COPILOT CHAT LOGIC
 const chatLog = document.getElementById("chatLog");

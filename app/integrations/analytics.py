@@ -163,7 +163,7 @@ class AnalyticsService:
         return {
             "scope": "event",
             "event_id": event_id,
-            "title": event_dossier.get("title", "Untitled"),
+            "title": event_dossier.get("title", "Event Dossier"),
             "health": {
                 "readiness_score": event_dossier.get("readiness_score", 95),
                 "critical_risks": critical_risks,
@@ -192,8 +192,9 @@ class AnalyticsService:
             },
             "system": {
                 "telemetry_events_recorded": total_reqs,
-                "success_rate_pct": round((success_reqs / total_reqs * 100), 1) if total_reqs > 0 else 100.0,
-                "median_latency_ms": median_lat,
+                "success_rate_pct": round((success_reqs / total_reqs * 100), 1) if total_reqs > 0 else None,
+                "median_latency_ms": median_lat if latencies else None,
+                "telemetry_status": "MEASURED" if total_reqs > 0 else "DEMO / NOT MEASURED",
                 "recent_operations": [
                     {
                         "operation": t.operation,
@@ -236,7 +237,7 @@ class AnalyticsService:
         total_ops = len(tel_list)
         success_ops = len([t for t in tel_list if t.status == "success"])
         all_lat = [t.latency_ms for t in tel_list if t.latency_ms > 0]
-        med_lat = round(statistics.median(all_lat), 1) if all_lat else 0.0
+        med_lat = round(statistics.median(all_lat), 1) if all_lat else None
 
         return {
             "scope": "portfolio",
@@ -255,8 +256,9 @@ class AnalyticsService:
             },
             "system_reliability": {
                 "total_operations": total_ops,
-                "system_success_rate_pct": round((success_ops / total_ops * 100), 1) if total_ops > 0 else 100.0,
+                "system_success_rate_pct": round((success_ops / total_ops * 100), 1) if total_ops > 0 else None,
                 "median_latency_ms": med_lat,
+                "telemetry_status": "MEASURED" if total_ops > 0 else "DEMO / NOT MEASURED",
             },
             "generated_at": datetime.now(timezone.utc).isoformat(),
         }
